@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://joakimstarr.github.io/music/index.html</loc>
+    
+    <lastmod>2022-11-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://joakimstarr.github.io/post/clb29ufi7001x76wmca5sc1ed.html</loc>
     
     <lastmod>2022-11-30</lastmod>
@@ -113,15 +122,6 @@
     <loc>https://joakimstarr.github.io/post/clb27ater001976wmbyir8t96.html</loc>
     
     <lastmod>2022-11-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://joakimstarr.github.io/music/index.html</loc>
-    
-    <lastmod>2022-11-29</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
