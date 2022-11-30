@@ -3,11 +3,11 @@
   <title>文人病</title>
   
   
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="https://joakimstarr.github.io/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
+  <link href="https://joakimstarr.github.io/"/>
   <updated>2022-11-29T14:20:20.039Z</updated>
-  <id>http://example.com/</id>
+  <id>https://joakimstarr.github.io/</id>
   
   <author>
     <name>文人病</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>小哲 | 浅论自爱自尊和自私虚荣的关系</title>
-    <link href="http://example.com/2022/11/29/%E5%B0%8F%E5%93%B2-%E6%B5%85%E8%AE%BA%E8%87%AA%E7%88%B1%E8%87%AA%E5%B0%8A%E5%92%8C%E8%87%AA%E7%A7%81%E8%99%9A%E8%8D%A3%E7%9A%84%E5%85%B3%E7%B3%BB/"/>
-    <id>http://example.com/2022/11/29/%E5%B0%8F%E5%93%B2-%E6%B5%85%E8%AE%BA%E8%87%AA%E7%88%B1%E8%87%AA%E5%B0%8A%E5%92%8C%E8%87%AA%E7%A7%81%E8%99%9A%E8%8D%A3%E7%9A%84%E5%85%B3%E7%B3%BB/</id>
+    <link href="https://joakimstarr.github.io/post/clb2a6e6y002376wm4pmc2oqc.html"/>
+    <id>https://joakimstarr.github.io/post/clb2a6e6y002376wm4pmc2oqc.html</id>
     <published>2022-11-29T13:54:38.000Z</published>
     <updated>2022-11-29T14:20:20.039Z</updated>
     
@@ -33,17 +33,17 @@
     
     
     
-    <category term="小哲" scheme="http://example.com/categories/%E5%B0%8F%E5%93%B2/"/>
+    <category term="小哲" scheme="https://joakimstarr.github.io/categories/%E5%B0%8F%E5%93%B2/"/>
     
     
-    <category term="哲学思考" scheme="http://example.com/tags/%E5%93%B2%E5%AD%A6%E6%80%9D%E8%80%83/"/>
+    <category term="哲学思考" scheme="https://joakimstarr.github.io/tags/%E5%93%B2%E5%AD%A6%E6%80%9D%E8%80%83/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 请予我三片落叶</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E8%AF%B7%E4%BA%88%E6%88%91%E4%B8%89%E7%89%87%E8%90%BD%E5%8F%B6/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E8%AF%B7%E4%BA%88%E6%88%91%E4%B8%89%E7%89%87%E8%90%BD%E5%8F%B6/</id>
+    <link href="https://joakimstarr.github.io/post/clb2a3rcz002276wmfj0cdwia.html"/>
+    <id>https://joakimstarr.github.io/post/clb2a3rcz002276wmfj0cdwia.html</id>
     <published>2022-11-29T13:52:35.000Z</published>
     <updated>2022-11-29T13:58:35.309Z</updated>
     
@@ -61,17 +61,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>散文 | 君子赋</title>
-    <link href="http://example.com/2022/11/29/%E6%95%A3%E6%96%87-%E5%90%9B%E5%AD%90%E8%B5%8B/"/>
-    <id>http://example.com/2022/11/29/%E6%95%A3%E6%96%87-%E5%90%9B%E5%AD%90%E8%B5%8B/</id>
+    <link href="https://joakimstarr.github.io/post/clb29z1tp002076wmcs8l8lj4.html"/>
+    <id>https://joakimstarr.github.io/post/clb29z1tp002076wmcs8l8lj4.html</id>
     <published>2022-11-29T13:48:55.000Z</published>
     <updated>2022-11-29T13:57:15.739Z</updated>
     
@@ -85,19 +85,19 @@
     
     
     
-    <category term="散文" scheme="http://example.com/categories/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/"/>
     
     
-    <category term="散文" scheme="http://example.com/tags/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/"/>
     
-    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 三生石</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E4%B8%89%E7%94%9F%E7%9F%B3/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E4%B8%89%E7%94%9F%E7%9F%B3/</id>
+    <link href="https://joakimstarr.github.io/post/clb2aa01p002g76wm5xcq9wkz.html"/>
+    <id>https://joakimstarr.github.io/post/clb2aa01p002g76wm5xcq9wkz.html</id>
     <published>2022-11-29T13:35:39.000Z</published>
     <updated>2022-11-29T13:58:38.229Z</updated>
     
@@ -117,19 +117,19 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
-    <title>散文 | 无题</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%97%A0%E9%A2%98/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%97%A0%E9%A2%98/</id>
+    <title>诗歌 | 无题</title>
+    <link href="https://joakimstarr.github.io/post/clb29ufi7001x76wmca5sc1ed.html"/>
+    <id>https://joakimstarr.github.io/post/clb29ufi7001x76wmca5sc1ed.html</id>
     <published>2022-11-29T13:32:19.000Z</published>
-    <updated>2022-11-29T13:59:07.299Z</updated>
+    <updated>2022-11-30T02:16:03.540Z</updated>
     
     <content type="html"><![CDATA[<font face='楷体'><center>我达达的马蹄是美丽的错误<p>我不是归人，是个过客……<br><font face='Freestyle Script'></p><font face='楷体'></center><p align='right'>——郑愁予《错误》</p><hr><h4 id="无题"><a href="#无题" class="headerlink" title="无题"></a>无题</h4><p>天空的落日忽然落下<br>世界只剩下一片虚无<br>巨大的恐惧朝我袭来<br>我只身一人，看向<br>远方眼前的迷茫</p><p>我将自己永远置身黑暗中的梦境<br>我深知抓不住的<br>他永远在远方<br>也久久在我眼帘</p><p>寒冷侵入了我的梦<br>秋天的萧瑟在我眼前飞舞不断<br>我于梦中一隅<br>独自蜷缩</p><p>夜晚安静得仿佛世界只有我一人<br><br></p><h4 id="无题-1"><a href="#无题-1" class="headerlink" title="无题"></a>无题</h4><p>孤帆启航，映着夕阳<br>潺潺的水声，在耳畔低呤<br>遍地杨柳的湖，寂静地在守着<br>守着过去的小桥，守着现在的小桥<br>相见，便失去了蝉鸣的夏天</p><p>留下  一株回忆的桔梗<br>在萧瑟的秋风中<br>泛黄的树叶边缘残留的露<br>承载了整个世界，颠倒了<br>现实，与现实<br>容得下整个世界，却怎么<br>也容不下一个小小的我，角落里<br>月亮出来了<br>背上吉他的旅人，前往北方<br>唱起低沉的民谣</p><p>风  奏起笛声……<br><br></p><h4 id="不再期待"><a href="#不再期待" class="headerlink" title="不再期待"></a>不再期待</h4><p>开始不再期待明日的朝阳何时会升起<br>开始不再期待今日的晚霞何时会美丽<br>开始不再期待春日的绿叶是如何生长<br>开始不再期待夏日的荷花是如何盛开<br>开始不再期待秋日的枫叶如何偷了夕阳<br>开始不再期待冬日的雪花如何洁白<br>开始不再期待我所期待的一切<br>开始不再期待我所羡慕的一切<br>我在深夜里蜷缩，握不住的黑暗<br>我的泪水蔓延，止不住的恐惧<br>在黑夜里，你是那唯一的灯塔</p><br>#### 我一无所有我一无所有，只停留在榕树身后身体还慵懒在昨日的暮色里，随着夜晚的风泥土的芬芳依附在天空的云彩里在绿荫里你痴迷地听着春天的故事我在雨中沉寂地站着远方和诗野的呼喊一同响起带着满身的春意在夏日里游荡你把秋天的落叶提前告知了我我沉默地从河中走来到你的冬天里生一把篝火，随着咸涩的泪水你怀中的美丽，渐渐浮现出来我即将逝去，而我没有告诉你<p><em><p align='right'>2022.11.13|文人病</p></em></p>]]></content>
     
@@ -148,17 +148,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>散文 | 记烟水亭</title>
-    <link href="http://example.com/2022/11/29/%E6%95%A3%E6%96%87-%E8%AE%B0%E7%83%9F%E6%B0%B4%E4%BA%AD/"/>
-    <id>http://example.com/2022/11/29/%E6%95%A3%E6%96%87-%E8%AE%B0%E7%83%9F%E6%B0%B4%E4%BA%AD/</id>
+    <link href="https://joakimstarr.github.io/post/clb29abe6001q76wmfsu85bfu.html"/>
+    <id>https://joakimstarr.github.io/post/clb29abe6001q76wmfsu85bfu.html</id>
     <published>2022-11-29T13:29:41.000Z</published>
     <updated>2022-11-29T13:57:17.839Z</updated>
     
@@ -174,19 +174,19 @@
     
     
     
-    <category term="散文" scheme="http://example.com/categories/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/"/>
     
     
-    <category term="散文" scheme="http://example.com/tags/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/"/>
     
-    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 他牵连一片云</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E4%BB%96%E7%89%B5%E8%BF%9E%E4%B8%80%E7%89%87%E4%BA%91/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E4%BB%96%E7%89%B5%E8%BF%9E%E4%B8%80%E7%89%87%E4%BA%91/</id>
+    <link href="https://joakimstarr.github.io/post/clb293fy4001p76wme4u35026.html"/>
+    <id>https://joakimstarr.github.io/post/clb293fy4001p76wme4u35026.html</id>
     <published>2022-11-29T13:24:21.000Z</published>
     <updated>2022-11-29T13:58:46.879Z</updated>
     
@@ -204,17 +204,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 我在远方</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%88%91%E5%9C%A8%E8%BF%9C%E6%96%B9/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%88%91%E5%9C%A8%E8%BF%9C%E6%96%B9/</id>
+    <link href="https://joakimstarr.github.io/post/clb28rxaf001m76wmfu3efsdh.html"/>
+    <id>https://joakimstarr.github.io/post/clb28rxaf001m76wmfu3efsdh.html</id>
     <published>2022-11-29T13:15:23.000Z</published>
     <updated>2022-11-29T13:59:03.499Z</updated>
     
@@ -236,17 +236,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 我从远方眺望你</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%88%91%E4%BB%8E%E8%BF%9C%E6%96%B9%E7%9C%BA%E6%9C%9B%E4%BD%A0/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%88%91%E4%BB%8E%E8%BF%9C%E6%96%B9%E7%9C%BA%E6%9C%9B%E4%BD%A0/</id>
+    <link href="https://joakimstarr.github.io/post/clb28ntth001l76wm4dcjhhkk.html"/>
+    <id>https://joakimstarr.github.io/post/clb28ntth001l76wm4dcjhhkk.html</id>
     <published>2022-11-29T13:12:12.000Z</published>
     <updated>2022-11-29T13:58:53.509Z</updated>
     
@@ -264,17 +264,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 春天，遂想起</title>
-    <link href="http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%98%A5%E5%A4%A9%EF%BC%8C%E9%81%82%E6%83%B3%E8%B5%B7/"/>
-    <id>http://example.com/2022/11/29/%E8%AF%97%E6%AD%8C-%E6%98%A5%E5%A4%A9%EF%BC%8C%E9%81%82%E6%83%B3%E8%B5%B7/</id>
+    <link href="https://joakimstarr.github.io/post/clb27hii3001c76wm650k6e4a.html"/>
+    <id>https://joakimstarr.github.io/post/clb27hii3001c76wm650k6e4a.html</id>
     <published>2022-11-29T12:39:18.000Z</published>
     <updated>2022-11-29T13:58:21.139Z</updated>
     
@@ -296,17 +296,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>散文 |</title>
-    <link href="http://example.com/2022/11/26/%E6%95%A3%E6%96%87-%E8%AE%B0%E5%BF%86%E9%82%A3%E4%B8%80%E9%9A%85/"/>
-    <id>http://example.com/2022/11/26/%E6%95%A3%E6%96%87-%E8%AE%B0%E5%BF%86%E9%82%A3%E4%B8%80%E9%9A%85/</id>
+    <link href="https://joakimstarr.github.io/post/clb2a146k002176wma50gh126.html"/>
+    <id>https://joakimstarr.github.io/post/clb2a146k002176wma50gh126.html</id>
     <published>2022-11-26T13:50:32.000Z</published>
     <updated>2022-11-29T13:57:18.289Z</updated>
     
@@ -320,19 +320,19 @@
     
     
     
-    <category term="散文" scheme="http://example.com/categories/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/"/>
     
     
-    <category term="散文" scheme="http://example.com/tags/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/"/>
     
-    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 叫喊故乡</title>
-    <link href="http://example.com/2022/11/16/%E8%AF%97%E6%AD%8C-%E5%8F%AB%E5%96%8A%E6%95%85%E4%B9%A1/"/>
-    <id>http://example.com/2022/11/16/%E8%AF%97%E6%AD%8C-%E5%8F%AB%E5%96%8A%E6%95%85%E4%B9%A1/</id>
+    <link href="https://joakimstarr.github.io/post/clb29xqu7001z76wm7rdf34cu.html"/>
+    <id>https://joakimstarr.github.io/post/clb29xqu7001z76wm7rdf34cu.html</id>
     <published>2022-11-16T13:47:54.000Z</published>
     <updated>2022-11-29T13:58:14.769Z</updated>
     
@@ -352,17 +352,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 我一无所有</title>
-    <link href="http://example.com/2022/11/13/%E8%AF%97%E6%AD%8C-%E6%88%91%E4%B8%80%E6%97%A0%E6%89%80%E6%9C%89/"/>
-    <id>http://example.com/2022/11/13/%E8%AF%97%E6%AD%8C-%E6%88%91%E4%B8%80%E6%97%A0%E6%89%80%E6%9C%89/</id>
+    <link href="https://joakimstarr.github.io/post/clb29vwdt001y76wmf1qkffn3.html"/>
+    <id>https://joakimstarr.github.io/post/clb29vwdt001y76wmf1qkffn3.html</id>
     <published>2022-11-13T13:46:28.000Z</published>
     <updated>2022-11-29T13:58:57.389Z</updated>
     
@@ -385,17 +385,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 无题</title>
-    <link href="http://example.com/2022/11/12/%E8%AF%97%E6%AD%8C-%E6%97%A0%E9%A2%98%C2%B72/"/>
-    <id>http://example.com/2022/11/12/%E8%AF%97%E6%AD%8C-%E6%97%A0%E9%A2%98%C2%B72/</id>
+    <link href="https://joakimstarr.github.io/post/clb29u8y8001w76wmgndn97q7.html"/>
+    <id>https://joakimstarr.github.io/post/clb29u8y8001w76wmgndn97q7.html</id>
     <published>2022-11-12T13:44:43.000Z</published>
     <updated>2022-11-29T13:59:09.629Z</updated>
     
@@ -413,17 +413,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 不要问我</title>
-    <link href="http://example.com/2022/11/08/%E8%AF%97%E6%AD%8C-%E4%B8%8D%E8%A6%81%E9%97%AE%E6%88%91/"/>
-    <id>http://example.com/2022/11/08/%E8%AF%97%E6%AD%8C-%E4%B8%8D%E8%A6%81%E9%97%AE%E6%88%91/</id>
+    <link href="https://joakimstarr.github.io/post/clb29n57s001t76wmeqsbhhdh.html"/>
+    <id>https://joakimstarr.github.io/post/clb29n57s001t76wmeqsbhhdh.html</id>
     <published>2022-11-08T13:39:40.000Z</published>
     <updated>2022-11-29T13:58:01.849Z</updated>
     
@@ -444,17 +444,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 一天</title>
-    <link href="http://example.com/2022/11/07/%E8%AF%97%E6%AD%8C-%E4%B8%80%E5%A4%A9/"/>
-    <id>http://example.com/2022/11/07/%E8%AF%97%E6%AD%8C-%E4%B8%80%E5%A4%A9/</id>
+    <link href="https://joakimstarr.github.io/post/clb29pmb4001u76wmb73v221l.html"/>
+    <id>https://joakimstarr.github.io/post/clb29pmb4001u76wmb73v221l.html</id>
     <published>2022-11-07T13:41:35.000Z</published>
     <updated>2022-11-29T14:00:04.069Z</updated>
     
@@ -476,17 +476,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>诗歌 | 夕阳，献给那夜里寂寞的林屋</title>
-    <link href="http://example.com/2022/10/19/%E8%AF%97%E6%AD%8C-%E5%A4%95%E9%98%B3%EF%BC%8C%E7%8C%AE%E7%BB%99%E9%82%A3%E5%A4%9C%E9%87%8C%E5%AF%82%E5%AF%9E%E7%9A%84%E6%9E%97%E5%B1%8B/"/>
-    <id>http://example.com/2022/10/19/%E8%AF%97%E6%AD%8C-%E5%A4%95%E9%98%B3%EF%BC%8C%E7%8C%AE%E7%BB%99%E9%82%A3%E5%A4%9C%E9%87%8C%E5%AF%82%E5%AF%9E%E7%9A%84%E6%9E%97%E5%B1%8B/</id>
+    <link href="https://joakimstarr.github.io/post/clb29021f001o76wm20u15qc2.html"/>
+    <id>https://joakimstarr.github.io/post/clb29021f001o76wm20u15qc2.html</id>
     <published>2022-10-19T13:21:43.000Z</published>
     <updated>2022-11-29T13:59:12.939Z</updated>
     
@@ -504,17 +504,17 @@
     
     
     
-    <category term="诗歌" scheme="http://example.com/categories/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/"/>
     
     
-    <category term="诗歌" scheme="http://example.com/tags/%E8%AF%97%E6%AD%8C/"/>
+    <category term="诗歌" scheme="https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/"/>
     
   </entry>
   
   <entry>
     <title>散文 | 写给朋友</title>
-    <link href="http://example.com/2022/10/17/%E6%95%A3%E6%96%87-%E5%86%99%E7%BB%99%E6%9C%8B%E5%8F%8B/"/>
-    <id>http://example.com/2022/10/17/%E6%95%A3%E6%96%87-%E5%86%99%E7%BB%99%E6%9C%8B%E5%8F%8B/</id>
+    <link href="https://joakimstarr.github.io/post/clb2ad3ap004076wma1nnew2d.html"/>
+    <id>https://joakimstarr.github.io/post/clb2ad3ap004076wma1nnew2d.html</id>
     <published>2022-10-17T13:17:19.000Z</published>
     <updated>2022-11-29T13:59:34.199Z</updated>
     
@@ -529,19 +529,19 @@
     
     
     
-    <category term="散文" scheme="http://example.com/categories/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/"/>
     
     
-    <category term="散文" scheme="http://example.com/tags/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/"/>
     
-    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
   <entry>
     <title>散文 | 给过去的一封信</title>
-    <link href="http://example.com/2022/10/06/%E6%95%A3%E6%96%87-%E7%BB%99%E8%BF%87%E5%8E%BB%E7%9A%84%E4%B8%80%E5%B0%81%E4%BF%A1/"/>
-    <id>http://example.com/2022/10/06/%E6%95%A3%E6%96%87-%E7%BB%99%E8%BF%87%E5%8E%BB%E7%9A%84%E4%B8%80%E5%B0%81%E4%BF%A1/</id>
+    <link href="https://joakimstarr.github.io/post/clb28jevc001k76wm65ac6ric.html"/>
+    <id>https://joakimstarr.github.io/post/clb28jevc001k76wm65ac6ric.html</id>
     <published>2022-10-06T13:08:46.000Z</published>
     <updated>2022-11-29T13:57:18.829Z</updated>
     
@@ -555,19 +555,19 @@
     
     
     
-    <category term="散文" scheme="http://example.com/categories/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/"/>
     
     
-    <category term="散文" scheme="http://example.com/tags/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/"/>
     
-    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
   <entry>
     <title>散文 | 逝去</title>
-    <link href="http://example.com/2022/10/06/%E6%95%A3%E6%96%87-%E9%80%9D%E5%8E%BB/"/>
-    <id>http://example.com/2022/10/06/%E6%95%A3%E6%96%87-%E9%80%9D%E5%8E%BB/</id>
+    <link href="https://joakimstarr.github.io/post/clb28frs0001j76wm0atjh8e1.html"/>
+    <id>https://joakimstarr.github.io/post/clb28frs0001j76wm0atjh8e1.html</id>
     <published>2022-10-06T13:05:56.000Z</published>
     <updated>2022-11-29T13:57:38.469Z</updated>
     
@@ -581,12 +581,12 @@
     
     
     
-    <category term="散文" scheme="http://example.com/categories/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/"/>
     
     
-    <category term="散文" scheme="http://example.com/tags/%E6%95%A3%E6%96%87/"/>
+    <category term="散文" scheme="https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/"/>
     
-    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    <category term="随笔" scheme="https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
