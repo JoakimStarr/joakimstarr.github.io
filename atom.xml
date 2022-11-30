@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>文人病</title>
   
-  
+  <subtitle>我从人间走过</subtitle>
   <link href="https://joakimstarr.github.io/atom.xml" rel="self"/>
   
   <link href="https://joakimstarr.github.io/"/>
