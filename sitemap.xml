@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://joakimstarr.github.io/post/fb96115d.html</loc>
+    
+    <lastmod>2022-12-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://joakimstarr.github.io/post/c0b7e9fa.html</loc>
     
     <lastmod>2022-12-08</lastmod>
@@ -400,7 +409,7 @@
 
   <url>
     <loc>https://joakimstarr.github.io/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -408,42 +417,42 @@
   
   <url>
     <loc>https://joakimstarr.github.io/tags/%E4%BF%A1%E4%BD%93/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/tags/%E9%9A%8F%E7%AC%94/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/tags/%E6%95%A3%E6%96%87/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/tags/%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/tags/%E5%93%B2%E5%AD%A6%E6%80%9D%E8%80%83/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/tags/%E8%AF%97%E6%AD%8C/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -452,28 +461,28 @@
   
   <url>
     <loc>https://joakimstarr.github.io/categories/%E4%BF%A1%E4%BD%93/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/categories/%E6%95%A3%E6%96%87/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/categories/%E5%B0%8F%E5%93%B2/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://joakimstarr.github.io/categories/%E8%AF%97%E6%AD%8C/</loc>
-    <lastmod>2022-12-08</lastmod>
+    <lastmod>2022-12-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
