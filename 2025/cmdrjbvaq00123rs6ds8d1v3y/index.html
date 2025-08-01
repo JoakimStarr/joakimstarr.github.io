@@ -11,6 +11,8 @@
   <link rel="canonical" href="http://example.com/2025/cmdrjbvaq00123rs6ds8d1v3y/">
 
   
+    <link rel="shortcut icon" href="/images/graph1.png">
+  
 
   <meta name="description" content="MathJax &#x3D; {   tex: {     inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;\\(&#39;, &#39;\\)&#39;]]   } };     Stata 常用技巧 Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata 具有很强的可扩展性，吸引了许多的用户编写程序，这使得 Stata 的社">
 <meta property="og:type" content="article">
@@ -34,7 +36,7 @@
 <meta name="twitter:image" content="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg">
   <meta name="generator" content="Hexo 7.3.0">
   <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2025/cmdrjbvaq00123rs6ds8d1v3y/"},"headline":"计量｜Stata 常用方法","description":"MathJax = {   tex: {     inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]   } };  Stata 常用技巧 Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata","datePublished":"2025-07-30T03:09:36.000Z","dateModified":"2025-07-31T15:13:05.988Z","author":{"@type":"Person","name":"Joakim Starr(文人病)"},"publisher":{"@type":"Organization","name":"文人病","logo":{"@type":"ImageObject","url":"http://example.com/favicon.ico"}}}
+{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2025/cmdrjbvaq00123rs6ds8d1v3y/"},"headline":"计量｜Stata 常用方法","description":"MathJax = {   tex: {     inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]   } };  Stata 常用技巧 Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata","datePublished":"2025-07-30T03:09:36.000Z","dateModified":"2025-07-31T15:13:05.988Z","author":{"@type":"Person","name":"Joakim Starr(文人病)"},"publisher":{"@type":"Organization","name":"文人病","logo":{"@type":"ImageObject","url":"http://example.com/images/graph1.png"}}}
 </script>
 
   
@@ -165,7 +167,7 @@ MathJax = {
 <li><strong>区域 5 为属性窗口</strong>，点击一个变量，在这个区域会显示所有的属性信息，包括名称、标签、类型等。</li>
 <li><strong>区域 6 为图形操作窗口</strong>（我也不知道该不该叫这个名字），从左往右分别日志、浏览器、图形按钮（这些一般用不上），最主要的是右边的 Do-file 编辑器，用来些 Stata 的 do 命令的，这是为了可操作性，后面会讲，还有数据编辑、数据浏览，其中，数据编辑可以直接查看并编辑数据，像 Excel 一样，数据浏览则只能查看数据，不能编辑。</li>
 </ul>
-<p><a target="_blank" rel="noopener" href="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg" alt="alt text" /></a></p>
+<p><a target="_blank" rel="noopener" href="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg" alt="alt text" /></a></p>
 <h2 id="stata-的使用方法"><a class="markdownIt-Anchor" href="#stata-的使用方法"></a> Stata 的使用方法</h2>
 <ul>
 <li><strong>Stata 的命令格式</strong></li>
@@ -175,13 +177,13 @@ MathJax = {
 <p>其中，[ ]表示该部分是可以选择的，并非一定需要，以回归命令为例，在命令窗口输入</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">help</span> <span class="keyword">regress</span></span><br></pre></td></tr></table></figure>
 <p>回车后，会显示该命令的帮助信息，其中有关于命令格式的描述。结果如下图所示<br />
-<a target="_blank" rel="noopener" href="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg" alt="alt text" /></a><br />
+<a target="_blank" rel="noopener" href="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg" alt="alt text" /></a><br />
 其中下面这一块，表示命令格式，其中 regress 表示变量名（可简写为 reg），depvar 为因变量，indepvars 为自变量，if 为条件，in 为样本范围，weight 为权值，options 为选项。这表明改命令至少需要一个因变量，因为 depvar 并没有用[ ]报告起来，这就说明，该变量必须要要一个变量，否则就会报错。</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">regress</span> depvar [indepvars] [<span class="keyword">if</span>] [<span class="keyword">in</span>] [weight] [, options]</span><br></pre></td></tr></table></figure>
 <p>我们以 Stata 自带的 auto 为例，尝试一下各种情况：</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">sysuse</span> auto, <span class="keyword">clear</span> # 导入数据</span><br><span class="line">(1978 automobile data)</span><br></pre></td></tr></table></figure>
 <p>导入数据后，你会发现，区域 4 多了几个变量名，如下图所示。可以通过点击每个变量查看该变量的属性，在属性窗口查看。<br />
-<a target="_blank" rel="noopener" href="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg" alt="alt text" /></a><br />
+<a target="_blank" rel="noopener" href="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg" alt="alt text" /></a><br />
 接下来输入 reg 命令，我们尝试各种情况试试：</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">reg</span> #什么变量都不传入</span><br><span class="line">last <span class="keyword">estimates</span> not found</span><br><span class="line"><span class="built_in">r</span>(301);</span><br><span class="line"></span><br><span class="line">. <span class="keyword">reg</span> price #输入因变量</span><br><span class="line"></span><br><span class="line">      Source |       SS           df       MS      Number of obs   =        74</span><br><span class="line">-------------+----------------------------------   <span class="built_in">F</span>(0, 73)        =      0.00</span><br><span class="line">       Model |           0         0           .   <span class="keyword">Prob</span> &gt; F        =         .</span><br><span class="line">    Residual |   635065396        73  8699525.97   R-squared       =    0.0000</span><br><span class="line">-------------+----------------------------------   Adj R-squared   =    0.0000</span><br><span class="line">       <span class="keyword">Total</span> |   635065396        73  8699525.97   Root MSE        =    2949.5</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">       price | Coefficient  Std. <span class="keyword">err</span>.      t    P&gt;|t|     [95% <span class="keyword">conf</span>. interval]</span><br><span class="line">-------------+----------------------------------------------------------------</span><br><span class="line">       _cons |   6165.257   342.8719    17.98   0.000     5481.914      6848.6</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">. <span class="keyword">reg</span> price length # 输入因变量和自变量</span><br><span class="line"></span><br><span class="line">      Source |       SS           df       MS      Number of obs   =        74</span><br><span class="line">-------------+----------------------------------   <span class="built_in">F</span>(1, 72)        =     16.50</span><br><span class="line">       Model |   118425867         1   118425867   <span class="keyword">Prob</span> &gt; F        =    0.0001</span><br><span class="line">    Residual |   516639529        72  7175549.01   R-squared       =    0.1865</span><br><span class="line">-------------+----------------------------------   Adj R-squared   =    0.1752</span><br><span class="line">       <span class="keyword">Total</span> |   635065396        73  8699525.97   Root MSE        =    2678.7</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">       price | Coefficient  Std. <span class="keyword">err</span>.      t    P&gt;|t|     [95% <span class="keyword">conf</span>. interval]</span><br><span class="line">-------------+----------------------------------------------------------------</span><br><span class="line">      length |   57.20224   14.08047     4.06   0.000     29.13332    85.27115</span><br><span class="line">       _cons |  -4584.899   2664.437    -1.72   0.090    -9896.357     726.559</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">.</span><br></pre></td></tr></table></figure>
 <p>可以发现，当没有传入必须传入的变量时候，命令会保报错，但需要注意，当你执行过一次 reg 后，再单独执行 reg 会默认执行上一次的回归任务，可以自行尝试一下。当只输入因变量后，默认返回因变量的均值。<br />
@@ -246,7 +248,7 @@ MathJax = {
 </li>
 </ul>
 <p>以 auto 数据库为例，其中 make 变量就是字符串格式，foreign 是编码格式，虽然使用字符串显示的，但实际是分类变量，即数值，通过上面也可以看到，foreign 所对应的 type 为 byte而非 str。<br />
-<a target="_blank" rel="noopener" href="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg" alt="alt text" /></a></p>
+<a target="_blank" rel="noopener" href="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg" title="alt text" class="gallery-item"><img src="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg" alt="alt text" /></a></p>
 <ul>
 <li>
 <p><strong>显示格式</strong><br />
@@ -293,16 +295,16 @@ MathJax = {
 <p>命令窗口、历史窗口和结果窗口的内容往往在 Stata 关掉后就会消失，当你再打开一个 Stata 后，经常会发现你辛辛苦苦写的命令直接消失了，然后你又得重新写。或者是你在你的电脑上做好后，想要换一台电脑或者在别人电脑上可以复现，那么直接在命令窗口写命令就不是一个好的选择了，那么这个时候，就需要使用 do 命令了。<br />
 在Stata中，​​do文件​​（以.do为后缀的脚本文件）是​​包含一系列Stata命令的可执行脚本​​，用于自动化执行数据分析流程。<br />
 可以通过区域 6 中的 do-file 编辑器打开，如下图所示。<br />
-<a href="%5BQQ_1753784178670.png%5D(https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg)" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="%5BQQ_1753784178670.png%5D(https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg)" alt="alt text" /></a><br />
+<a href="%5BQQ_1753784178670.png%5D(https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg)" title="alt text" class="gallery-item"><img src="%5BQQ_1753784178670.png%5D(https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg)" alt="alt text" /></a><br />
 点击后，会跳出一个类似文本框的界面。如下图所示。<br />
-<a href="%5BQQ_1753784233679.png%5D(https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg)" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="%5BQQ_1753784233679.png%5D(https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg)" alt="alt text" /></a><br />
+<a href="%5BQQ_1753784233679.png%5D(https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg)" title="alt text" class="gallery-item"><img src="%5BQQ_1753784233679.png%5D(https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg)" alt="alt text" /></a><br />
 在这个内容中，顶部右侧有几个按钮，分别为打开 do 文件，保存 do 文件以及打印do 文件，查找功能是对于 do 文件中的关键字查询，和 word 的查找功能类似，最主要的是最右边的执行按钮，在没有选中命令的情况下，点击可以实现整个 do 文件的执行。<br />
 例如，我们在 do 文件中写入以下代码，以实现自动导入 auto 文件夹，自动查看变量类型和回归分析。</p>
 <figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sysuse</span> auto, <span class="keyword">clear</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">describe</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> price weight</span><br></pre></td></tr></table></figure>
 <p>写入后，点击执行按钮，会发现它会自动的实现整个文件写入的命令。然后将其保存，把这个文件放在任何一台电脑上的 Stata 中，点击执行，会实现同样的效果。这就可以保证可复制性和处理过程了。<br />
 但是新问题是，若我不想执行整个文件，我只想执行文件中的某行命令或者某几行命令怎么办呢，不可能将其复制到命令窗口执行吧，一次两次还好，多了就会显得很麻烦。<br />
 Stata 提供了一种方法，就是选中一行或几行的命令，在点击执行按钮，可以只允许执行选择的命令，例如上述的命令中，我们已经导入了 auto 数据库了，那么我们只想做一次回归，就可以只选择reg price weight，然后再点击执行按钮。选中后，大概如下图所示。<br />
-<a target="_blank" rel="noopener" href="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg" title="alt text" class="gallery-item"><img src="/images/loading.gif" data-original="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg" alt="alt text" /></a></p>
+<a target="_blank" rel="noopener" href="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg" alt="alt text" /></a></p>
 <blockquote>
 <p>Tips: Windows 中可以直接按 Ctrl + D快捷键实现点击执行动作，Mac中可以按 Command + shift + D快捷键。</p>
 </blockquote>
@@ -554,6 +556,17 @@ Stata 提供了一种方法，就是选中一行或几行的命令，在点击�
         </a>
         <span class="sea-footer-link__dot">·</span>
       
+        <a
+          class="sea-footer-link"
+          
+            target="_blank"
+          
+          href="https://www.zhihu.com/people/miskies"
+        >
+          Zhihu
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
     </div>
   </div>
   
@@ -580,18 +593,5 @@ Stata 提供了一种方法，就是选中一行或几行的命令，在点击�
 
 <script src="/js/theme.js" defer></script>
 
-
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</body>
 </html>

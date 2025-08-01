@@ -11,6 +11,8 @@
   <link rel="canonical" href="http://example.com/2025/cmdrjbvas001a3rs6hwkf0hz4/">
 
   
+    <link rel="shortcut icon" href="/images/graph1.png">
+  
 
   <meta name="description" content="MathJax &#x3D; {   tex: {     inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;\\(&#39;, &#39;\\)&#39;]]   } };     线性回归完全指南：从理论推导到实例应用  目录  基本概念 参数推导 模型设定 假设条件 假设检验 stata代码实现 python代码实现    基本概念 在统计学中，线性回归（英语：Linear Regression）是利用称为线性回归方程">
 <meta property="og:type" content="article">
@@ -29,7 +31,7 @@
 <meta name="twitter:image" content="http://example.com/2025/cmdrjbvas001a3rs6hwkf0hz4/image/graph1.png">
   <meta name="generator" content="Hexo 7.3.0">
   <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2025/cmdrjbvas001a3rs6hwkf0hz4/"},"headline":"计量｜线性回归完全指南：从理论推导到实例应用","description":"MathJax = {   tex: {     inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]   } };  线性回归完全指南：从理论推导到实例应用  目录 基本概念 参数推导 模型设定 假设条件 假设检验 stata代码实现 python代码实现  基本概念 在统计学中，线性回归","datePublished":"2025-07-30T03:09:36.000Z","dateModified":"2025-07-31T15:13:05.988Z","author":{"@type":"Person","name":"Joakim Starr(文人病)"},"publisher":{"@type":"Organization","name":"文人病","logo":{"@type":"ImageObject","url":"http://example.com/favicon.ico"}}}
+{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2025/cmdrjbvas001a3rs6hwkf0hz4/"},"headline":"计量｜线性回归完全指南：从理论推导到实例应用","description":"MathJax = {   tex: {     inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]   } };  线性回归完全指南：从理论推导到实例应用  目录 基本概念 参数推导 模型设定 假设条件 假设检验 stata代码实现 python代码实现  基本概念 在统计学中，线性回归","datePublished":"2025-07-30T03:09:36.000Z","dateModified":"2025-07-31T15:13:05.988Z","author":{"@type":"Person","name":"Joakim Starr(文人病)"},"publisher":{"@type":"Organization","name":"文人病","logo":{"@type":"ImageObject","url":"http://example.com/images/graph1.png"}}}
 </script>
 
   
@@ -181,10 +183,10 @@ Y = \beta_0 + \beta_1X + \varepsilon
 <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi></mrow><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ε</span></span></span></span>：误差项（模型无法解释的部分）<br />
 如下图所示，其中红色的线为回归线$ Y = \beta_0 + \beta_1X + \varepsilon$，蓝色的点为真实值。</li>
 </ul>
-<!-- <a href="image/graph1.png" title="线性回归图" class="gallery-item"><img src="/images/loading.gif" data-original="image/graph1.png" style="display: block; margin: 0 auto;" alt="线性回归图" width="600"></a>
+<!-- <a href="image/graph1.png" title="线性回归图" class="gallery-item"><img src="image/graph1.png" style="display: block; margin: 0 auto;" alt="线性回归图" width="600"></a>
 <div style="text-align: center;">图 1 线性回归图</div> -->
 <!-- ![线性回归图](https://picx.zhimg.com/80/v2-d9848272ef2a336dfd1ae8ea0728589f_1440w.webp?source=d16d100b) -->
-<p><a href="/images/graph1.png" title="线性回归图" class="gallery-item"><img src="/images/loading.gif" data-original="/images/graph1.png" alt="线性回归图" /></a></p>
+<p><a href="/images/graph1.png" title="线性回归图" class="gallery-item"><img src="/images/graph1.png" alt="线性回归图" /></a></p>
 <blockquote>
 <p>注：其实从这个地方也能看得出来，线性回归本身描述是真实值<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span></span></span></span>的趋势，也可以说是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span></span></span></span>的均值的预测，并不是对每个真实值的准确预测，这并非线性回归的目的。即给定<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">X_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的条件下，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">Y_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的均值是多少，即<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false">(</mo><msub><mi>Y</mi><mi>i</mi></msub><mi mathvariant="normal">∣</mi><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">E(Y_i | X_i)=Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span></span></span></span>。线性回归这种特性是为了可解释性而存在的。例如各种深度学习模型，比如CNN、LSTM等，他们的预测能力可能非常强，但是可解释性并不那么高，这种模型还是个黑匣子，对每个变量的参数是不可控的。而线性回归模型不一样，只要模型形式确定了，数据确定了，那无论什么时候，模型的参数都是确定的，同时也是可以直接量化的。</p>
 </blockquote>
@@ -573,6 +575,17 @@ R^2 &amp;= 1 - \frac{\sum_{i=1}^n(y_i - \hat{y_i})^2}{\sum_{i=1}^n(y_i - \bar{y}
         </a>
         <span class="sea-footer-link__dot">·</span>
       
+        <a
+          class="sea-footer-link"
+          
+            target="_blank"
+          
+          href="https://www.zhihu.com/people/miskies"
+        >
+          Zhihu
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
     </div>
   </div>
   
@@ -599,18 +612,5 @@ R^2 &amp;= 1 - \frac{\sum_{i=1}^n(y_i - \hat{y_i})^2}{\sum_{i=1}^n(y_i - \bar{y}
 
 <script src="/js/theme.js" defer></script>
 
-
-        <style>
-            [bg-lazy] {
-                background-image: none !important;
-                background-color: #eee !important;
-            }
-        </style>
-        <script>
-            window.imageLazyLoadSetting = {
-                isSPA: false,
-                preloadRatio: 1,
-                processImages: null,
-            };
-        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</body>
 </html>
