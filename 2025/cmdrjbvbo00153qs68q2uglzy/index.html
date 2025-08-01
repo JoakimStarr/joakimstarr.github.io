@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>计量｜什么是虚拟变量 | 文人病</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="Joakim Starr 文人病 我从人间走过">
+  <meta name="theme-color" content="#10b981">
+
+  <link rel="canonical" href="http://example.com/2025/cmdrjbvbo00153qs68q2uglzy/">
+
+  
+
+  <meta name="description" content="MathJax &#x3D; {   tex: {     inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;\\(&#39;, &#39;\\)&#39;]]   } };     什么是虚拟变量 虚拟变量（Dummy Variable），又称哑变量或指示变量，是统计学和计量经济学中用于将定性数据（分类变量）转换为定量数据（数值变量）的一种方法。它通过赋予不同类别特定的数值（通常是0或1），使得分类变量能够被纳入回归模型等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计量｜什么是虚拟变量">
+<meta property="og:url" content="http://example.com/2025/cmdrjbvbo00153qs68q2uglzy/index.html">
+<meta property="og:site_name" content="文人病">
+<meta property="og:description" content="MathJax &#x3D; {   tex: {     inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;\\(&#39;, &#39;\\)&#39;]]   } };     什么是虚拟变量 虚拟变量（Dummy Variable），又称哑变量或指示变量，是统计学和计量经济学中用于将定性数据（分类变量）转换为定量数据（数值变量）的一种方法。它通过赋予不同类别特定的数值（通常是0或1），使得分类变量能够被纳入回归模型等">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-30T03:09:36.000Z">
+<meta property="article:modified_time" content="2025-07-31T15:13:05.988Z">
+<meta property="article:author" content="Joakim Starr(文人病)">
+<meta property="article:tag" content="计量, 数学">
+<meta name="twitter:card" content="summary">
+  <meta name="generator" content="Hexo 7.3.0">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2025/cmdrjbvbo00153qs68q2uglzy/"},"headline":"计量｜什么是虚拟变量","description":"MathJax = {   tex: {     inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]   } };  什么是虚拟变量 虚拟变量（Dummy Variable），又称哑变量或指示变量，是统计学和计量经济学中用于将定性数据（分类变量）转换为定量数据（数值变量）的一种方法。它通过","datePublished":"2025-07-30T03:09:36.000Z","dateModified":"2025-07-31T15:13:05.988Z","author":{"@type":"Person","name":"Joakim Starr(文人病)"},"publisher":{"@type":"Organization","name":"文人病","logo":{"@type":"ImageObject","url":"http://example.com/favicon.ico"}}}
+</script>
+
+  
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  <style>
+    :root {
+      --sea-color-primary: #10b981;
+    }
+  </style>
+
+  
+<script src="/js/theme_mode.js"></script>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+  <header class="sea-header">
+    <nav class="sea-nav-wrap">
+  <div class="sea-nav-logo" title="- 我从人间走过">
+    <a href="/">文人病</a>
+  </div>
+  <div class="sea-nav-menus">
+    <div id="sea-nav-toggle">
+      <svg t="1716965724278" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10878" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M950.857143 768v73.142857c0 20.004571-16.566857 36.571429-36.571429 36.571429H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571429v-73.142857c0-20.004571 16.566857-36.571429 36.571429-36.571429h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571429z m0-292.571429v73.142858c0 20.004571-16.566857 36.571429-36.571429 36.571428H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571428v-73.142858c0-20.004571 16.566857-36.571429 36.571429-36.571428h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571428z m0-292.571428v73.142857c0 20.004571-16.566857 36.571429-36.571429 36.571429H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571429V182.857143c0-20.004571 16.566857-36.571429 36.571429-36.571429h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571429z" p-id="10879"></path></svg>
+    </div>
+
+    <div id="sea-nav-dimmer"></div>
+<div class="sea-menu-wrap">
+  
+    <a
+      class="sea-menu-link "
+      
+      href="/archives/"
+    >
+      归档
+    </a>
+  
+    <a
+      class="sea-menu-link "
+      
+      href="/graph/"
+    >
+      图片
+    </a>
+  
+
+  <span class="sea-menu-sep">|</span>
+
+  
+  
+
+  
+    <a href="/search" title="Search">
+  <span class="sea-menu-icon" id="sea-search-icon">
+    <svg t="1725410662861" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5552" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M400.085333 151.210667c-89.059556 0-172.672 47.616-218.197333 124.273777a14.222222 14.222222 0 1 0 24.462222 14.535112c40.433778-68.067556 114.659556-110.364444 193.735111-110.364445a14.222222 14.222222 0 1 0 0-28.444444zM170.197333 336.298667a14.236444 14.236444 0 0 0-17.080889 10.609777c-4.252444 18.147556-6.656 29.397333-6.656 49.592889a14.222222 14.222222 0 1 0 28.444445 0c0-17.137778 1.92-26.083556 5.902222-43.121777a14.222222 14.222222 0 0 0-10.609778-17.080889z" fill="" p-id="5553"></path><path d="M947.384889 821.944889L717.809778 592.384a70.584889 70.584889 0 0 0-16.64-12.472889 346.254222 346.254222 0 0 0 47.36-175.089778c0-192.142222-156.302222-348.444444-348.444445-348.444444-192.128 0-348.444444 156.302222-348.444444 348.444444s156.316444 348.430222 348.444444 348.430223c68.408889 0 132.209778-19.882667 186.083556-54.058667 2.915556 4.821333 6.570667 9.472 10.951111 13.852444l229.575111 229.589334a84.849778 84.849778 0 0 0 60.359111 24.974222 84.821333 84.821333 0 0 0 60.344889-24.974222 84.778667 84.778667 0 0 0 24.974222-60.330667 84.920889 84.920889 0 0 0-24.988444-60.359111zM108.529778 404.835556c0-160.768 130.787556-291.555556 291.555555-291.555556 160.782222 0 291.555556 130.787556 291.555556 291.555556 0 160.782222-130.801778 291.541333-291.555556 291.541333-160.768 0-291.555556-130.759111-291.555555-291.541333z m798.620444 497.578666c-10.766222 10.723556-29.496889 10.723556-40.248889 0L637.340444 672.839111c-1.991111-1.976889-2.730667-3.299556-2.830222-3.299555 0.042667-0.611556 0.824889-6.471111 17.080889-22.698667 16.213333-16.256 22.072889-16.995556 22.257778-17.109333 0.369778 0.113778 1.692444 0.853333 3.740444 2.887111l229.546667 229.560889c5.390222 5.390222 8.334222 12.529778 8.334222 20.138666a28.401778 28.401778 0 0 1-8.32 20.096z" p-id="5554"></path></svg>
+  </span>
+</a>
+  
+
+
+  <span class="sea-menu-icon" id="sea-theme-dark">
+    <svg t="1725413107294" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10118" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M557.553778 976.355556c-257.265778 0-466.56-207.160889-466.56-464.426667 0-253.923556 206.577778-464.284444 460.501333-464.284445h0.355556c10.766222 0 20.622222 3.953778 25.443555 13.610667 4.878222 9.756444 3.740444 20.394667-2.915555 29.027556-55.722667 72.220444-85.162667 158.108444-85.162667 249.372444 0 225.891556 183.779556 409.386667 409.671111 409.386667l5.248-0.256c10.325333-0.142222 20.977778 5.859556 25.841778 15.644444a28.302222 28.302222 0 0 1-2.915556 30.051556C837.902222 910.08 703.203556 976.355556 557.553778 976.355556zM495.274667 105.016889C299.192889 135.281778 147.882667 306.161778 147.882667 509.809778c0 225.877333 183.779556 409.656889 409.671111 409.656889 108.686222 0 210.403556-42.055111 286.577778-116.977778-231.566222-27.192889-411.804444-224.625778-411.804445-463.36 0-83.427556 21.617778-163.299556 62.947556-234.112z" fill="" p-id="10119"></path><path d="M578.830222 879.132444c-186.865778 0-345.784889-133.418667-377.841778-317.269333a14.222222 14.222222 0 1 1 28.017778-4.878222c29.681778 170.183111 176.810667 293.703111 349.824 293.703111a14.222222 14.222222 0 1 1 0 28.444444zM209.991111 531.2c-7.537778 0-13.838222-6.997333-14.193778-14.606222-0.312889-6.584889-0.483556-13.795556-0.483555-20.465778 0-7.864889 6.357333-14.492444 14.222222-14.492444s14.222222 6.229333 14.222222 14.094222c0 6.229333 0.170667 13.425778 0.455111 19.584 0.369778 7.850667-5.674667 15.886222-13.525333 15.886222h-0.696889z" fill="" p-id="10120"></path><path d="M622.350222 309.930667m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" fill="" p-id="10121"></path><path d="M787.072 188.273778m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" fill="" p-id="10122"></path><path d="M731.960889 415.303111m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" p-id="10123"></path></svg>
+  </span>
+  <span class="sea-menu-icon" id="sea-theme-light">
+    <svg t="1725410359322" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4274" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M512 768c-141.376 0-256-114.624-256-256s114.624-256 256-256 256 114.624 256 256-114.624 256-256 256z m0-85.333333a170.666667 170.666667 0 1 0 0-341.333334 170.666667 170.666667 0 0 0 0 341.333334zM469.333333 85.333333a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0V85.333333z m0 768a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0v-85.333334zM85.333333 554.666667a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334H85.333333z m768 0a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334h-85.333334zM161.834667 222.165333a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m576 576a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m-515.669334 64a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z m576-576a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z" p-id="4275"></path></svg>
+  </span>
+
+  <span id="sea-menu-close-icon">
+    <svg t="1725435896874" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4408" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M556.8 512l265.6-265.6c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L512 467.2 246.4 201.6c-12.8-12.8-32-12.8-44.8 0s-12.8 32 0 44.8l265.6 265.6-265.6 265.6c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 12.8 9.6 22.4 9.6s16-3.2 22.4-9.6l265.6-265.6 265.6 265.6c6.4 6.4 16 9.6 22.4 9.6s16-3.2 22.4-9.6c12.8-12.8 12.8-32 0-44.8L556.8 512z" p-id="4409"></path></svg>
+  </span>
+</div>
+  </div>
+</nav>
+  </header>
+  <main id="sea-main-wrapper" data-pagefind-body>
+    <article class="sea-page-card-wrapper">
+  <header class="sea-article-header">
+    <h1 class="sea-article-title">计量｜什么是虚拟变量</h1>
+    
+      <div class="sea-post-meta sea-post-meta__center">
+        <div class="sea-post-time">
+  <svg t="1716964550804" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2621" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M805.49888 981.49888l-602.3168-0.76288c-86.59456-8.192-154.56768-81.3056-154.56768-170.01472L48.6144 291.73248c0-94.1568 76.60032-170.75712 170.7776-170.75712l586.10176 0c94.1568 0 170.73152 76.60032 170.73152 170.75712L976.22528 810.7008C976.2304 904.87296 899.63008 981.49888 805.49888 981.49888L805.49888 981.49888zM219.3664 190.57152c-55.79776 0-101.20192 45.38368-101.20192 101.18144l0 518.96832c0 55.79776 45.40416 101.20704 101.20192 101.20704l586.13248 0c55.77728 0 101.16096-45.40928 101.16096-101.20704L906.65984 291.73248c0-55.79776-45.38368-101.18656-101.16096-101.18656L219.3664 190.54592 219.3664 190.57152zM698.84416 290.51904c-25.60512 0-46.38208-20.77696-46.38208-46.38208l0-158.6688c0-25.6 20.77696-46.38208 46.38208-46.38208 25.6 0 46.38208 20.78208 46.38208 46.38208L745.22624 244.1216C745.22624 269.7472 724.46976 290.51904 698.84416 290.51904L698.84416 290.51904zM315.65824 290.51904c-25.60512 0-46.38208-20.77696-46.38208-46.38208l0-158.6688c0-25.6 20.77696-46.38208 46.38208-46.38208 25.6 0 46.38208 20.78208 46.38208 46.38208L362.04032 244.1216C362.04032 269.7472 341.28896 290.51904 315.65824 290.51904L315.65824 290.51904zM534.8864 794.78784l-44.27264 0c-25.6 0-46.38208-20.77696-46.38208-46.38208 0-25.6 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.78208 46.38208 46.38208C581.26848 774.01088 560.4864 794.78784 534.8864 794.78784L534.8864 794.78784zM930.79552 452.608 121.24672 452.608c-25.60512 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.77696-46.38208 46.38208-46.38208l809.5744 0c25.6 0 46.38208 20.77696 46.38208 46.38208C977.2032 431.82592 956.42624 452.608 930.79552 452.608L930.79552 452.608zM327.92576 649.03168l-44.27264 0c-25.6 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.77696 46.38208 46.38208C374.30784 628.25472 353.52576 649.03168 327.92576 649.03168L327.92576 649.03168zM534.8864 649.03168l-44.27264 0c-25.6 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.77696 46.38208 46.38208S560.4864 649.03168 534.8864 649.03168L534.8864 649.03168zM741.27872 649.03168l-44.26752 0c-25.60512 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.77696-46.38208 46.38208-46.38208l44.26752 0c25.60512 0 46.38208 20.77696 46.38208 46.38208C787.6608 628.25472 766.90944 649.03168 741.27872 649.03168L741.27872 649.03168zM327.92576 794.78784l-44.27264 0c-25.6 0-46.38208-20.77696-46.38208-46.38208 0-25.6 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.78208 46.38208 46.38208C374.30784 774.01088 353.52576 794.78784 327.92576 794.78784L327.92576 794.78784zM741.27872 794.78784l-44.26752 0c-25.60512 0-46.38208-20.77696-46.38208-46.38208 0-25.6 20.77696-46.38208 46.38208-46.38208l44.26752 0c25.60512 0 46.38208 20.78208 46.38208 46.38208C787.6608 774.01088 766.90944 794.78784 741.27872 794.78784L741.27872 794.78784z" p-id="2622"></path></svg>
+  <time datetime="2025-07-30T03:09:36.000Z">2025-07-30</time>
+</div>
+        
+  <div class="sea-post-categories">
+    <svg t="1716964680422" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4550" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M810.666667 85.333333a85.333333 85.333333 0 0 1 85.333333 85.333334v152.021333c36.821333 9.493333 64 42.88 64 82.645333v405.333334a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128V298.666667a85.376 85.376 0 0 1 64-82.645334V170.666667a85.333333 85.333333 0 0 1 85.333333-85.333334h597.333334zM128.149333 296.170667L128 298.666667v512a64 64 0 0 0 60.245333 63.893333L192 874.666667h640a64 64 0 0 0 63.893333-60.245334L896 810.666667V405.333333a21.333333 21.333333 0 0 0-18.837333-21.184L874.666667 384H638.165333l-122.069333-101.717333a21.333333 21.333333 0 0 0-10.688-4.736l-2.986667-0.213334H149.333333a21.333333 21.333333 0 0 0-21.184 18.837334zM535.189333 213.333333l127.978667 106.666667H832V170.666667a21.333333 21.333333 0 0 0-18.837333-21.184L810.666667 149.333333H213.333333a21.333333 21.333333 0 0 0-21.184 18.837334L192 170.666667v42.666666h343.168z" p-id="4551"></path></svg>
+    <a class="category-link" href="/categories/%E8%AE%A1%E9%87%8F/">计量</a>
+  </div>
+
+        
+  <div class="sea-post-tags">
+    <svg t="1716964811431" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6117" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M384 977.152c-20.5312 0-39.8336-7.9872-54.3232-22.4256l-260.4032-260.4032c-14.4896-14.4896-22.4256-33.7408-22.4256-54.3232s7.9872-39.8336 22.4256-54.3232l439.6032-439.6032c24.9344-24.9344 70.2464-43.7248 105.5232-43.7248h230.4c42.3424 0 76.8 34.4576 76.8 76.8v230.4c0 35.2256-18.7904 80.5888-43.6736 105.5232l-439.6032 439.6032a76.1856 76.1856 0 0 1-54.3232 22.4256zM614.4 153.6c-21.248 0-54.272 13.6704-69.2736 28.7232l-439.6032 439.6032c-4.8128 4.8128-7.424 11.2128-7.424 18.1248s2.6624 13.312 7.424 18.0736l260.4032 260.4032c4.8128 4.8128 11.2128 7.424 18.1248 7.424s13.312-2.6624 18.1248-7.424l439.6032-439.6032c15.0016-15.0016 28.7232-48.0768 28.7232-69.3248V179.2a25.6 25.6 0 0 0-25.6-25.6h-230.4z" p-id="6118"></path><path d="M742.4 358.4c-42.3424 0-76.8-34.4576-76.8-76.8S700.0576 204.8 742.4 204.8s76.8 34.4576 76.8 76.8S784.7424 358.4 742.4 358.4z m0-102.4a25.6 25.6 0 1 0 0 51.2 25.6 25.6 0 0 0 0-51.2z" p-id="6119"></path></svg>
+    <a class="tag-link" href="/tags/%E8%AE%A1%E9%87%8F-%E6%95%B0%E5%AD%A6/" rel="tag">计量, 数学</a>
+  </div>
+
+      </div>
+    
+  </header>
+  <div class="sea-doc">
+    
+    <div class="sea-article-content">
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<h1 id="什么是虚拟变量"><a class="markdownIt-Anchor" href="#什么是虚拟变量"></a> 什么是虚拟变量</h1>
+<p>虚拟变量（Dummy Variable），又称哑变量或指示变量，是统计学和计量经济学中用于将定性数据（分类变量）转换为定量数据（数值变量）的一种方法。它通过赋予不同类别特定的数值（通常是0或1），使得分类变量能够被纳入回归模型等定量分析中。</p>
+<ul>
+<li>定性数据（Categorical Data）<br />
+定性数据表示事物的类别或属性，可分为：<br />
+名义变量（Nominal Variable）：类别间无顺序关系<br />
+例：性别（男/女）、地区（东部/中部/西部）、血型（A/B/O/AB）<br />
+有序变量（Ordinal Variable）：类别间有顺序关系<br />
+例：教育水平（小学/中学/大学）、满意度（不满意/一般/满意）</li>
+<li>定量数据：<br />
+定量数据是可直接进行数学运算的数值型变量，分为连续变量和离散变量。<br />
+连续变量：身高、体重、温度<br />
+离散变量：年龄、家庭人口数</li>
+</ul>
+<h2 id="虚拟变量的定义"><a class="markdownIt-Anchor" href="#虚拟变量的定义"></a> 虚拟变量的定义</h2>
+<p>虚拟变量是一种只有0和1两种取值的变量，用于表示某一类别是否存在。例如：</p>
+<ul>
+<li>性别：男（1），女（0）</li>
+<li>地区：东部（1），非东部（0）</li>
+</ul>
+<h2 id="为什么需要虚拟变量"><a class="markdownIt-Anchor" href="#为什么需要虚拟变量"></a> 为什么需要虚拟变量</h2>
+<p>许多统计模型只能处理数值型变量，分类变量无法直接参与计算，而在实际中，有可能收到这些因素的影响，或者我们想要研究性别、地区、行业是否对收入有影响，这个时候就需要量化，将其变为虚拟变量。通过引入虚拟变量，可以将分类信息编码为数值，使其能够被模型识别和利用。</p>
+<h2 id="虚拟变量的构造方法"><a class="markdownIt-Anchor" href="#虚拟变量的构造方法"></a> 虚拟变量的构造方法</h2>
+<p>对于有 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> 个类别的分类变量，通常需要引入 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> 个虚拟变量。例如：</p>
+<table>
+<thead>
+<tr>
+<th>地区</th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">D_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">D_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>东部</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>中部</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>西部</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">D_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 表示“东部”，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">D_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 表示“中部”，西部作为基准组，即当 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn><mtext>，</mtext><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D_1 = 0，D_2 = 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord">0</span><span class="mord cjk_fallback">，</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span> 时，表示“西部”。</p>
+<h2 id="虚拟变量陷阱"><a class="markdownIt-Anchor" href="#虚拟变量陷阱"></a> 虚拟变量陷阱</h2>
+<p>在回归模型中，若为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> 个类别引入 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> 个虚拟变量，会导致多重共线性（虚拟变量陷阱）。这是因为如上所述，基准组可以由前<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>个变量表示。因此，通常只需引入 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> 个虚拟变量，剩下的类别作为基准组。<br />
+如上述例子所示，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>1</mn><mo separator="true">,</mo><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D_1=1,D_2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>为东部，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn><mo separator="true">,</mo><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">D_1=0,D_2=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>为中部，当<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn><mo separator="true">,</mo><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D_1=0,D_2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span>为西部。这个时候就没有必要额外引入一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">D_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>变量了。</p>
+<h2 id="应用举例"><a class="markdownIt-Anchor" href="#应用举例"></a> 应用举例</h2>
+<p>假设我们要分析工资与性别的关系，可以建立如下回归模型：</p>
+<p class='katex-block katex-error' title='ParseError: KaTeX parse error: No such environment: align at position 7: \begin{̲a̲l̲i̲g̲n̲}̲
+工资 = \beta_0 +…'>\begin{align}
+工资 = \beta_0 + \beta_1 \times 性别 + \epsilon
+\end{align}$$其中，性别为虚拟变量（男=1，女=0），$\beta_1$ 表示男性与女性工资的平均差异。
+或者分析工资与地区的关系，则可以建立如下模型：
+</p>
+<p>\begin{align}<br />
+工资 = \beta_0 + \beta_1 D_1 + \beta_1 \times D_2+ \epsilon<br />
+\end{align}</p>
+<p class='katex-block katex-error' title='ParseError: KaTeX parse error: Can&#039;t use function &#039;$&#039; in math mode at position 4: 其中，$̲D_1=1,D_2=0$为东部…'>其中，$D_1=1,D_2=0$为东部，$D_1=0,D_2=1$为中部，当$D_1=0,D_2=0$为西部。
+
+## 结果解读
+假设以性别对工资的影响为例，设模型为：
+$$\begin{align}
+工资 = \beta_0 + \beta_1 \times D + \epsilon
+\end{align}$$其中，性别为虚拟变量$D$（男=1，女=0）。
+假设回归结果为
+</p>
+<p>\begin{align}<br />
+工资 = 5000 + 50 \times D + \epsilon<br />
+\end{align}</p>
+<p class='katex-block katex-error' title='ParseError: KaTeX parse error: Can&#039;t use function &#039;$&#039; in math mode at position 17: …么，当性别为女的时候，虚拟变量$̲D=0$，则会发现，性别为女时…'>那么，当性别为女的时候，虚拟变量$D=0$，则会发现，性别为女时的回归就变为了：
+</p>
+<p>\begin{align}<br />
+工资 = 5000 + 50 \times 0 + \epsilon<br />
+\end{align}</p>
+<p class='katex-block katex-error' title='ParseError: KaTeX parse error: Can&#039;t use function &#039;$&#039; in math mode at position 22: …的bian为男的时候，虚拟变量$̲D=1$，则会发现，性别为男时…'>而当性别为男的bian为男的时候，虚拟变量$D=1$，则会发现，性别为男时的回归就变为了：
+</p>
+<p>\begin{align}<br />
+工资 = 5000 + 50 \times 1 + \epsilon<br />
+\end{align}</p>
+<p class='katex-block katex-error' title='ParseError: KaTeX parse error: Can&#039;t use function &#039;$&#039; in math mode at position 43: … 5000 是平均工资水平。若$̲\beta_1=50$系数在给…'>从上述对比中可以发现，男性的工资比女性高50个单位。而 5000 是平均工资水平。若$\beta_1=50$系数在给定的显著性水平下显著，那么我们就有理由说，性别对工资有显著影响。
+### stata 实现
+在这里我们还是使用 stata 自带的 auto 数据集来演示虚拟变量的使用。
+导入数据集：
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">sysuse</span> auto, <span class="keyword">clear</span></span><br><span class="line">(1978 automobile data)</span><br><span class="line"></span><br><span class="line">. <span class="keyword">tab</span> foreign # 查看foreign变量的取值   </span><br><span class="line"></span><br><span class="line"> Car origin |      Freq.     Percent        Cum.</span><br><span class="line">------------+-----------------------------------</span><br><span class="line">   Domestic |         52       70.27       70.27</span><br><span class="line">    Foreign |         22       29.73      100.00</span><br><span class="line">------------+-----------------------------------</span><br><span class="line">      <span class="keyword">Total</span> |         74      100.00</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+可以发现，foreign的取值为国内(Domestic)和国内(Foreign)，在 stata 里面，foreign 以及进行虚拟变量处理了，可以通过下列命令查看。
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">label</span> <span class="keyword">list</span>  origin</span><br><span class="line">origin:</span><br><span class="line">           0 Domestic</span><br><span class="line">           1 Foreign</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+在这里，origin 是 foreign 值标签。从这里可以发现，0 表示国内，1 表示国外。
+从这个地方可以看出
+![alt text](https://pica.zhimg.com/80/v2-d84a1fc97ba9464d80d7015c181834b6_1440w.webp?source=d16d100b)
+若要从0 开始构建虚拟变量，我们需要将 foreign 恢复为原始值，在这个地方我们进行下列操作进行还原。
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">gen</span> foreign_str = <span class="string">&quot;&quot;</span></span><br><span class="line">(74 missing values generated)</span><br><span class="line"></span><br><span class="line">. <span class="keyword">replace</span> foreign_str = <span class="string">&quot;Domestic&quot;</span> <span class="keyword">if</span> foreign == 0</span><br><span class="line">variable foreign_str was str1 now str8</span><br><span class="line">(52 real changes made)</span><br><span class="line"></span><br><span class="line">. <span class="keyword">replace</span> foreign_str = <span class="string">&quot;Foreign&quot;</span> <span class="keyword">if</span> foreign == 1</span><br><span class="line">(22 real changes made)</span><br><span class="line"></span><br><span class="line">. <span class="keyword">tab</span> foreign_str</span><br><span class="line"></span><br><span class="line">foreign_str |      Freq.     Percent        Cum.</span><br><span class="line">------------+-----------------------------------</span><br><span class="line">   Domestic |         52       70.27       70.27</span><br><span class="line">    Foreign |         22       29.73      100.00</span><br><span class="line">------------+-----------------------------------</span><br><span class="line">      <span class="keyword">Total</span> |         74      100.00</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+这个地方我们生成了一个新变量，名为foreign_str，用来保存foreign变量的原始值。通过tab 查看可以发现，和 foreign的值是一样的。
+接下来，我们进行虚拟变量的生成。
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">gen</span> foreign_dummy = 0 # 生成新变量，并将其全部赋值为 0 </span><br><span class="line"></span><br><span class="line">. <span class="keyword">replace</span> foreign_dummy = 1 <span class="keyword">if</span> foreign_str == <span class="string">&quot;Foreign&quot;</span> 将满足条件的值改为 1</span><br><span class="line">(22 real changes made) </span><br><span class="line"></span><br><span class="line">. <span class="keyword">tab</span> foreign_dummy</span><br><span class="line"></span><br><span class="line">foreign_dum |</span><br><span class="line">         my |      Freq.     Percent        Cum.</span><br><span class="line">------------+-----------------------------------</span><br><span class="line">          0 |         52       70.27       70.27</span><br><span class="line">          1 |         22       29.73      100.00</span><br><span class="line">------------+-----------------------------------</span><br><span class="line">      <span class="keyword">Total</span> |         74      100.00</span><br><span class="line"></span><br><span class="line">. </span><br><span class="line">end of <span class="keyword">do</span>-<span class="keyword">file</span></span><br><span class="line"></span><br><span class="line">. </span><br></pre></td></tr></table></figure>
+至此，我们就完成了虚拟变量的构建，接下来就可以将其放入模型中进行回归处理了。
+接下来，我们研究汽车价格和来源是否为国外的关系进行研究。在 stata 中，接着运行以下代码进行回归：
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">reg</span> price foreign_dummy # 也可以将foreign_dummy换为foreign</span><br><span class="line"></span><br><span class="line">      Source |       SS           df       MS      Number of obs   =        74</span><br><span class="line">-------------+----------------------------------   <span class="built_in">F</span>(1, 72)        =      0.17</span><br><span class="line">       Model |  1507382.66         1  1507382.66   <span class="keyword">Prob</span> &gt; F        =    0.6802</span><br><span class="line">    Residual |   633558013        72  8799416.85   R-squared       =    0.0024</span><br><span class="line">-------------+----------------------------------   Adj R-squared   =   -0.0115</span><br><span class="line">       <span class="keyword">Total</span> |   635065396        73  8699525.97   Root MSE        =    2966.4</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line">        price | Coefficient  Std. <span class="keyword">err</span>.      t    P&gt;|t|     [95% <span class="keyword">conf</span>. interval]</span><br><span class="line">--------------+----------------------------------------------------------------</span><br><span class="line">foreign_dummy |   312.2587   754.4488     0.41   0.680    -1191.708    1816.225</span><br><span class="line">        _cons |   6072.423    411.363    14.76   0.000     5252.386     6892.46</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line">. </span><br><span class="line">end of <span class="keyword">do</span>-<span class="keyword">file</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+从上述结果我们可以构建下列的回归方程：
+$$\begin{align}
+price = 6072.423 + 312.2587 \times foreign\_dummy
+\end{align}
+$$但是在这里我们可以发现，$foreign\_dummy$的$p $值为0.680，大于0.1，因此我们无法拒绝$H_0$，即$foreign\_dummy$对$price$的贡献为0。则我们没有理由认为$foreign\_dummy$对$price$有显著的影响。即表示国外车与国内车的平均价格差异</p>
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script src="https://github.com/sachinchoolur/lg-thumbnail.js"></script><script src="https://github.com/sachinchoolur/lg-fullscreen.js"></script><script src="https://github.com/sachinchoolur/lg-zoom.js"></script><script src="https://github.com/sachinchoolur/lg-autoplay.js"></script><script src="https://github.com/sachinchoolur/lg-video.js"></script><script src="https://github.com/sachinchoolur/lg-hash.js"></script><script src="https://github.com/sachinchoolur/lg-pager.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
+    </div>
+  </div>
+
+  
+    
+  <div class="sea-prev-next-wrapper">
+    
+      <div class="prev">
+        <svg t="1725418977480" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4239" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M384 512L731.733333 202.666667c17.066667-14.933333 19.2-42.666667 4.266667-59.733334-14.933333-17.066667-42.666667-19.2-59.733333-4.266666l-384 341.333333c-10.666667 8.533333-14.933333 19.2-14.933334 32s4.266667 23.466667 14.933334 32l384 341.333333c8.533333 6.4 19.2 10.666667 27.733333 10.666667 12.8 0 23.466667-4.266667 32-14.933333 14.933333-17.066667 14.933333-44.8-4.266667-59.733334L384 512z" p-id="4240"></path></svg>
+        <a class="link" href="/2025/cmdrjbvbn00123qs66p2gboes/">
+          计量｜Stata 常用方法
+        </a>
+      </div>
+    
+    
+      <div class="next">
+        <a class="link" href="/2025/cmdrjbvbp001a3qs6anwaesy1/">
+          计量｜线性回归完全指南：从理论推导到实例应用
+        </a>
+        <svg t="1725418993065" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6832" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M731.733333 480l-384-341.333333c-17.066667-14.933333-44.8-14.933333-59.733333 4.266666-14.933333 17.066667-14.933333 44.8 4.266667 59.733334L640 512 292.266667 821.333333c-17.066667 14.933333-19.2 42.666667-4.266667 59.733334 8.533333 8.533333 19.2 14.933333 32 14.933333 10.666667 0 19.2-4.266667 27.733333-10.666667l384-341.333333c8.533333-8.533333 14.933333-19.2 14.933334-32s-4.266667-23.466667-14.933334-32z" p-id="6833"></path></svg>
+      </div>
+    
+  </div>
+
+  
+</article>
+
+
+
+<script defer>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleIcon = document.querySelector('.sea-article-catalog-title .sea-svg-icon');
+    const tocContent = document.querySelector('.sea-article-catalog > .toc');
+    if (toggleIcon && tocContent) {
+      toggleIcon.addEventListener('click', function () {
+        tocContent.classList.toggle('sea-article-catalog-show');
+        toggleIcon.classList.toggle('sea-svg-icon-rotate');
+      });
+    }
+  });
+</script>
+  </main>
+  <footer id="sea-footer-container">
+  <div class="sea-footer-row">
+    <div class="sea-footer-menu-link">
+      
+        <a
+          class="sea-footer-link"
+          
+          href="/joakimstarr@qq.com"
+        >
+          Email
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+        <a
+          class="sea-footer-link"
+          
+            target="_blank"
+          
+          href="https://github.com/joakimstarr"
+        >
+          Github
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+    </div>
+  </div>
+  
+  
+  <div class="sea-footer-row">
+    <div class="sea-footer-copyright">
+      <span>©</span>
+      
+        2025
+      
+      <span>·</span>
+      Joakim Starr(文人病)
+    </div>
+    <span class="split-line">|</span>
+    <div class="sea-footer-theme-by">
+      Theme by <a class="theme" href="https://github.com/hai-zou/hexo-theme-sea" target="_blank">Sea</a>
+    </div>
+  </div>
+</footer>
+
+  
+<script src="/js/main.js" defer></script>
+
+
+<script src="/js/theme.js" defer></script>
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</html>
