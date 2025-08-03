@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>计量｜Stata 常用方法 | 文人病</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="Joakim Starr 文人病 我从人间走过">
+  <meta name="theme-color" content="#10b981">
+
+  <link rel="canonical" href="http://example.com/2025/cmdv0aw3h000qtgs6goxwflkk/">
+
+  
+    <link rel="shortcut icon" href="/images/graph1.png">
+  
+
+  <meta name="description" content="MathJax &#x3D; {   tex: {     inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;\\(&#39;, &#39;\\)&#39;]]   } };     Stata 常用技巧Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata 具有很强的可扩展性，吸引了许多的用户编写程序，这使得 Stata 的社区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计量｜Stata 常用方法">
+<meta property="og:url" content="http://example.com/2025/cmdv0aw3h000qtgs6goxwflkk/index.html">
+<meta property="og:site_name" content="文人病">
+<meta property="og:description" content="MathJax &#x3D; {   tex: {     inlineMath: [[&#39;$&#39;, &#39;$&#39;], [&#39;\\(&#39;, &#39;\\)&#39;]]   } };     Stata 常用技巧Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata 具有很强的可扩展性，吸引了许多的用户编写程序，这使得 Stata 的社区">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg">
+<meta property="og:image" content="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg">
+<meta property="og:image" content="http://example.com/2025/cmdv0aw3h000qtgs6goxwflkk/[QQ_1753784178670.png](https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg">
+<meta property="og:image" content="http://example.com/2025/cmdv0aw3h000qtgs6goxwflkk/[QQ_1753784233679.png](https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg">
+<meta property="article:published_time" content="2025-07-30T03:09:36.000Z">
+<meta property="article:modified_time" content="2025-08-03T01:42:57.207Z">
+<meta property="article:author" content="Joakim Starr(文人病)">
+<meta property="article:tag" content="计量 数学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg">
+  <meta name="generator" content="Hexo 7.3.0">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2025/cmdv0aw3h000qtgs6goxwflkk/"},"headline":"计量｜Stata 常用方法","description":"MathJax = {   tex: {     inlineMath: [['$', '$'], ['\\\\(', '\\\\)']]   } }; Stata 常用技巧Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata 具","datePublished":"2025-07-30T03:09:36.000Z","dateModified":"2025-08-03T01:42:57.207Z","author":{"@type":"Person","name":"Joakim Starr(文人病)"},"publisher":{"@type":"Organization","name":"文人病","logo":{"@type":"ImageObject","url":"http://example.com/images/graph1.png"}}}
+</script>
+
+  
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  <style>
+    :root {
+      --sea-color-primary: #10b981;
+    }
+  </style>
+
+  
+<script src="/js/theme_mode.js"></script>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+  <header class="sea-header">
+    <nav class="sea-nav-wrap">
+  <div class="sea-nav-logo" title="- 我从人间走过">
+    <a href="/">文人病</a>
+  </div>
+  <div class="sea-nav-menus">
+    <div id="sea-nav-toggle">
+      <svg t="1716965724278" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10878" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M950.857143 768v73.142857c0 20.004571-16.566857 36.571429-36.571429 36.571429H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571429v-73.142857c0-20.004571 16.566857-36.571429 36.571429-36.571429h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571429z m0-292.571429v73.142858c0 20.004571-16.566857 36.571429-36.571429 36.571428H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571428v-73.142858c0-20.004571 16.566857-36.571429 36.571429-36.571428h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571428z m0-292.571428v73.142857c0 20.004571-16.566857 36.571429-36.571429 36.571429H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571429V182.857143c0-20.004571 16.566857-36.571429 36.571429-36.571429h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571429z" p-id="10879"></path></svg>
+    </div>
+
+    <div id="sea-nav-dimmer"></div>
+<div class="sea-menu-wrap">
+  
+    <a
+      class="sea-menu-link "
+      
+      href="/archives/"
+    >
+      归档
+    </a>
+  
+    <a
+      class="sea-menu-link "
+      
+      href="/graph/"
+    >
+      图片
+    </a>
+  
+
+  <span class="sea-menu-sep">|</span>
+
+  
+  
+
+  
+    <a href="/search" title="Search">
+  <span class="sea-menu-icon" id="sea-search-icon">
+    <svg t="1725410662861" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5552" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M400.085333 151.210667c-89.059556 0-172.672 47.616-218.197333 124.273777a14.222222 14.222222 0 1 0 24.462222 14.535112c40.433778-68.067556 114.659556-110.364444 193.735111-110.364445a14.222222 14.222222 0 1 0 0-28.444444zM170.197333 336.298667a14.236444 14.236444 0 0 0-17.080889 10.609777c-4.252444 18.147556-6.656 29.397333-6.656 49.592889a14.222222 14.222222 0 1 0 28.444445 0c0-17.137778 1.92-26.083556 5.902222-43.121777a14.222222 14.222222 0 0 0-10.609778-17.080889z" fill="" p-id="5553"></path><path d="M947.384889 821.944889L717.809778 592.384a70.584889 70.584889 0 0 0-16.64-12.472889 346.254222 346.254222 0 0 0 47.36-175.089778c0-192.142222-156.302222-348.444444-348.444445-348.444444-192.128 0-348.444444 156.302222-348.444444 348.444444s156.316444 348.430222 348.444444 348.430223c68.408889 0 132.209778-19.882667 186.083556-54.058667 2.915556 4.821333 6.570667 9.472 10.951111 13.852444l229.575111 229.589334a84.849778 84.849778 0 0 0 60.359111 24.974222 84.821333 84.821333 0 0 0 60.344889-24.974222 84.778667 84.778667 0 0 0 24.974222-60.330667 84.920889 84.920889 0 0 0-24.988444-60.359111zM108.529778 404.835556c0-160.768 130.787556-291.555556 291.555555-291.555556 160.782222 0 291.555556 130.787556 291.555556 291.555556 0 160.782222-130.801778 291.541333-291.555556 291.541333-160.768 0-291.555556-130.759111-291.555555-291.541333z m798.620444 497.578666c-10.766222 10.723556-29.496889 10.723556-40.248889 0L637.340444 672.839111c-1.991111-1.976889-2.730667-3.299556-2.830222-3.299555 0.042667-0.611556 0.824889-6.471111 17.080889-22.698667 16.213333-16.256 22.072889-16.995556 22.257778-17.109333 0.369778 0.113778 1.692444 0.853333 3.740444 2.887111l229.546667 229.560889c5.390222 5.390222 8.334222 12.529778 8.334222 20.138666a28.401778 28.401778 0 0 1-8.32 20.096z" p-id="5554"></path></svg>
+  </span>
+</a>
+  
+
+
+  <span class="sea-menu-icon" id="sea-theme-dark">
+    <svg t="1725413107294" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10118" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M557.553778 976.355556c-257.265778 0-466.56-207.160889-466.56-464.426667 0-253.923556 206.577778-464.284444 460.501333-464.284445h0.355556c10.766222 0 20.622222 3.953778 25.443555 13.610667 4.878222 9.756444 3.740444 20.394667-2.915555 29.027556-55.722667 72.220444-85.162667 158.108444-85.162667 249.372444 0 225.891556 183.779556 409.386667 409.671111 409.386667l5.248-0.256c10.325333-0.142222 20.977778 5.859556 25.841778 15.644444a28.302222 28.302222 0 0 1-2.915556 30.051556C837.902222 910.08 703.203556 976.355556 557.553778 976.355556zM495.274667 105.016889C299.192889 135.281778 147.882667 306.161778 147.882667 509.809778c0 225.877333 183.779556 409.656889 409.671111 409.656889 108.686222 0 210.403556-42.055111 286.577778-116.977778-231.566222-27.192889-411.804444-224.625778-411.804445-463.36 0-83.427556 21.617778-163.299556 62.947556-234.112z" fill="" p-id="10119"></path><path d="M578.830222 879.132444c-186.865778 0-345.784889-133.418667-377.841778-317.269333a14.222222 14.222222 0 1 1 28.017778-4.878222c29.681778 170.183111 176.810667 293.703111 349.824 293.703111a14.222222 14.222222 0 1 1 0 28.444444zM209.991111 531.2c-7.537778 0-13.838222-6.997333-14.193778-14.606222-0.312889-6.584889-0.483556-13.795556-0.483555-20.465778 0-7.864889 6.357333-14.492444 14.222222-14.492444s14.222222 6.229333 14.222222 14.094222c0 6.229333 0.170667 13.425778 0.455111 19.584 0.369778 7.850667-5.674667 15.886222-13.525333 15.886222h-0.696889z" fill="" p-id="10120"></path><path d="M622.350222 309.930667m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" fill="" p-id="10121"></path><path d="M787.072 188.273778m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" fill="" p-id="10122"></path><path d="M731.960889 415.303111m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" p-id="10123"></path></svg>
+  </span>
+  <span class="sea-menu-icon" id="sea-theme-light">
+    <svg t="1725410359322" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4274" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M512 768c-141.376 0-256-114.624-256-256s114.624-256 256-256 256 114.624 256 256-114.624 256-256 256z m0-85.333333a170.666667 170.666667 0 1 0 0-341.333334 170.666667 170.666667 0 0 0 0 341.333334zM469.333333 85.333333a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0V85.333333z m0 768a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0v-85.333334zM85.333333 554.666667a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334H85.333333z m768 0a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334h-85.333334zM161.834667 222.165333a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m576 576a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m-515.669334 64a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z m576-576a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z" p-id="4275"></path></svg>
+  </span>
+
+  <span id="sea-menu-close-icon">
+    <svg t="1725435896874" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4408" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M556.8 512l265.6-265.6c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L512 467.2 246.4 201.6c-12.8-12.8-32-12.8-44.8 0s-12.8 32 0 44.8l265.6 265.6-265.6 265.6c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 12.8 9.6 22.4 9.6s16-3.2 22.4-9.6l265.6-265.6 265.6 265.6c6.4 6.4 16 9.6 22.4 9.6s16-3.2 22.4-9.6c12.8-12.8 12.8-32 0-44.8L556.8 512z" p-id="4409"></path></svg>
+  </span>
+</div>
+  </div>
+</nav>
+  </header>
+  <main id="sea-main-wrapper" data-pagefind-body>
+    <article class="sea-page-card-wrapper">
+  <header class="sea-article-header">
+    <h1 class="sea-article-title">计量｜Stata 常用方法</h1>
+    
+      <div class="sea-post-meta sea-post-meta__center">
+        <div class="sea-post-time">
+  <svg t="1716964550804" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2621" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M805.49888 981.49888l-602.3168-0.76288c-86.59456-8.192-154.56768-81.3056-154.56768-170.01472L48.6144 291.73248c0-94.1568 76.60032-170.75712 170.7776-170.75712l586.10176 0c94.1568 0 170.73152 76.60032 170.73152 170.75712L976.22528 810.7008C976.2304 904.87296 899.63008 981.49888 805.49888 981.49888L805.49888 981.49888zM219.3664 190.57152c-55.79776 0-101.20192 45.38368-101.20192 101.18144l0 518.96832c0 55.79776 45.40416 101.20704 101.20192 101.20704l586.13248 0c55.77728 0 101.16096-45.40928 101.16096-101.20704L906.65984 291.73248c0-55.79776-45.38368-101.18656-101.16096-101.18656L219.3664 190.54592 219.3664 190.57152zM698.84416 290.51904c-25.60512 0-46.38208-20.77696-46.38208-46.38208l0-158.6688c0-25.6 20.77696-46.38208 46.38208-46.38208 25.6 0 46.38208 20.78208 46.38208 46.38208L745.22624 244.1216C745.22624 269.7472 724.46976 290.51904 698.84416 290.51904L698.84416 290.51904zM315.65824 290.51904c-25.60512 0-46.38208-20.77696-46.38208-46.38208l0-158.6688c0-25.6 20.77696-46.38208 46.38208-46.38208 25.6 0 46.38208 20.78208 46.38208 46.38208L362.04032 244.1216C362.04032 269.7472 341.28896 290.51904 315.65824 290.51904L315.65824 290.51904zM534.8864 794.78784l-44.27264 0c-25.6 0-46.38208-20.77696-46.38208-46.38208 0-25.6 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.78208 46.38208 46.38208C581.26848 774.01088 560.4864 794.78784 534.8864 794.78784L534.8864 794.78784zM930.79552 452.608 121.24672 452.608c-25.60512 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.77696-46.38208 46.38208-46.38208l809.5744 0c25.6 0 46.38208 20.77696 46.38208 46.38208C977.2032 431.82592 956.42624 452.608 930.79552 452.608L930.79552 452.608zM327.92576 649.03168l-44.27264 0c-25.6 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.77696 46.38208 46.38208C374.30784 628.25472 353.52576 649.03168 327.92576 649.03168L327.92576 649.03168zM534.8864 649.03168l-44.27264 0c-25.6 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.77696 46.38208 46.38208S560.4864 649.03168 534.8864 649.03168L534.8864 649.03168zM741.27872 649.03168l-44.26752 0c-25.60512 0-46.38208-20.78208-46.38208-46.38208 0-25.60512 20.77696-46.38208 46.38208-46.38208l44.26752 0c25.60512 0 46.38208 20.77696 46.38208 46.38208C787.6608 628.25472 766.90944 649.03168 741.27872 649.03168L741.27872 649.03168zM327.92576 794.78784l-44.27264 0c-25.6 0-46.38208-20.77696-46.38208-46.38208 0-25.6 20.78208-46.38208 46.38208-46.38208l44.27264 0c25.6 0 46.38208 20.78208 46.38208 46.38208C374.30784 774.01088 353.52576 794.78784 327.92576 794.78784L327.92576 794.78784zM741.27872 794.78784l-44.26752 0c-25.60512 0-46.38208-20.77696-46.38208-46.38208 0-25.6 20.77696-46.38208 46.38208-46.38208l44.26752 0c25.60512 0 46.38208 20.78208 46.38208 46.38208C787.6608 774.01088 766.90944 794.78784 741.27872 794.78784L741.27872 794.78784z" p-id="2622"></path></svg>
+  <time datetime="2025-07-30T03:09:36.000Z">2025-07-30</time>
+</div>
+        
+  <div class="sea-post-categories">
+    <svg t="1716964680422" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4550" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M810.666667 85.333333a85.333333 85.333333 0 0 1 85.333333 85.333334v152.021333c36.821333 9.493333 64 42.88 64 82.645333v405.333334a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128V298.666667a85.376 85.376 0 0 1 64-82.645334V170.666667a85.333333 85.333333 0 0 1 85.333333-85.333334h597.333334zM128.149333 296.170667L128 298.666667v512a64 64 0 0 0 60.245333 63.893333L192 874.666667h640a64 64 0 0 0 63.893333-60.245334L896 810.666667V405.333333a21.333333 21.333333 0 0 0-18.837333-21.184L874.666667 384H638.165333l-122.069333-101.717333a21.333333 21.333333 0 0 0-10.688-4.736l-2.986667-0.213334H149.333333a21.333333 21.333333 0 0 0-21.184 18.837334zM535.189333 213.333333l127.978667 106.666667H832V170.666667a21.333333 21.333333 0 0 0-18.837333-21.184L810.666667 149.333333H213.333333a21.333333 21.333333 0 0 0-21.184 18.837334L192 170.666667v42.666666h343.168z" p-id="4551"></path></svg>
+    <a class="category-link" href="/categories/%E8%AE%A1%E9%87%8F/">计量</a>
+  </div>
+
+        
+  <div class="sea-post-tags">
+    <svg t="1716964811431" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6117" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M384 977.152c-20.5312 0-39.8336-7.9872-54.3232-22.4256l-260.4032-260.4032c-14.4896-14.4896-22.4256-33.7408-22.4256-54.3232s7.9872-39.8336 22.4256-54.3232l439.6032-439.6032c24.9344-24.9344 70.2464-43.7248 105.5232-43.7248h230.4c42.3424 0 76.8 34.4576 76.8 76.8v230.4c0 35.2256-18.7904 80.5888-43.6736 105.5232l-439.6032 439.6032a76.1856 76.1856 0 0 1-54.3232 22.4256zM614.4 153.6c-21.248 0-54.272 13.6704-69.2736 28.7232l-439.6032 439.6032c-4.8128 4.8128-7.424 11.2128-7.424 18.1248s2.6624 13.312 7.424 18.0736l260.4032 260.4032c4.8128 4.8128 11.2128 7.424 18.1248 7.424s13.312-2.6624 18.1248-7.424l439.6032-439.6032c15.0016-15.0016 28.7232-48.0768 28.7232-69.3248V179.2a25.6 25.6 0 0 0-25.6-25.6h-230.4z" p-id="6118"></path><path d="M742.4 358.4c-42.3424 0-76.8-34.4576-76.8-76.8S700.0576 204.8 742.4 204.8s76.8 34.4576 76.8 76.8S784.7424 358.4 742.4 358.4z m0-102.4a25.6 25.6 0 1 0 0 51.2 25.6 25.6 0 0 0 0-51.2z" p-id="6119"></path></svg>
+    <a class="tag-link" href="/tags/%E8%AE%A1%E9%87%8F-%E6%95%B0%E5%AD%A6/" rel="tag">计量 数学</a>
+  </div>
+
+      </div>
+    
+  </header>
+  <div class="sea-doc">
+    
+    <div class="sea-article-content">
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+
+<h1 id="Stata-常用技巧"><a href="#Stata-常用技巧" class="headerlink" title="Stata 常用技巧"></a>Stata 常用技巧</h1><p>Stata 是一个用于数据处理、统计分析、可视化和报告等的软件。在计量经济学、统计分析中，Stata 是一个很常用的也是最为流行的工具之一。Stata 具有很强的可扩展性，吸引了许多的用户编写程序，这使得 Stata 的社区和功能能够进一步被充实和扩展，在 Stata 上，你也可以通过自己编写命令和发布命令来简化自己的分析步骤。比如我自己编写的一键分析工具就可以通过下面的方式进行安装。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">net</span> install xwtx, from(https:<span class="comment">//gitee.com/JoakimStarr/macos/raw/master/xwtx/) replace 安装</span></span><br><span class="line">. xwtx  #输入这个命令查看可用命令集</span><br></pre></td></tr></table></figure>
+<p>Stata 的界面如下图所示，主要分为了六个区域，我在下图分别标注了区域，其中：</p>
+<ul>
+<li><strong>区域 1 是历史命令窗口</strong>，所以运行过的命令，都会在其中显示，左键双击历史命令，可以直接执行，单击可以将该命令复制到命令窗口，适合重复执行代码或调错的时候使用。</li>
+<li><strong>区域 2 为命令窗口</strong>，在这个地方可以直接输入命令然后执行，比如输入 help 命令，然后回车，就会显示帮助信息。</li>
+<li><strong>区域 3 为结果窗口</strong>，你在命令窗口输入的命令执行后，会在这个地方显示。</li>
+<li><strong>区域 4 为变量窗口</strong>，这个窗口显示的是当前数据集的变量信息。</li>
+<li><strong>区域 5 为属性窗口</strong>，点击一个变量，在这个区域会显示所有的属性信息，包括名称、标签、类型等。</li>
+<li><strong>区域 6 为图形操作窗口</strong>（我也不知道该不该叫这个名字），从左往右分别日志、浏览器、图形按钮（这些一般用不上），最主要的是右边的 Do-file 编辑器，用来些 Stata 的 do 命令的，这是为了可操作性，后面会讲，还有数据编辑、数据浏览，其中，数据编辑可以直接查看并编辑数据，像 Excel 一样，数据浏览则只能查看数据，不能编辑。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pica.zhimg.com/v2-bb404b05e6195825e2467dcbfd9ae29e_1440w.jpg" alt="alt text"></a></p>
+<h2 id="Stata-的使用方法"><a href="#Stata-的使用方法" class="headerlink" title="Stata 的使用方法"></a>Stata 的使用方法</h2><ul>
+<li><strong>Stata 的命令格式</strong></li>
+</ul>
+<p>Stata 中的常见命令格式为：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">command [<span class="keyword">varlist</span>] [<span class="keyword">if</span>] [<span class="keyword">in</span>] [w] [, options]</span><br></pre></td></tr></table></figure>
+<p>其中，[ ]表示该部分是可以选择的，并非一定需要，以回归命令为例，在命令窗口输入</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">help</span> <span class="keyword">regress</span></span><br></pre></td></tr></table></figure>
+<p>回车后，会显示该命令的帮助信息，其中有关于命令格式的描述。结果如下图所示<br><a target="_blank" rel="noopener" href="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pic2.zhimg.com/v2-d65b85b097b7907335dc0b96db33ca2d_1440w.jpg" alt="alt text"></a><br>其中下面这一块，表示命令格式，其中 regress 表示变量名（可简写为 reg），depvar 为因变量，indepvars 为自变量，if 为条件，in 为样本范围，weight 为权值，options 为选项。这表明改命令至少需要一个因变量，因为 depvar 并没有用[ ]报告起来，这就说明，该变量必须要要一个变量，否则就会报错。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">regress</span> depvar [indepvars] [<span class="keyword">if</span>] [<span class="keyword">in</span>] [weight] [, options]</span><br></pre></td></tr></table></figure>
+<p>我们以 Stata 自带的 auto 为例，尝试一下各种情况：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">sysuse</span> auto, <span class="keyword">clear</span> # 导入数据</span><br><span class="line">(1978 automobile data)</span><br></pre></td></tr></table></figure>
+<p>导入数据后，你会发现，区域 4 多了几个变量名，如下图所示。可以通过点击每个变量查看该变量的属性，在属性窗口查看。<br><a target="_blank" rel="noopener" href="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pic4.zhimg.com/v2-29c7dacf969c357c6124bb9fde830699_1440w.jpg" alt="alt text"></a><br>接下来输入 reg 命令，我们尝试各种情况试试：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">reg</span> #什么变量都不传入</span><br><span class="line">last <span class="keyword">estimates</span> not found</span><br><span class="line"><span class="built_in">r</span>(301);</span><br><span class="line"></span><br><span class="line">. <span class="keyword">reg</span> price #输入因变量</span><br><span class="line"></span><br><span class="line">      Source |       SS           df       MS      Number of obs   =        74</span><br><span class="line">-------------+----------------------------------   <span class="built_in">F</span>(0, 73)        =      0.00</span><br><span class="line">       Model |           0         0           .   <span class="keyword">Prob</span> &gt; F        =         .</span><br><span class="line">    Residual |   635065396        73  8699525.97   R-squared       =    0.0000</span><br><span class="line">-------------+----------------------------------   Adj R-squared   =    0.0000</span><br><span class="line">       <span class="keyword">Total</span> |   635065396        73  8699525.97   Root MSE        =    2949.5</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">       price | Coefficient  Std. <span class="keyword">err</span>.      t    P&gt;|t|     [95% <span class="keyword">conf</span>. interval]</span><br><span class="line">-------------+----------------------------------------------------------------</span><br><span class="line">       _cons |   6165.257   342.8719    17.98   0.000     5481.914      6848.6</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">. <span class="keyword">reg</span> price length # 输入因变量和自变量</span><br><span class="line"></span><br><span class="line">      Source |       SS           df       MS      Number of obs   =        74</span><br><span class="line">-------------+----------------------------------   <span class="built_in">F</span>(1, 72)        =     16.50</span><br><span class="line">       Model |   118425867         1   118425867   <span class="keyword">Prob</span> &gt; F        =    0.0001</span><br><span class="line">    Residual |   516639529        72  7175549.01   R-squared       =    0.1865</span><br><span class="line">-------------+----------------------------------   Adj R-squared   =    0.1752</span><br><span class="line">       <span class="keyword">Total</span> |   635065396        73  8699525.97   Root MSE        =    2678.7</span><br><span class="line"></span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">       price | Coefficient  Std. <span class="keyword">err</span>.      t    P&gt;|t|     [95% <span class="keyword">conf</span>. interval]</span><br><span class="line">-------------+----------------------------------------------------------------</span><br><span class="line">      length |   57.20224   14.08047     4.06   0.000     29.13332    85.27115</span><br><span class="line">       _cons |  -4584.899   2664.437    -1.72   0.090    -9896.357     726.559</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">.</span><br></pre></td></tr></table></figure>
+<p>可以发现，当没有传入必须传入的变量时候，命令会保报错，但需要注意，当你执行过一次 reg 后，再单独执行 reg 会默认执行上一次的回归任务，可以自行尝试一下。当只输入因变量后，默认返回因变量的均值。<br>可以通过下列命令查看因变量的均值信息，与上面的结果进行对比：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">. sum price</span><br><span class="line"></span><br><span class="line">    Variable |        Obs        Mean    Std. dev.       Min        Max</span><br><span class="line">-------------+---------------------------------------------------------</span><br><span class="line">       price |         74    6165.257    2949.496       3291      15906</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>其中，Mean 就是均值，Obs 为样本数，Std. dev.为标准差，Min、Max 分别为最小最大值。</li>
+</ul>
+<p>可以发现，Mean 为 6165.257，与上述只输入因变量的结果一致，这也从另一方面说明了，线性回归其实是在给定$X_i$的时候，预测$Y_i$的均值或期望值，即$E(Y_i | X_i)$<br>也有什么参数都不需要输入的命令，比如 cls，即清除结果窗口内容的命令，通过输入 help cls 命令，可以发现就只有很简单的几行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Syntax</span><br><span class="line"></span><br><span class="line">        cls</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Description</span><br><span class="line"></span><br><span class="line">    cls clears the Results window, causing all text to be removed.  This operation cannot be undone.</span><br></pre></td></tr></table></figure>
+<h3 id="命令窗口"><a href="#命令窗口" class="headerlink" title="命令窗口"></a>命令窗口</h3><p>命令窗口可以直接输入命令，回车执行，适合一些简单的命令，比如回归分析(reg、xtreg 等)，查看描述性统计(sum)，查看变量类型等。<br>例如可以通过下列命令查看数据结构，还是以 auto 数据为例：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">. <span class="keyword">describe</span> # 不填写变量默认全部变量(简写为 <span class="keyword">desc</span>)</span><br><span class="line"></span><br><span class="line">Contains data from /Applications/Stata/<span class="keyword">ado</span>/base/a/auto.dta</span><br><span class="line"> Observations:            74                  1978 automobile data</span><br><span class="line">    Variables:            12                  13 Apr 2020 17:45</span><br><span class="line">                                              (_dta has <span class="keyword">notes</span>)</span><br><span class="line">---------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">Variable      Storage   <span class="keyword">Display</span>    Value</span><br><span class="line">    name         <span class="keyword">type</span>    <span class="keyword">format</span>    <span class="keyword">label</span>      Variable <span class="keyword">label</span></span><br><span class="line">---------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">make            str18   %-18s                 Make and model</span><br><span class="line">price           int     %8.0gc                Price</span><br><span class="line">mpg             int     %8.0g                 Mileage (mpg)</span><br><span class="line">rep78           int     %8.0g                 Repair record 1978</span><br><span class="line">headroom        float   %6.1f                 Headroom (<span class="keyword">in</span>.)</span><br><span class="line">trunk           int     %8.0g                 Trunk space (cu. ft.)</span><br><span class="line">weight          int     %8.0gc                Weight (lbs.)</span><br><span class="line">length          int     %8.0g                 Length (<span class="keyword">in</span>.)</span><br><span class="line">turn            int     %8.0g                 Turn circle (ft.)</span><br><span class="line">displacement    int     %8.0g                 Displacement (cu. <span class="keyword">in</span>.)</span><br><span class="line">gear_ratio      float   %6.2f                 Gear <span class="keyword">ratio</span></span><br><span class="line">foreign         byte    %8.0g      origin     Car origin</span><br><span class="line">---------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">Sorted <span class="keyword">by</span>: foreign</span><br></pre></td></tr></table></figure>
+<p>其中，Variable name 为变量名，Storage type 为变量类型，Display format 为显示格式，Value label 为值标签，Variable label 为变量标签。</p>
+<ul>
+<li><p><strong>变量类型</strong><br>变量类型是变量在内存中的 ​​ 存储格式 ​​（二进制如何解释数据），主要有以下几种。往大方向说，其实 Stata 只存在两种格式，即数值和字符串，在 Stata 中，也可以通过数据浏览器查看，其中红色的为字符串，其他的就是数值类型。</p>
+<p>  | ​ 类型 ​​ | ​​ 说明 ​​                       | ​​ 示例值 ​​      |<br>  | ————- | ———————————————— | ————————- |<br>  | byte      | 整数（-127 到 127）              | 0, 1, -10         |<br>  | int       | 整数（-32,767 到 32,767）        | 1000, -200        |<br>  | long      | 大整数（±20 亿）                 | 3000000000        |<br>  | float     | 单精度浮点数（约 7 位有效数字）  | 3.14159           |<br>  | double    | 双精度浮点数（约 15 位有效数字） | 3.141592653589793 |<br>  | str#      | 字符串（#为长度）                | “Male”, “北京”    |</p>
+</li>
+</ul>
+<p>以 auto 数据库为例，其中 make 变量就是字符串格式，foreign 是编码格式，虽然使用字符串显示的，但实际是分类变量，即数值，通过上面也可以看到，foreign 所对应的 type 为 byte而非 str。<br><a target="_blank" rel="noopener" href="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg" title="alt text" class="gallery-item"><img src="https://picx.zhimg.com/v2-314846f852aba7e71f2b3dfd1d93c713_1440w.jpg" alt="alt text"></a></p>
+<ul>
+<li><p><strong>显示格式</strong><br>显示格式主要控制变量在界面中的​​显示样式，但不改变实际存储值，主要有下列格式，具体的可以通过help format命令查看完整信息。</p>
+<p>  | 格式           | 用途                     | 示例显示      |<br>  | ——————— | ———————————— | ——————- |<br>  | <code>%8.0g</code>        | 通用数值（8字符宽）      | 42, -3.14e+10 |<br>  | <code>%8.2f</code>        | 固定小数位（2位）        | 123.45        |<br>  | <code>%8.0gc</code>       | 带千分位分隔符           | 1,234         |<br>  | <code>%-12s</code>        | 左对齐字符串（12字符宽） | “Hello “      |<br>  | <code>%tdDD-Mon-YY</code> | 日期格式                 | 15-Jan-23     |</p>
+</li>
+</ul>
+<h2 id="Do-file-使用方法"><a href="#Do-file-使用方法" class="headerlink" title="Do-file 使用方法"></a>Do-file 使用方法</h2><p>命令窗口、历史窗口和结果窗口的内容往往在 Stata 关掉后就会消失，当你再打开一个 Stata 后，经常会发现你辛辛苦苦写的命令直接消失了，然后你又得重新写。或者是你在你的电脑上做好后，想要换一台电脑或者在别人电脑上可以复现，那么直接在命令窗口写命令就不是一个好的选择了，那么这个时候，就需要使用 do 命令了。<br>在Stata中，​​do文件​​（以.do为后缀的脚本文件）是​​包含一系列Stata命令的可执行脚本​​，用于自动化执行数据分析流程。<br>可以通过区域 6 中的 do-file 编辑器打开，如下图所示。<br><a href="[QQ_1753784178670.png](https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg" title="alt text" class="gallery-item"><img src="[QQ_1753784178670.png](https://pica.zhimg.com/v2-3950a987c7f61c8f3f8981e968a883ba_1440w.jpg" alt="alt text"></a>)<br>点击后，会跳出一个类似文本框的界面。如下图所示。<br><a href="[QQ_1753784233679.png](https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg" title="alt text" class="gallery-item"><img src="[QQ_1753784233679.png](https://pic1.zhimg.com/v2-9388139e8fc2d7cf6efa3a33b4090900_1440w.jpg" alt="alt text"></a>)<br>在这个内容中，顶部右侧有几个按钮，分别为打开 do 文件，保存 do 文件以及打印do 文件，查找功能是对于 do 文件中的关键字查询，和 word 的查找功能类似，最主要的是最右边的执行按钮，在没有选中命令的情况下，点击可以实现整个 do 文件的执行。<br>例如，我们在 do 文件中写入以下代码，以实现自动导入 auto 文件夹，自动查看变量类型和回归分析。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sysuse</span> auto, <span class="keyword">clear</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">describe</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> price weight</span><br></pre></td></tr></table></figure><br>写入后，点击执行按钮，会发现它会自动的实现整个文件写入的命令。然后将其保存，把这个文件放在任何一台电脑上的 Stata 中，点击执行，会实现同样的效果。这就可以保证可复制性和处理过程了。<br>但是新问题是，若我不想执行整个文件，我只想执行文件中的某行命令或者某几行命令怎么办呢，不可能将其复制到命令窗口执行吧，一次两次还好，多了就会显得很麻烦。<br>Stata 提供了一种方法，就是选中一行或几行的命令，在点击执行按钮，可以只允许执行选择的命令，例如上述的命令中，我们已经导入了 auto 数据库了，那么我们只想做一次回归，就可以只选择reg price weight，然后再点击执行按钮。选中后，大概如下图所示。<br><a target="_blank" rel="noopener" href="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg" title="alt text" class="gallery-item"><img src="https://pic1.zhimg.com/v2-e7f861587e49a42f2c7592dd00846d6a_1440w.jpg" alt="alt text"></a></p>
+<blockquote>
+<p>Tips: Windows 中可以直接按 Ctrl + D快捷键实现点击执行动作，Mac中可以按 Command + shift + D快捷键。 </p>
+</blockquote>
+<p>需要注意的是，do 文件的执行顺序是从上往下，也就是说，必须上面一行的命令执行成功后，才会执行下面一行，否则，将不会继续执行下去。如，上图中，describe报错，那么reg 回归命令将不会被执行。</p>
+<h2 id="Stata常用命令"><a href="#Stata常用命令" class="headerlink" title="Stata常用命令"></a>Stata常用命令</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>命令</strong></th>
+<th><strong>作用</strong></th>
+<th><strong>示例</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>基础操作</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>use</code></td>
+<td>加载数据集</td>
+<td><code>use &quot;data.dta&quot;, clear</code></td>
+</tr>
+<tr>
+<td><code>save</code></td>
+<td>保存数据集</td>
+<td><code>save &quot;new_data.dta&quot;, replace</code></td>
+</tr>
+<tr>
+<td><code>describe</code></td>
+<td>查看变量信息</td>
+<td><code>describe price mpg</code></td>
+</tr>
+<tr>
+<td><code>list</code></td>
+<td>列出数据</td>
+<td><code>list make price in 1/5</code></td>
+</tr>
+<tr>
+<td><strong>数据清洗</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>generate</code></td>
+<td>生成新变量</td>
+<td><code>gen ln_price = log(price)</code></td>
+</tr>
+<tr>
+<td><code>replace</code></td>
+<td>修改变量值</td>
+<td><code>replace price = . if price &lt;= 0</code></td>
+</tr>
+<tr>
+<td><code>drop</code></td>
+<td>删除变量/观测</td>
+<td><code>drop if missing(income)</code></td>
+</tr>
+<tr>
+<td><code>rename</code></td>
+<td>重命名变量</td>
+<td><code>rename oldvar newvar</code></td>
+</tr>
+<tr>
+<td><code>destring</code></td>
+<td>字符串转数值</td>
+<td><code>destring income_str, gen(income_num) ignore(&quot;,&quot;)</code></td>
+</tr>
+<tr>
+<td><strong>统计分析</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>summarize</code></td>
+<td>描述统计</td>
+<td><code>sum price weight, detail</code></td>
+</tr>
+<tr>
+<td><code>tabulate</code></td>
+<td>频数表</td>
+<td><code>tabulate foreign, plot</code></td>
+</tr>
+<tr>
+<td><code>correlate</code></td>
+<td>相关系数矩阵</td>
+<td><code>corr price mpg weight</code></td>
+</tr>
+<tr>
+<td><code>ttest</code></td>
+<td>t检验</td>
+<td><code>ttest price, by(foreign)</code></td>
+</tr>
+<tr>
+<td><code>anova</code></td>
+<td>方差分析</td>
+<td><code>anova price foreign##mpg</code></td>
+</tr>
+<tr>
+<td><strong>回归模型</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>regress</code></td>
+<td>线性回归</td>
+<td><code>reg price weight mpg, robust</code></td>
+</tr>
+<tr>
+<td><code>logit</code>/<code>probit</code></td>
+<td>二元选择模型</td>
+<td><code>logit y x1 x2, or</code></td>
+</tr>
+<tr>
+<td><code>xtreg</code></td>
+<td>面板回归</td>
+<td><code>xtreg y x1 x2, fe</code></td>
+</tr>
+<tr>
+<td><code>reghdfe</code></td>
+<td>多维固定效应回归</td>
+<td><code>reghdfe y x1 x2, absorb(id year)</code></td>
+</tr>
+<tr>
+<td><code>ivregress</code></td>
+<td>工具变量回归</td>
+<td><code>ivregress 2sls y x1 (x2 = z1 z2)</code></td>
+</tr>
+<tr>
+<td><strong>可视化</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>histogram</code></td>
+<td>直方图</td>
+<td><code>hist price, freq normal</code></td>
+</tr>
+<tr>
+<td><code>scatter</code></td>
+<td>散点图</td>
+<td><code>scatter price weight, mlabel(make)</code></td>
+</tr>
+<tr>
+<td><code>twoway</code></td>
+<td>组合图形</td>
+<td><code>twoway (scatter price mpg) (lfit price mpg)</code></td>
+</tr>
+<tr>
+<td><code>graph export</code></td>
+<td>导出图形</td>
+<td><code>graph export &quot;plot.png&quot;, width(1000) replace</code></td>
+</tr>
+<tr>
+<td><strong>编程扩展</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>foreach</code></td>
+<td>循环语句</td>
+<td><code>foreach var in price mpg &#123; summarize</code>var’ }`</td>
+</tr>
+<tr>
+<td><code>if</code>/<code>else</code></td>
+<td>条件语句</td>
+<td><code>if price &gt; 10000 &#123; gen luxury = 1 &#125; else &#123; gen luxury = 0 &#125;</code></td>
+</tr>
+<tr>
+<td><code>program</code></td>
+<td>自定义程序</td>
+<td><code>program mycmd args x y &#123; reg</code>x’ <code>y&#39; &#125;</code></td>
+</tr>
+<tr>
+<td><strong>输出结果</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>eststo</code>/<code>esttab</code></td>
+<td>存储/输出回归结果</td>
+<td><code>eststo: reg y x1</code><br><code>esttab using &quot;result.rtf&quot;, replace</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script src="https://gitee.com/mirrors_sachinchoolur/lg-pager.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
+    </div>
+  </div>
+
+  
+    
+  <div class="sea-prev-next-wrapper">
+    
+    
+      <div class="next">
+        <a class="link" href="/2025/cmdv0aw3h000utgs6hw5lb43o/">
+          计量｜什么是虚拟变量
+        </a>
+        <svg t="1725418993065" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6832" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M731.733333 480l-384-341.333333c-17.066667-14.933333-44.8-14.933333-59.733333 4.266666-14.933333 17.066667-14.933333 44.8 4.266667 59.733334L640 512 292.266667 821.333333c-17.066667 14.933333-19.2 42.666667-4.266667 59.733334 8.533333 8.533333 19.2 14.933333 32 14.933333 10.666667 0 19.2-4.266667 27.733333-10.666667l384-341.333333c8.533333-8.533333 14.933333-19.2 14.933334-32s-4.266667-23.466667-14.933334-32z" p-id="6833"></path></svg>
+      </div>
+    
+  </div>
+
+  
+</article>
+
+
+
+<script defer>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleIcon = document.querySelector('.sea-article-catalog-title .sea-svg-icon');
+    const tocContent = document.querySelector('.sea-article-catalog > .toc');
+    if (toggleIcon && tocContent) {
+      toggleIcon.addEventListener('click', function () {
+        tocContent.classList.toggle('sea-article-catalog-show');
+        toggleIcon.classList.toggle('sea-svg-icon-rotate');
+      });
+    }
+  });
+</script>
+  </main>
+  <footer id="sea-footer-container">
+  <div class="sea-footer-row">
+    <div class="sea-footer-menu-link">
+      
+        <a
+          class="sea-footer-link"
+          
+          href="/joakimstarr@qq.com"
+        >
+          Email
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+        <a
+          class="sea-footer-link"
+          
+            target="_blank"
+          
+          href="https://github.com/joakimstarr"
+        >
+          Github
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+        <a
+          class="sea-footer-link"
+          
+            target="_blank"
+          
+          href="https://www.zhihu.com/people/miskies"
+        >
+          Zhihu
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+    </div>
+  </div>
+  
+  
+  <div class="sea-footer-row">
+    <div class="sea-footer-copyright">
+      <span>©</span>
+      
+        2025
+      
+      <span>·</span>
+      Joakim Starr(文人病)
+    </div>
+    <span class="split-line">|</span>
+    <div class="sea-footer-theme-by">
+      Theme by <a class="theme" href="https://github.com/hai-zou/hexo-theme-sea" target="_blank">Sea</a>
+    </div>
+  </div>
+</footer>
+
+  
+<script src="/js/main.js" defer></script>
+
+
+<script src="/js/theme.js" defer></script>
+
+</body>
+</html>
