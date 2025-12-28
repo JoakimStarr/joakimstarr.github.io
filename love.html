@@ -1,11 +1,744 @@
-  <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>喜欢小苹果</title>
+  <title>小苹果和宝宝的恋爱时钟</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #5a3d5c;
+      overflow-x: hidden;
+      position: relative;
+      transition: background 0.8s ease;
+    }
+
+    /* 心形背景 */
+    .heart-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      color: #ff6b8b;
+      animation: float 8s infinite ease-in-out;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* 主容器 */
+    .container {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      padding: 35px;
+      max-width: 650px;
+      width: 92%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* 标题样式 */
+    .header {
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 2.4rem;
+      color: #ff6b8b;
+      margin-bottom: 12px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 1.3rem;
+      color: #8a6d8f;
+      font-weight: 500;
+    }
+
+    /* 计时器样式 */
+    .timer {
+      display: flex;
+      justify-content: space-around;
+      margin: 35px 0;
+      flex-wrap: wrap;
+    }
+
+    .time-unit {
+      margin: 12px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 18px;
+      min-width: 110px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .time-unit:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .time-unit::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.6s;
+    }
+
+    .time-unit:hover::before {
+      left: 100%;
+    }
+
+    .time-value {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #ff6b8b;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+
+    .time-label {
+      font-size: 1.1rem;
+      color: #8a6d8f;
+      font-weight: 500;
+    }
+
+    /* 纪念日部分 */
+    .milestone {
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(255, 235, 238, 0.75);
+      border-radius: 18px;
+      font-size: 1.2rem;
+      animation: pulse 2s infinite;
+      border: 1px solid rgba(255, 182, 193, 0.3);
+    }
+
+    /* 按钮样式 */
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      background: #ff6b8b;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 18px rgba(255, 107, 139, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    .btn:hover {
+      background: #ff8fa3;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(255, 107, 139, 0.6);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* 动画 */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-25px) rotate(5deg);
+      }
+    }
+
+    @keyframes heartbeat {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.15);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+    }
+
+    .heartbeat {
+      animation: heartbeat 1.5s infinite;
+      display: inline-block;
+      margin: 0 10px;
+      color: #ff6b8b;
+    }
+
+    /* 模态框样式 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 35px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.5s ease-out;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.3s;
+    }
+
+    .modal-close:hover {
+      color: #ff6b8b;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px 20px;
+        border-radius: 20px;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+      }
+
+      .time-unit {
+        min-width: 85px;
+        padding: 15px 10px;
+        margin: 8px;
+      }
+
+      .time-value {
+        font-size: 2.2rem;
+      }
+
+      .time-label {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+
+      .timer {
+        margin: 25px 0;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .time-unit {
+        min-width: 70px;
+      }
+
+      .time-value {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>喜欢小苹果</h1>
+  <!-- 心形背景 -->
+  <div class="heart-bg" id="heartBg"></div>
+
+  <!-- 主容器 -->
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-heart heartbeat"></i> 小苹果和宝宝 <i class="fas fa-heart heartbeat"></i></h1>
+      <p>已经在一起度过了：</p>
+    </div>
+
+    <div class="timer">
+      <div class="time-unit">
+        <div class="time-value" id="days">0</div>
+        <div class="time-label">天</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="hours">00</div>
+        <div class="time-label">小时</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="minutes">00</div>
+        <div class="time-label">分钟</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="seconds">00</div>
+        <div class="time-label">秒</div>
+      </div>
+    </div>
+
+    <div class="milestone" id="milestone">
+      <!-- 纪念日信息会动态显示在这里 -->
+    </div>
+
+    <div class="btn-container">
+      <button class="btn" id="themeBtn">
+        <i class="fas fa-palette"></i> 切换主题
+      </button>
+      <button class="btn" id="shareBtn">
+        <i class="fas fa-share-alt"></i> 分享甜蜜
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 设置恋爱开始的日期和时间
+    const startDate = new Date('2025-09-04T00:00:00');
+
+    // 纪念日数据
+    const milestones = [
+      { days: 100, name: "💝 恋爱100天", message: "百分百的爱给你！" },
+      { days: 200, name: "🌹 恋爱200天", message: "爱意如玫瑰绽放！" },
+      { days: 365, name: "🎉 恋爱一周年", message: "周年快乐！" },
+      { days: 520, name: "💖 恋爱520天", message: "我爱你！" },
+      { days: 999, name: "🌟 恋爱999天", message: "长长久久！" }
+    ];
+
+    // 主题颜色
+    const themes = [
+      {
+        primary: "#ff6b8b",
+        secondary: "#8a6d8f",
+        bg: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
+        heart: "#ff6b8b"
+      },
+      {
+        primary: "#6a8caf",
+        secondary: "#4a6572",
+        bg: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
+        heart: "#6a8caf"
+      },
+      {
+        primary: "#6b5b95",
+        secondary: "#4b3b6d",
+        bg: "linear-gradient(135deg, #d9a7c7 0%, #fffcdc 100%)",
+        heart: "#6b5b95"
+      },
+      {
+        primary: "#44a08d",
+        secondary: "#2d6a6d",
+        bg: "linear-gradient(135deg, #a8ff78 0%, #78ffd6 100%)",
+        heart: "#44a08d"
+      },
+      {
+        primary: "#e65c78",
+        secondary: "#8a4b6e",
+        bg: "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)",
+        heart: "#e65c78"
+      }
+    ];
+
+    let currentTheme = 0;
+    let animationFrameId = null;
+
+    // 初始化心形背景 - 优化性能
+    function initHeartBackground() {
+      const heartBg = document.getElementById('heartBg');
+      // 根据屏幕尺寸计算合适的心形数量
+      const heartCount = Math.min(40, Math.floor((window.innerWidth * window.innerHeight) / 15000));
+
+      // 清空现有心形
+      heartBg.innerHTML = '';
+
+      for (let i = 0; i < heartCount; i++) {
+        const heart = document.createElement('div');
+        heart.innerHTML = '❤';
+        heart.classList.add('heart');
+
+        // 随机位置
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.top = `${Math.random() * 100}%`;
+
+        // 随机动画延迟和持续时间
+        heart.style.animationDelay = `${Math.random() * 12}s`;
+        heart.style.animationDuration = `${6 + Math.random() * 10}s`;
+
+        // 随机大小
+        const size = 16 + Math.random() * 12;
+        heart.style.fontSize = `${size}px`;
+
+        heartBg.appendChild(heart);
+      }
+    }
+
+    // 高精度计时器 - 避免setInterval延迟问题 [1](@ref)
+    function startLoveTimer() {
+      let lastTime = Date.now();
+
+      function update() {
+        const now = Date.now();
+        const diff = now - lastTime;
+
+        // 只有当距离上次更新超过900ms才更新，避免过度渲染 [8](@ref)
+        if (diff >= 900) {
+          updateLoveTimer();
+          lastTime = now;
+        }
+
+        animationFrameId = requestAnimationFrame(update);
+      }
+
+      animationFrameId = requestAnimationFrame(update);
+    }
+
+    // 更新计时器
+    function updateLoveTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      // 计算时间差
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      // 平滑更新DOM [8](@ref)
+      smoothUpdate('days', days);
+      smoothUpdate('hours', hours.toString().padStart(2, '0'));
+      smoothUpdate('minutes', minutes.toString().padStart(2, '0'));
+      smoothUpdate('seconds', seconds.toString().padStart(2, '0'));
+
+      // 检查并显示纪念日
+      checkMilestone(days);
+    }
+
+    // 平滑更新数值
+    function smoothUpdate(elementId, newValue) {
+      const element = document.getElementById(elementId);
+      if (element.textContent !== newValue.toString()) {
+        element.style.transform = 'scale(1.1)';
+        element.textContent = newValue;
+        setTimeout(() => {
+          element.style.transform = 'scale(1)';
+        }, 150);
+      }
+    }
+
+    // 检查纪念日
+    function checkMilestone(days) {
+      const milestoneElement = document.getElementById('milestone');
+      let nextMilestone = null;
+      let achievedMilestone = null;
+
+      // 查找下一个纪念日和已实现的纪念日
+      for (const milestone of milestones) {
+        if (days >= milestone.days) {
+          achievedMilestone = milestone;
+        } else if (!nextMilestone) {
+          nextMilestone = milestone;
+          break;
+        }
+      }
+
+      if (achievedMilestone && (!nextMilestone || days - achievedMilestone.days < 7)) {
+        // 显示最近实现的纪念日（一周内）
+        milestoneElement.innerHTML = `
+                    <i class="fas fa-crown"></i> 
+                    已庆祝 <strong>${achievedMilestone.name}</strong>！
+                    <br><small>${achievedMilestone.message}</small>
+                `;
+        milestoneElement.style.background = 'rgba(255, 215, 0, 0.7)';
+      } else if (nextMilestone) {
+        // 显示下一个纪念日倒计时
+        const daysLeft = nextMilestone.days - days;
+        milestoneElement.innerHTML = `
+                    <i class="fas fa-gift"></i> 
+                    距离 <strong>${nextMilestone.name}</strong> 还有 <strong>${daysLeft}</strong> 天
+                    <br><small>${nextMilestone.message}</small>
+                `;
+        milestoneElement.style.background = 'rgba(255, 235, 238, 0.75)';
+      } else {
+        // 如果已经过了所有纪念日
+        const lastMilestone = milestones[milestones.length - 1];
+        milestoneElement.innerHTML = `
+                    <i class="fas fa-infinity"></i> 
+                    爱意持续增长中...
+                    <br><small>已超越 ${lastMilestone.name}！</small>
+                `;
+        milestoneElement.style.background = 'rgba(200, 230, 255, 0.75)';
+      }
+    }
+
+    // 切换主题
+    function changeTheme() {
+      currentTheme = (currentTheme + 1) % themes.length;
+      const theme = themes[currentTheme];
+
+      // 平滑过渡背景
+      document.body.style.background = theme.bg;
+
+      // 更新所有时间单位的颜色
+      const timeValues = document.querySelectorAll('.time-value');
+      timeValues.forEach(value => {
+        value.style.color = theme.primary;
+      });
+
+      // 更新按钮颜色
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(button => {
+        button.style.background = theme.primary;
+      });
+
+      // 更新心形颜色
+      const hearts = document.querySelectorAll('.heart');
+      hearts.forEach(heart => {
+        heart.style.color = theme.heart;
+      });
+
+      // 更新标题颜色
+      const headers = document.querySelectorAll('.header h1');
+      headers.forEach(header => {
+        header.style.color = theme.primary;
+      });
+    }
+
+    // 分享功能
+    function shareLove() {
+      const days = document.getElementById('days').textContent;
+      const message = `小苹果和宝宝已经相爱 ${days} 天了！💖 我们的爱还在继续...`;
+      const shareUrl = window.location.href;
+
+      // 添加加载状态
+      const shareBtn = document.getElementById('shareBtn');
+      const originalHTML = shareBtn.innerHTML;
+      shareBtn.innerHTML = '<div class="loading"></div> 生成中...';
+      shareBtn.disabled = true;
+
+      setTimeout(() => {
+        // 优先尝试使用 Web Share API
+        if (navigator.share) {
+          navigator.share({
+            title: '我们的恋爱时钟',
+            text: message,
+            url: shareUrl
+          }).catch(err => {
+            console.log('分享被取消或失败，使用二维码备用方案:', err);
+            showQRCodeModal(shareUrl, message);
+          }).finally(() => {
+            restoreShareButton(shareBtn, originalHTML);
+          });
+        } else {
+          // 如果不支持 Web Share API，直接显示二维码
+          showQRCodeModal(shareUrl, message);
+          restoreShareButton(shareBtn, originalHTML);
+        }
+      }, 500);
+    }
+
+    // 恢复分享按钮状态
+    function restoreShareButton(button, originalHTML) {
+      button.innerHTML = originalHTML;
+      button.disabled = false;
+    }
+
+    // 显示二维码弹窗
+    function showQRCodeModal(url, message) {
+      // 创建模态框容器
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.id = 'qrcodeModal';
+
+      // 模态框内容
+      modal.innerHTML = `
+                <div class="modal-content">
+                    <button class="modal-close" id="modalClose">&times;</button>
+                    <h3 style="margin-top: 0; color: #ff6b8b; margin-bottom: 15px;">分享我们的爱</h3>
+                    <p style="margin-bottom: 20px; line-height: 1.5;">${message}</p>
+                    <div id="qrcode-container" style="margin: 20px auto;"></div>
+                    <p style="font-size: 0.9em; color: #666; margin: 15px 0;">扫描二维码，分享甜蜜</p>
+                    <button class="btn" id="downloadQRCode" style="margin: 10px auto;">
+                        <i class="fas fa-download"></i> 下载二维码
+                    </button>
+                </div>
+            `;
+
+      // 将模态框添加到页面
+      document.body.appendChild(modal);
+
+      // 生成二维码
+      setTimeout(() => {
+        QRCode.toCanvas(document.getElementById('qrcode-container'), url, {
+          width: 200,
+          height: 200,
+          margin: 1,
+          colorDark: themes[currentTheme].primary,
+          colorLight: "#ffffff",
+        }, function (error) {
+          if (error) {
+            console.error('生成二维码失败:', error);
+            document.getElementById('qrcode-container').innerHTML =
+              '<p style="color:red; padding: 20px;">生成二维码失败，请刷新重试。</p>';
+          }
+        });
+      }, 100);
+
+      // 添加事件监听器
+      document.getElementById('modalClose').addEventListener('click', () => {
+        document.body.removeChild(modal);
+      });
+
+      document.getElementById('downloadQRCode').addEventListener('click', downloadQRCode);
+
+      // 点击模态框外部关闭
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          document.body.removeChild(modal);
+        }
+      });
+    }
+
+    // 下载二维码
+    function downloadQRCode() {
+      const canvas = document.querySelector('#qrcode-container canvas');
+      if (canvas) {
+        const link = document.createElement('a');
+        link.download = '恋爱时钟二维码.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      initHeartBackground();
+      updateLoveTimer();
+      startLoveTimer();
+
+      // 添加事件监听器
+      document.getElementById('themeBtn').addEventListener('click', changeTheme);
+      document.getElementById('shareBtn').addEventListener('click', shareLove);
+
+      // 窗口大小改变时重新初始化心形背景
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          initHeartBackground();
+        }, 250);
+      });
+    });
+
+    // 页面卸载时清理资源
+    window.addEventListener('beforeunload', () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    });
+  </script>
 </body>
+
 </html>
