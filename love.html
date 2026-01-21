@@ -114,7 +114,7 @@
     }
 
     .flip-card.flipping {
-      transform: rotateX(180deg);
+      transform: rotateX(90deg);
     }
 
     .flip-front,
@@ -511,6 +511,9 @@
       <button class="btn" id="shareBtn">
         <i class="fas fa-share-alt"></i> 分享甜蜜
       </button>
+            <button class="btn" id="playMusicBtn">
+              <i class="fas fa-play"></i> 播放音乐
+            </button>
     </div>
   </div>
 
@@ -520,7 +523,7 @@
       <button class="modal-close" id="modalClose">&times;</button>
       <h2 class="modal-title">分享我们的爱</h2>
       <p class="modal-message">
-        小苹果和宝宝已经相爱<span class="love-days" id="loveDays">115</span>天了<span class="modal-heart">💖</span>
+        小苹果和宝宝已经相爱<span class="love-days" id="loveDays">999</span>天了<span class="modal-heart">💖</span>
       </p>
       <p class="modal-continue">我们的爱还在继续...</p>
       <div id="qrcode"></div>
@@ -532,6 +535,9 @@
   </div>
 
   <script>
+    let audio = null;
+    let isPlaying = false;
+
     // 设置恋爱开始的日期和时间
     const startDate = new Date('2025-09-04T00:00:00');
 
@@ -590,6 +596,7 @@
       seconds: "00"
     };
 
+    
     // 初始化心形背景
     function initHeartBackground() {
       const heartBg = document.getElementById('heartBg');
@@ -842,6 +849,7 @@
       // 添加事件监听器
       document.getElementById('themeBtn').addEventListener('click', changeTheme);
       document.getElementById('shareBtn').addEventListener('click', shareLove);
+      document.getElementById('playMusicBtn').addEventListener('click', toggleMusic);
       
       // 二维码弹窗关闭按钮
       document.getElementById('modalClose').addEventListener('click', () => {
@@ -867,6 +875,28 @@
         }, 250);
       });
     });
+
+    function toggleMusic() {
+        if (!audio) {
+          audio = new Audio('https://music.163.com/song/media/outer/url?id=1407540299.mp3');
+          audio.loop = true;
+        }
+
+        const btn = document.getElementById('playMusicBtn');
+
+        if (!isPlaying) {
+          audio.play().catch(err => {
+            console.error('播放失败:', err);
+          });
+          btn.innerHTML = '<i class="fas fa-pause"></i> 暂停音乐';
+          isPlaying = true;
+        } else {
+          audio.pause();
+          btn.innerHTML = '<i class="fas fa-play"></i> 播放音乐';
+          isPlaying = false;
+        }
+      }
+
 
     // 页面卸载时清理资源
     window.addEventListener('beforeunload', () => {
