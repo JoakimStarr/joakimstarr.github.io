@@ -749,42 +749,25 @@ async function callAi(messages, options = {}) {
                 body: JSON.stringify({
                     model,
                     messages,
-                    stream: true,
+                    stream: false,
                     max_tokens: Number(options.maxTokens || config.maxTokens || 700),
                 }),
                 signal: controller.signal,
             });
             clearTimeout(timeoutId);
             if (!response.ok) {
-                throw new Error(`模型 ${model} 请求失败：${response.status} ${(await response.text()).slice(0, 160)}`);
+                const errorText = await response.text();
+                throw new Error(`模型 ${model} 请求失败：${response.status} ${errorText.slice(0, 160)}`);
             }
-            const reader = response.body?.getReader?.();
-            let answer = '';
-            if (reader) {
-                const decoder = new TextDecoder('utf-8');
-                let buffer = '';
-                while (true) {
-                    const chunk = await reader.read();
-                    if (chunk.done) break;
-                    buffer += decoder.decode(chunk.value, { stream: true });
-                    const lines = buffer.split('\n');
-                    buffer = lines.pop() || '';
-                    lines.forEach(line => {
-                        const trimmed = line.trim();
-                        if (!trimmed || !trimmed.startsWith('data:')) return;
-                        const data = trimmed.replace(/^data:\s*/, '');
-                        if (data === '[DONE]') return;
-                        try {
-                            const json = JSON.parse(data);
-                            const delta = json?.choices?.[0]?.delta || {};
-                            if (delta.content) answer += delta.content;
-                        } catch (_) {}
-                    });
-                }
-            } else {
-                const json = await response.json();
-                answer = json?.choices?.[0]?.message?.content || '';
+            
+            // 非流式响应直接解析 JSON
+            const json = await response.json();
+            const answer = json?.choices?.[0]?.message?.content || '';
+            
+            if (!answer) {
+                throw new Error(`模型 ${model} 返回空内容`);
             }
+            
             recordAiSuccess(model, messages, answer, index > 0);
             if (cacheKey) {
                 const cache = aiCache();
@@ -797,9 +780,10 @@ async function callAi(messages, options = {}) {
             const normalized = error.name === 'AbortError' ? new Error(`模型 ${model} 请求超时`) : error;
             lastError = normalized;
             recordAiFailure(model, normalized);
+            console.warn(`AI 模型 ${model} 调用失败:`, normalized.message);
         }
     }
-    throw lastError || new Error('AI 请求失败');
+    throw lastError || new Error('AI 请求失败，所有模型均不可用');
 }
 
 function normalizeMessages(systemPrompt, userPrompt, history) {
