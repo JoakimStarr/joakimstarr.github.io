@@ -4,6 +4,43 @@ const API_TIMEOUT = 30000;
 const AUTH_TOKEN_STORAGE_KEY = 'finintern_auth_token';
 const AUTH_USER_STORAGE_KEY = 'finintern_auth_user';
 
+// ============ 密码加密工具 ============
+const PasswordCrypto = {
+    // 生成随机盐值
+    generateSalt: function(length = 16) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let salt = '';
+        for (let i = 0; i < length; i++) {
+            salt += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return salt;
+    },
+
+    // SHA-256 哈希函数
+    hashPassword: async function(password, salt) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password + salt);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    },
+
+    // 加密密码（返回 salt:hash 格式）
+    encrypt: async function(password) {
+        const salt = this.generateSalt();
+        const hash = await this.hashPassword(password, salt);
+        return `${salt}:${hash}`;
+    },
+
+    // 验证密码
+    verify: async function(password, encryptedPassword) {
+        if (!encryptedPassword || !encryptedPassword.includes(':')) return false;
+        const [salt, hash] = encryptedPassword.split(':');
+        const computedHash = await this.hashPassword(password, salt);
+        return computedHash === hash;
+    }
+};
+
 // ============ 渐进式数据加载支持 ============
 const DataLoader = {
     config: {
@@ -1208,9 +1245,28 @@ const API = {
 
     async login(data = {}) {
         const users = ensureUsers();
-        const target = users.find(user => user.username === text(data.username) && user.password === String(data.password || ''));
+        const target = users.find(user => user.username === text(data.username));
         if (!target) throw new APIError('用户名或密码错误', 401);
+        
+        // 验证密码（支持加密和明文兼容）
+        let passwordValid = false;
+        if (target.password && target.password.includes(':')) {
+            // 新格式：加密密码
+            passwordValid = await PasswordCrypto.verify(String(data.password || ''), target.password);
+        } else {
+            // 旧格式：明文密码（兼容旧用户）
+            passwordValid = target.password === String(data.password || '');
+        }
+        
+        if (!passwordValid) throw new APIError('用户名或密码错误', 401);
         if (target.is_active === false) throw new APIError('账号已停用，请联系管理员', 403);
+        
+        // 如果是旧格式明文密码，自动升级为加密格式
+        if (target.password && !target.password.includes(':')) {
+            target.password = await PasswordCrypto.encrypt(target.password);
+            saveUsers(users);
+        }
+        
         target.last_login_at = nowLocal();
         saveUsers(users);
         return { access_token: `jobweb-${target.id}-${Date.now()}`, token_type: 'bearer', user: buildPublicUser(target) };
@@ -1244,10 +1300,14 @@ const API = {
         if (!text(data.username) || !String(data.password || '').trim()) throw new APIError('请填写用户名和密码', 400);
         const users = ensureUsers();
         if (users.some(item => item.username === text(data.username))) throw new APIError('用户名已存在', 400);
+        
+        // 加密密码
+        const encryptedPassword = await PasswordCrypto.encrypt(String(data.password));
+        
         const next = {
             id: users.reduce((max, item) => Math.max(max, Number(item.id || 0)), 0) + 1,
             username: text(data.username),
-            password: String(data.password),
+            password: encryptedPassword,
             display_name: text(data.display_name) || text(data.username),
             role: getRole(text(data.role) || 'viewer').id,
             is_active: data.is_active !== false,
@@ -1278,7 +1338,9 @@ const API = {
         const target = users.find(item => Number(item.id) === Number(id));
         if (!target) throw new APIError('用户不存在', 404);
         if (!String(data.password || '').trim()) throw new APIError('请提供新密码', 400);
-        target.password = String(data.password);
+        
+        // 加密新密码
+        target.password = await PasswordCrypto.encrypt(String(data.password));
         saveUsers(users);
         return { success: true, message: '密码已重置' };
     },
