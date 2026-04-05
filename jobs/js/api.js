@@ -1471,8 +1471,9 @@ const API = {
             const messages = normalizeMessages('你是一名金融岗位分析助手。请输出结构化 Markdown，说明岗位适合什么人、亮点、风险和投递建议。', `岗位信息：${JSON.stringify(job, null, 2)}\n\n用户追问：${data.question || '请给出这份岗位的整体推荐分析。'}`, data.history || []);
             const result = await callAi(messages, { scope: 'job-analysis', cacheKey: { id, question: data.question || '', history: data.history || [] }, timeout: 45 });
             return { answer: result.answer || fallback, model: result.model || null };
-        } catch (_) {
-            return { answer: fallback, model: null };
+        } catch (error) {
+            console.warn('AI 岗位分析失败:', error);
+            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
         }
     },
 
@@ -1485,8 +1486,9 @@ const API = {
             const messages = normalizeMessages('你是金融求职顾问。请围绕岗位与候选人画像，输出结构化匹配报告，包含匹配亮点、风险点、建议投递顺序。', `候选人画像：${JSON.stringify(profile, null, 2)}\n\n岗位信息：${JSON.stringify(job, null, 2)}\n\n请输出 Markdown 报告。`, []);
             const result = await callAi(messages, { scope: 'match-report', cacheKey: { id, profile }, timeout: 45 });
             return { report: result.answer || fallback, model: result.model || null };
-        } catch (_) {
-            return { report: fallback, model: null };
+        } catch (error) {
+            console.warn('AI 岗位匹配报告失败:', error);
+            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
         }
     },
 
@@ -1498,8 +1500,9 @@ const API = {
             const messages = normalizeMessages('你是一名面试教练。请基于岗位信息生成面试题与回答思路，使用 Markdown。', `岗位信息：${JSON.stringify(job, null, 2)}\n\n请输出 6-8 个面试问题，并给出简短回答方向。`, []);
             const result = await callAi(messages, { scope: 'interview-questions', cacheKey: { id, title: job.title }, timeout: 45 });
             return { data: { questions: result.answer || fallback }, model: result.model || null };
-        } catch (_) {
-            return { data: { questions: fallback }, model: null };
+        } catch (error) {
+            console.warn('AI 面试题生成失败:', error);
+            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
         }
     },
 
@@ -1530,16 +1533,22 @@ const API = {
         const fallbackSummary = recommendations[0] ? ['### 分析结论', `- 当前最优结果是 **${recommendations[0].job.title} / ${recommendations[0].job.company}**，匹配分为 **${recommendations[0].score}**。`, '', '### 推荐亮点', ...recommendations[0].reasons.map(reason => `- ${reason}`), '', '### 下一步建议', '- 先查看 TOP 3 岗位，优先处理发布时间更新、数据质量更高的岗位。', '- 再根据推荐结果生成 AI 改简历建议和投递助手。'].join('\n') : '### 分析结论\n- 当前没有找到足够匹配的岗位，建议放宽关键词、地点或行业限制。';
         let analysis = fallbackSummary;
         let model = null;
+        let aiError = null;
         if (data.use_ai_summary !== false) {
             try {
                 const messages = normalizeMessages('你是一名金融求职顾问，请根据候选人画像和推荐岗位输出清晰、可执行的 Markdown 分析。', `候选人画像：${JSON.stringify(profile, null, 2)}\n\n候选岗位：${JSON.stringify(recommendations.slice(0, 5).map(item => ({ score: item.score, tier: item.recommendation_tier, reasons: item.reasons, job: item.job })), null, 2)}`, []);
                 const result = await callAi(messages, { scope: 'recommendations', cacheKey: { profile, topIds: recommendations.slice(0, 5).map(item => item.job.id) }, timeout: 50 });
                 analysis = result.answer || fallbackSummary;
                 model = result.model || null;
-            } catch (_) {}
+            } catch (error) {
+                aiError = error;
+                console.warn('AI 推荐分析失败:', error);
+                // 如果 AI 失败，在分析中添加错误提示
+                analysis = fallbackSummary + '\n\n> ⚠️ **AI 分析未成功**：' + (error.message || '请检查 API Key 配置') + '\n> 当前显示的是规则-based 分析结果。';
+            }
         }
         const diagnostic = resumeDiagnostic(profile, JSON.stringify(profile));
-        const payload = { total_considered: jobs.length, returned: recommendations.length, profile_summary: buildProfileSummary(profile), analysis_summary: analysis, model, resume_diagnostic: { score: diagnostic.score, highlights: diagnostic.highlights, risks: diagnostic.risks, suggestions: diagnostic.suggestions }, resume_diagnostic_markdown: diagnostic.markdown, recommendations };
+        const payload = { total_considered: jobs.length, returned: recommendations.length, profile_summary: buildProfileSummary(profile), analysis_summary: analysis, model, ai_error: aiError ? aiError.message : null, resume_diagnostic: { score: diagnostic.score, highlights: diagnostic.highlights, risks: diagnostic.risks, suggestions: diagnostic.suggestions }, resume_diagnostic_markdown: diagnostic.markdown, recommendations };
         if (data.save_to_server_history !== false) {
             upsertHistory({ type: 'recommendation', profile_summary: payload.profile_summary, profile, recommendation: payload });
         }
@@ -1553,8 +1562,9 @@ const API = {
             const messages = normalizeMessages('你是一名金融求职顾问，请延续上下文，用简洁、可执行的 Markdown 回答用户追问。', `用户画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n候选岗位：${JSON.stringify(data.recommendations || [], null, 2)}\n\n问题：${data.question || ''}`, data.history || []);
             const result = await callAi(messages, { scope: 'recommendation-chat', cacheKey: { profile: data.profile, question: data.question, jobs: (data.recommendations || []).map(job => job.id || job.title) }, timeout: 45 });
             return { answer: result.answer || fallback, model: result.model || null };
-        } catch (_) {
-            return { answer: fallback, model: null };
+        } catch (error) {
+            console.warn('AI 追问回答失败:', error);
+            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
         }
     },
 
@@ -1565,8 +1575,9 @@ const API = {
             const messages = normalizeMessages('你是一名简历优化顾问。请基于候选人画像和目标岗位输出具体可执行的简历改写建议，使用 Markdown。', `候选人画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(data.target_jobs || [], null, 2)}`, []);
             const result = await callAi(messages, { scope: 'resume-advice', cacheKey: { profile: data.profile, targets: (data.target_jobs || []).map(job => job.id || job.title) }, timeout: 45 });
             return { answer: result.answer || fallback, model: result.model || null };
-        } catch (_) {
-            return { answer: fallback, model: null };
+        } catch (error) {
+            console.warn('AI 改简历建议失败:', error);
+            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
         }
     },
 
@@ -1578,8 +1589,9 @@ const API = {
             const messages = normalizeMessages('你是一名投递助手。请生成适合中文求职场景的自我介绍、邮件正文建议和投递重点，使用 Markdown。', `候选人画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(data.job || {}, null, 2)}`, []);
             const result = await callAi(messages, { scope: 'delivery-assistant', cacheKey: { profile: data.profile, jobId: data.job?.id }, timeout: 45 });
             return { answer: result.answer || fallback, model: result.model || null };
-        } catch (_) {
-            return { answer: fallback, model: null };
+        } catch (error) {
+            console.warn('AI 投递助手失败:', error);
+            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
         }
     },
 
