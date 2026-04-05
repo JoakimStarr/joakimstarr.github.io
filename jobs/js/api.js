@@ -749,7 +749,7 @@ async function callAi(messages, options = {}) {
                 body: JSON.stringify({
                     model,
                     messages,
-                    stream: false,
+                    stream: true,
                     max_tokens: Number(options.maxTokens || config.maxTokens || 700),
                 }),
                 signal: controller.signal,
@@ -760,9 +760,37 @@ async function callAi(messages, options = {}) {
                 throw new Error(`模型 ${model} 请求失败：${response.status} ${errorText.slice(0, 160)}`);
             }
             
-            // 非流式响应直接解析 JSON
-            const json = await response.json();
-            const answer = json?.choices?.[0]?.message?.content || '';
+            // 流式响应处理
+            const reader = response.body?.getReader?.();
+            let answer = '';
+            if (reader) {
+                const decoder = new TextDecoder('utf-8');
+                let buffer = '';
+                while (true) {
+                    const chunk = await reader.read();
+                    if (chunk.done) break;
+                    buffer += decoder.decode(chunk.value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+                    lines.forEach(line => {
+                        const trimmed = line.trim();
+                        if (!trimmed || !trimmed.startsWith('data:')) return;
+                        const data = trimmed.replace(/^data:\s*/, '');
+                        if (data === '[DONE]') return;
+                        try {
+                            const json = JSON.parse(data);
+                            const delta = json?.choices?.[0]?.delta || {};
+                            if (delta.content) answer += delta.content;
+                        } catch (e) {
+                            // 忽略解析错误
+                        }
+                    });
+                }
+            } else {
+                // 降级：非流式响应
+                const json = await response.json();
+                answer = json?.choices?.[0]?.message?.content || '';
+            }
             
             if (!answer) {
                 throw new Error(`模型 ${model} 返回空内容`);
