@@ -1,0 +1,4462 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小苹果和二狗子的恋爱时钟</title>
+    <link rel="preconnect" href="https://cdn.staticfile.net" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://cdn.staticfile.net/font-awesome/6.4.0/css/all.min.css"
+    /> 
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@pqina/flip/dist/flip.min.css"
+    />
+    <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root{
+  /* 动画统一变量，便于协调节奏 */
+  --flip-duration: 600ms;
+  --flip-ease: cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  --ui-transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  --theme-page-bg: transparent;
+  --theme-card-bg: #ff6b8b;
+  --theme-text-color: #ffffff;
+  --theme-separator-color: #ff6b8b;
+  --theme-shadow-color: rgba(0, 0, 0, 0.35);
+  --days-accent: #ff6b8b;
+  --days-sub: #8a6d8f;
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.58);
+  --glass-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #5a3d5c;
+  overflow-x: hidden;
+  position: relative;
+  transition: background 0.8s ease;
+}
+
+body.data-saver-mode .heart-bg {
+  display: none;
+}
+
+body.data-saver-mode .share-preview-wrap {
+  display: none !important;
+}
+
+body.ldr-compact-mode .container {
+  padding: 20px 22px;
+}
+
+body.ldr-compact-mode .header {
+  margin-bottom: 14px;
+}
+
+body.ldr-compact-mode .header h1 {
+  font-size: clamp(1.8rem, 3.8vw, 2.06rem);
+  margin-bottom: 8px;
+}
+
+body.ldr-compact-mode .header p {
+  font-size: 1.05rem;
+}
+
+body.ldr-compact-mode .love-clock-wrap {
+  margin: 14px auto 9px;
+  padding: 16px 10px 10px;
+}
+
+body.ldr-compact-mode .clock-display {
+  min-height: 172px;
+  padding: 10px 8px;
+}
+
+body.ldr-compact-mode .milestone {
+  margin: 12px 0;
+  padding: 17px 12px 11px;
+}
+
+body.ldr-compact-mode .btn-container {
+  margin-top: 10px;
+  gap: 8px;
+}
+
+body.ldr-compact-mode .btn {
+  padding: 10px 18px;
+  font-size: 0.96rem;
+}
+
+body.ldr-compact-mode .ldr-mode-badge {
+  padding: 7px 12px;
+  font-size: 0.8rem;
+}
+
+.module-title-corner {
+  position: relative;
+  --module-chip-color: #8a6d8f;
+  --module-chip-border: rgba(255, 182, 193, 0.42);
+}
+
+.module-title-corner::before {
+  content: attr(data-module-title);
+  position: absolute;
+  top: 0;
+  right: 14px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--module-chip-color);
+  border: 1px solid var(--module-chip-border);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+/* 心形背景 */
+.heart-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.heart {
+  position: absolute;
+  font-size: 20px;
+  color: #ff6b8b;
+  animation: float 8s infinite ease-in-out;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 主容器 */
+.container {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 28px;
+  max-width: 750px;
+  width: 92%;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  animation: fadeIn 1s ease-out;
+  transition: var(--ui-transition);
+}
+
+/* 标题样式 */
+.header {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.header h1 {
+  font-size: 2.2rem;
+  color: #ff6b8b;
+  margin-bottom: 12px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+}
+
+.header p {
+  font-size: 1.3rem;
+  color: #8a6d8f;
+  font-weight: 500;
+}
+
+/* 翻页计时器样式 */
+.flip-timer {
+  display: flex;
+  justify-content: center;
+  margin: 35px 0;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.flip-unit {
+  text-align: center;
+}
+
+.flip-container {
+  position: relative;
+  width: 100px;
+  height: 120px;
+  perspective: 800px;
+  margin: 0 auto 10px;
+}
+
+.flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* 翻页卡片容器 */
+.flip-front {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
+  background: white;
+}
+
+/* 上半部分 - 显示当前数字的上半部分 */
+.flip-top {
+  width: 100%;
+  /* 仅显示上半部分，实现机械翻页时上下两个独立面 */
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: bold;
+  color: var(--primary-color);
+  background: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 15px;
+  z-index: 2;
+  /* 底部为旋转枢轴，模仿真实翻页铰链 */
+  transform-origin: bottom center;
+  backface-visibility: hidden;
+  /* 平滑背景/颜色变化以配合翻页动画 */
+  transition: background-color 250ms var(--flip-ease), color 250ms var(--flip-ease), transform 250ms ease;
+}
+
+/* 下半部分 - 显示当前数字的下半部分 */
+.flip-bottom {
+  /* 下半部分默认显示，和上半部分各占一半，高度匹配 */
+  width: 100%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: bold;
+  color: var(--primary-color);
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  overflow: hidden;
+  border-radius: 15px;
+  z-index: 1;
+  transform-origin: center center;
+}
+
+/* 翻转的上半部分 - 用于动画，使用不同颜色 */
+.flip-top-flip {
+  width: 100%;
+  /* 作为翻转层，仅覆盖上半部分以实现向下翻的效果 */
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: bold;
+  color: white;
+  /* 更紧致的渐变与较强对比，便于在翻转时阅读 */
+  background: linear-gradient(135deg, rgba(255,107,139,0.98) 0%, rgba(107,91,149,0.92) 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 15px;
+  /* 底部为旋转枢轴，保证向下翻转的自然感 */
+  transform-origin: bottom center;
+  z-index: 3;
+  transform: perspective(900px) rotateX(0deg);
+  backface-visibility: hidden;
+  opacity: 0;
+}
+
+/* 中间分割线 */
+.flip-front::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 107, 139, 0.3), transparent);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* 翻转动画 - 上半部分向下翻转 */
+.flip-top-flip.flipping {
+  /* 使用变量以便与脚本中的定时器保持一致（300ms 半程, 600ms 全程） */
+  animation: flipDown var(--flip-duration) var(--flip-ease) forwards;
+  opacity: 1; /* 在动画期间确保可见 */
+}
+
+@keyframes flipDown {
+  0% {
+    transform: perspective(900px) rotateX(0deg);
+    opacity: 1;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.06) inset;
+  }
+  35% {
+    transform: perspective(900px) rotateX(-82deg);
+    opacity: 1;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.2) inset;
+  }
+  50% {
+    transform: perspective(900px) rotateX(-90deg);
+    opacity: 1;
+  }
+  70% {
+    transform: perspective(900px) rotateX(-120deg);
+    opacity: 0.95;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12) inset;
+  }
+  100% {
+    transform: perspective(900px) rotateX(-180deg);
+    opacity: 0;
+  }
+}
+
+/* 铰链（hinge）和机械式底部折叠动画 */
+.flip-card::before{
+  content: '';
+  position: absolute;
+  top: 48%;
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.18), rgba(0,0,0,0.06));
+  z-index: 9;
+  pointer-events: none;
+  border-radius: 2px;
+  filter: blur(0.3px);
+}
+
+.flip-bottom.folding{
+  /* 动画显示为轻微抬起并回弹，模拟机械结构的反作用力 */
+  animation: bottomFold var(--flip-duration) var(--flip-ease) forwards;
+  transform-origin: top center;
+  z-index: 2;
+}
+
+@keyframes bottomFold{
+  0% {
+    transform: rotateX(0deg) translateY(0);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06) inset;
+  }
+  40% {
+    transform: rotateX(10deg) translateY(-6px) scaleY(0.995);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.12) inset;
+  }
+  60% {
+    transform: rotateX(-6deg) translateY(2px) scaleY(1.01);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08) inset;
+  }
+  100% {
+    transform: rotateX(0deg) translateY(0) scaleY(1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06) inset;
+  }
+}
+
+/* 增强翻转上半部的机械感：在半程时更显著的阴影与边缘 */
+.flip-top-flip.flipping {
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  opacity: 1;
+}
+
+/* 上半部分 folding 动画（配合脚本在翻页时抬起/回弹） */
+.flip-top.folding{
+  animation: topFold var(--flip-duration) var(--flip-ease) forwards;
+  transform-origin: center center;
+}
+
+@keyframes topFold{
+  0%{
+    transform: rotateX(0deg) translateY(0);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06) inset;
+  }
+  40%{
+    transform: rotateX(-8deg) translateY(-6px) scaleY(0.995);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.16) inset;
+  }
+  60%{
+    transform: rotateX(6deg) translateY(2px) scaleY(1.01);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08) inset;
+  }
+  100%{
+    transform: rotateX(0deg) translateY(0) scaleY(1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06) inset;
+  }
+}
+
+.flip-label {
+  font-size: 1.2rem;
+  color: #8a6d8f;
+  margin-top: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* ===== 迁移自 clock.html 的时钟展示样式 ===== */
+.love-clock-wrap {
+  margin: 22px auto 14px;
+  padding: 20px 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: var(--ui-transition);
+}
+
+#clockThemePanel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clock-theme {
+  background: var(--theme-page-bg);
+}
+
+.clock-display {
+  min-height: 212px;
+  border-radius: 16px;
+  padding: 18px 13px;
+  transition: all 0.25s ease;
+  cursor: default;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+}
+
+.clock-display:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.clock-main-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.18em;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.clock-group {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.clock-separator {
+  font-size: clamp(1.88rem, 5vw, 3.25rem);
+  font-weight: 800;
+  color: var(--theme-separator-color);
+  line-height: 1;
+  height: 1.42em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  transform: translateY(-0.08em);
+}
+
+.days-cards-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.06em;
+  margin-right: 0.02em;
+}
+
+.days-card-digit {
+  min-width: 1.18em;
+  height: 1.44em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.85rem, 4.9vw, 2.52rem);
+  font-weight: 700;
+  color: var(--theme-text-color);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.14) 0% 48%,
+      rgba(0, 0, 0, 0.1) 52% 100%
+    ),
+    var(--theme-card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.12em;
+  text-shadow: 0 2px 6px var(--theme-shadow-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform-origin: center center;
+  position: relative;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.days-card-digit::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.days-card-digit.is-flipping {
+  animation: dayCardPulse 0.45s ease;
+}
+
+@keyframes dayCardPulse {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.clock-unit-label {
+  min-width: 3.3em;
+  text-align: center;
+  font-size: 1.05rem;
+  color: #8a6d8f;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.tick {
+  font-size: clamp(0.88rem, 1.75vw, 1.25rem);
+  white-space: nowrap;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+}
+
+.tick-flip,
+.tick-text-inline {
+  font-size: clamp(1.88em, 5.25vw, 3.25em);
+  font-weight: 700;
+}
+
+.tick-unit .tick-flip {
+  font-size: clamp(1.85rem, 4.9vw, 2.52rem);
+}
+
+.tick-unit .tick-flip-panel {
+  min-width: 1.18em;
+  border-radius: 0.12em;
+}
+
+.tick-text-inline {
+  color: var(--theme-separator-color) !important;
+  text-shadow: 0 2px 6px rgba(255, 255, 255, 0.55);
+  margin: 0 0.06em;
+}
+
+.tick-days-inline {
+  font-size: clamp(1.1em, 3.6vw, 1.8em) !important;
+  font-weight: 800;
+  min-width: 2.1em;
+  text-align: right;
+  color: #7d547f !important;
+}
+
+.tick-days-unit {
+  font-size: clamp(0.8em, 2.2vw, 1.1em) !important;
+  margin-right: 0.2em;
+  color: #8a6d8f !important;
+}
+
+.tick-sep-inline {
+  font-size: clamp(0.9em, 2.4vw, 1.2em) !important;
+  color: rgba(138, 109, 143, 0.7) !important;
+  margin: 0 0.25em;
+}
+
+.tick-days-card {
+  margin-right: 0.06em;
+}
+
+.tick-days-card .tick-flip-panel {
+  min-width: 1.6em;
+}
+
+.clock-theme .tick-flip-panel {
+  background-color: var(--theme-card-bg) !important;
+  color: var(--theme-text-color) !important;
+  text-shadow: 0 2px 6px var(--theme-shadow-color);
+}
+
+.clock-date {
+  margin-top: 14px;
+  font-size: 1.08rem;
+  color: #6f5a78;
+  font-weight: 600;
+}
+
+.love-days-module {
+  margin-top: 15px;
+  border-radius: 14px;
+  padding: 12px 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.85));
+  border: 1px solid rgba(255, 182, 193, 0.4);
+}
+
+.days-label {
+  font-size: 0.95rem;
+  color: var(--days-sub);
+  margin-bottom: 6px;
+  letter-spacing: 0.08em;
+}
+
+.days-value {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 6px;
+  color: var(--days-accent);
+}
+
+.days-value span {
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  line-height: 1;
+  font-weight: 800;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.days-value small {
+  font-size: 1.02rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.web-fullscreen-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: 2rem;
+  background: linear-gradient(160deg, rgba(255, 219, 230, 0.95), rgba(255, 244, 250, 0.96));
+}
+
+.web-fullscreen-mode .tick-flip,
+.web-fullscreen-mode .tick-text-inline {
+  font-size: clamp(3.8em, 11vw, 9em);
+}
+
+/* 纪念日部分 */
+.milestone {
+  margin: 18px 0;
+  padding: 20px 16px 14px;
+  background: rgba(255, 245, 248, 0.88);
+  border-radius: 18px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  text-align: left;
+  transition: var(--ui-transition);
+}
+
+.milestone-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.milestone-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.7);
+  color: #8a6d8f;
+}
+
+.milestone-title {
+  margin-top: 10px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #7a536d;
+}
+
+.milestone-count {
+  margin-top: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: #ff6b8b;
+}
+
+.milestone-count-num {
+  font-size: clamp(1.9rem, 5.2vw, 2.5rem);
+  line-height: 1;
+  font-weight: 800;
+}
+
+.milestone-count-unit {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.milestone-note {
+  margin-top: 10px;
+  font-size: 0.94rem;
+  color: #8a6d8f;
+}
+
+.milestone-sub {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #8a6d8f;
+}
+
+.milestone-history {
+  margin-top: 12px;
+  border-top: 1px dashed rgba(255, 182, 193, 0.5);
+  padding-top: 10px;
+}
+
+.milestone-history-meta {
+  font-size: 0.82rem;
+  color: #8a6d8f;
+  margin-bottom: 6px;
+}
+
+.milestone-history-toggle {
+  width: 100%;
+  border: none;
+  background: rgba(255, 255, 255, 0.76);
+  color: #7a536d;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.milestone-history-toggle:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.milestone-history-list {
+  list-style: none;
+  margin-top: 8px;
+  display: none;
+  gap: 6px;
+  padding-left: 0;
+}
+
+.milestone-history-list.is-open {
+  display: grid;
+}
+
+.milestone-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.84rem;
+  color: #7a536d;
+}
+
+.milestone-history-item strong {
+  color: #ff6b8b;
+  font-size: 0.82rem;
+}
+
+.milestone-progress {
+  margin-top: 12px;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 182, 193, 0.35);
+  overflow: hidden;
+}
+
+.milestone-progress-bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff8fa3, #ff6b8b);
+}
+
+.milestone--upcoming {
+  background: linear-gradient(135deg, rgba(255, 245, 248, 0.95), rgba(255, 236, 240, 0.92));
+}
+
+.milestone--achieved {
+  background: linear-gradient(135deg, rgba(255, 249, 224, 0.95), rgba(255, 236, 178, 0.9));
+}
+
+.milestone--infinity {
+  background: linear-gradient(135deg, rgba(230, 243, 255, 0.95), rgba(220, 237, 255, 0.9));
+}
+
+/* 按钮样式 */
+.btn-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ldr-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 182, 193, 0.58);
+  color: #7a536d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: var(--ui-transition);
+}
+
+.ldr-mode-badge.is-on {
+  color: #2b8a57;
+  border-color: rgba(47, 191, 113, 0.5);
+  background: rgba(232, 255, 242, 0.92);
+}
+
+.ldr-mode-badge.is-off {
+  color: #9d6c86;
+  border-color: rgba(255, 182, 193, 0.58);
+  background: rgba(255, 245, 248, 0.92);
+}
+
+.btn {
+  background: #ff6b8b;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 6px 18px rgba(255, 107, 139, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.btn-soft {
+  background: rgba(255, 255, 255, 0.92);
+  color: #7a536d;
+  border: 1px solid rgba(255, 182, 193, 0.55);
+  box-shadow: 0 4px 12px rgba(138, 109, 143, 0.18);
+}
+
+.btn-soft:hover {
+  background: rgba(255, 255, 255, 0.98);
+  color: #6e4a64;
+  border-color: rgba(255, 143, 163, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(138, 109, 143, 0.22);
+}
+
+.btn:hover {
+  background: #ff8fa3;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(255, 107, 139, 0.6);
+}
+
+.btn:active {
+  transform: translateY(-1px);
+}
+
+/* 异地恋区域样式 */
+.ldr-section {
+  margin-top: 14px;
+  padding: 22px 16px 16px;
+  background: var(--glass-bg);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  display: none;
+  box-shadow: var(--glass-shadow);
+  transition: var(--ui-transition);
+}
+
+.ldr-section.is-entering {
+  animation: ldrSectionReveal 220ms ease both;
+}
+
+.ldr-section.is-hiding {
+  animation: ldrSectionHide 180ms ease both;
+}
+
+.ldr-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.ldr-header h3 {
+  color: #ff6b8b;
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ldr-header p {
+  color: #8a6d8f;
+  font-size: 1rem;
+}
+
+.ldr-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ldr-stat-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 14px 12px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+  border: 1px solid var(--glass-border);
+  transition: var(--ui-transition), transform 0.3s ease;
+}
+
+.ldr-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.ldr-icon {
+  font-size: 2rem;
+  color: #ff6b8b;
+  margin-bottom: 10px;
+}
+
+.ldr-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.ldr-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ff6b8b;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ldr-controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ldr-weather {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--glass-border);
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: var(--ui-transition);
+}
+
+@keyframes ldrSectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ldrSectionHide {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.985);
+  }
+}
+
+@keyframes ldrCaptionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weather-loading {
+  color: #8a6d8f;
+  font-size: 1rem;
+}
+
+.weather-info {
+  width: 100%;
+}
+
+.weather-locations {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.weather-location {
+  text-align: center;
+  flex: 1;
+  min-width: 120px;
+}
+
+.location-name {
+  font-weight: bold;
+  color: #ff6b8b;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.weather-detail {
+  font-size: 1rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+/* 模态框样式 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10001;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: var(--glass-bg);
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: popIn 0.4s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--glass-border);
+  transition: var(--ui-transition);
+}
+
+.modal-content h3 {
+  color: #ff6b8b;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #5a3d5c;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e6e6e6;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #ff6b8b;
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btn-small {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.3s;
+}
+
+.btn-small:hover {
+  background: #5a6268;
+}
+
+.btn-secondary {
+  background: #6c757d;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.form-actions .btn {
+  flex: 1;
+}
+
+.location-tips {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.location-tips i {
+  color: #ff6b8b;
+  margin-right: 5px;
+}
+
+/* 天气图标 */
+.weather-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.weather-temperature {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff6b8b;
+  margin: 5px 0;
+}
+
+/* 动画 */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-25px) rotate(5deg);
+  }
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.heartbeat {
+  animation: heartbeat 1.5s infinite;
+  display: inline-block;
+  margin: 0 10px;
+  color: #ff6b8b;
+}
+
+/* 二维码弹窗样式 */
+.qrcode-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.qrcode-content {
+  background: var(--glass-bg);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  position: relative;
+  animation: popIn 0.4s ease-out;
+  border: 1px solid var(--glass-border);
+  transition: var(--ui-transition);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.3s;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #f5f5f5;
+  color: #ff6b8b;
+}
+
+.modal-title {
+  color: #ff6b8b;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.modal-message {
+  color: #333;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.modal-message .love-days {
+  color: #ff6b8b;
+  font-weight: bold;
+}
+
+.modal-heart {
+  color: #ff6b8b;
+  font-size: 1.2rem;
+  margin: 0 5px;
+}
+
+.modal-continue {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+#qrcode {
+  margin: 15px auto;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-tip {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 15px 0 20px;
+}
+
+.download-btn {
+  background: #ff6b8b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 139, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  width: auto;
+  margin: 0 auto;
+}
+
+.download-btn:hover {
+  background: #ff8fa3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 107, 139, 0.5);
+}
+
+.share-export-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.share-template-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.share-template-label {
+  font-size: 0.85rem;
+  color: #7a536d;
+  font-weight: 700;
+}
+
+.share-template-select {
+  width: min(230px, 95%);
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 182, 193, 0.7);
+  background: #fff;
+  color: #6f5a78;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.share-preview-wrap {
+  width: min(192px, 100%);
+  margin-top: 2px;
+  padding: 6px 7px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 245, 248, 0.95), rgba(255, 255, 255, 0.95));
+  border: 1px solid rgba(255, 182, 193, 0.42);
+}
+
+.share-preview-wrap.is-hidden {
+  display: none;
+}
+
+.preview-toggle-btn {
+  padding: 8px 14px;
+  font-size: 0.86rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #7a536d;
+  border: 1px solid rgba(255, 182, 193, 0.62);
+  box-shadow: 0 4px 12px rgba(138, 109, 143, 0.2);
+}
+
+.preview-toggle-btn:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+.share-preview-title {
+  font-size: 0.76rem;
+  color: #7a536d;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-preview-canvas {
+  width: min(100%, 164px);
+  aspect-ratio: 3 / 4;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 182, 193, 0.45);
+  box-shadow: 0 4px 12px rgba(255, 107, 139, 0.14);
+  background: #fff;
+}
+
+@media (max-width: 480px) {
+  .share-preview-wrap {
+    width: min(168px, 100%);
+    padding: 5px;
+  }
+
+  .share-preview-title {
+    font-size: 0.72rem;
+    margin-bottom: 5px;
+  }
+
+  .share-preview-canvas {
+    width: min(100%, 142px);
+  }
+}
+
+.export-card-btn {
+  background: #8a6d8f;
+  box-shadow: 0 4px 12px rgba(138, 109, 143, 0.35);
+}
+
+.export-card-btn:hover {
+  background: #9f7ea3;
+  box-shadow: 0 6px 16px rgba(138, 109, 143, 0.45);
+}
+
+/* 轻提示 Toast */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 11010;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 220px;
+  max-width: 320px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-success { background: linear-gradient(135deg, #2fbf71, #26a65b); }
+.toast-info { background: linear-gradient(135deg, #5b8def, #4a74c9); }
+.toast-warning { background: linear-gradient(135deg, #f59f00, #e67700); }
+.toast-error { background: linear-gradient(135deg, #e03131, #c92a2a); }
+
+/* 点击冒心特效 */
+.click-heart {
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 12000;
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+  will-change: transform, opacity;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  animation: clickHeartFloat 950ms ease-out forwards;
+}
+
+@keyframes clickHeartFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--heart-x, 0px)), calc(-50% + var(--heart-y, -60px))) scale(0.8);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 桌面端压缩：尽量在一个页面内完整展示 */
+@media (min-width: 769px) {
+  .container {
+    padding: 26px 28px;
+    max-width: 730px;
+  }
+
+  .header {
+    margin-bottom: 18px;
+  }
+
+  .header h1 {
+    font-size: 2.1rem;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    font-size: 1.12rem;
+  }
+
+  .love-clock-wrap {
+    margin: 20px auto 16px;
+    padding: 15px 11px;
+  }
+
+  .clock-display {
+    min-height: 186px;
+    padding: 13px 9px;
+  }
+
+  .clock-group {
+    gap: 6px;
+  }
+
+  .clock-separator {
+    font-size: clamp(1.68rem, 3.95vw, 2.72rem);
+  }
+
+  .tick {
+    font-size: clamp(0.78rem, 1.46vw, 1.08rem);
+  }
+
+  .tick-flip,
+  .tick-text-inline {
+    font-size: clamp(1.66em, 4.55vw, 2.84em);
+  }
+
+  .tick-unit .tick-flip {
+    font-size: clamp(1.62rem, 4.25vw, 2.24rem);
+  }
+
+  .days-card-digit {
+    font-size: clamp(1.62rem, 4.25vw, 2.24rem);
+  }
+
+  .clock-unit-label {
+    font-size: 0.96rem;
+    min-width: 3em;
+  }
+
+  .milestone {
+    margin: 17px 0;
+    padding: 15px 17px;
+  }
+
+  .milestone-title {
+    margin-top: 8px;
+    font-size: 1.04rem;
+  }
+
+  .milestone-count-num {
+    font-size: clamp(1.72rem, 4.35vw, 2.3rem);
+  }
+
+  .milestone-note,
+  .milestone-sub {
+    font-size: 0.9rem;
+  }
+
+  .btn-container {
+    margin-top: 13px;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 1.02rem;
+  }
+}
+
+/* 低高度电脑屏进一步压缩 */
+@media (min-width: 769px) and (max-height: 900px) {
+  body {
+    align-items: flex-start;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .container {
+    padding: 18px 20px;
+  }
+
+  .header {
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: 1.74rem;
+    margin-bottom: 6px;
+  }
+
+  .header p {
+    font-size: 1rem;
+  }
+
+  .love-clock-wrap {
+    margin: 12px auto 10px;
+    padding: 10px 8px;
+  }
+
+  .clock-display {
+    min-height: 154px;
+    padding: 8px 6px;
+  }
+
+  .milestone {
+    margin: 12px 0;
+    padding: 10px 12px;
+  }
+
+  .btn-container {
+    margin-top: 10px;
+    gap: 8px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.92rem;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  body.ldr-compact-mode .container {
+    padding: 18px 14px;
+  }
+
+  body.ldr-compact-mode .header {
+    margin-bottom: 10px;
+  }
+
+  body.ldr-compact-mode .header h1 {
+    font-size: 1.72rem;
+  }
+
+  body.ldr-compact-mode .love-clock-wrap {
+    margin: 12px auto 8px;
+    padding: 9px 7px;
+  }
+
+  body.ldr-compact-mode .milestone {
+    margin: 10px 0;
+    padding: 10px;
+  }
+
+  body.ldr-compact-mode .btn {
+    padding: 9px 14px;
+    font-size: 0.92rem;
+  }
+
+  body.ldr-compact-mode .btn-container {
+    gap: 7px;
+    margin-top: 8px;
+  }
+
+  body.ldr-compact-mode .ldr-mode-badge {
+    font-size: 0.76rem;
+    padding: 6px 10px;
+  }
+
+  body {
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  }
+
+  .container {
+    padding: 25px 20px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 650px;
+  }
+
+  .module-title-corner::before {
+    right: 10px;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .header p {
+    font-size: 1.1rem;
+  }
+
+  .flip-timer {
+    gap: 15px;
+    margin: 25px 0;
+  }
+
+  .flip-container {
+    width: 80px;
+    height: 100px;
+  }
+  .flip-top,
+  .flip-bottom,
+  .flip-top-flip {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    border-radius: 15px;
+    transform-origin: center center;
+  }
+  .flip-label {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .ldr-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ldr-value {
+    font-size: 1.5rem;
+  }
+
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+
+  .weather-locations {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .weather-location {
+    min-width: 100%;
+  }
+
+  .love-clock-wrap {
+    margin: 24px auto 18px;
+    padding: 16px 10px;
+  }
+
+  .clock-display {
+    min-height: 175px;
+    padding: 12px 8px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    justify-content: center;
+  }
+
+  .clock-main-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 14px;
+    width: 100%;
+    max-width: 560px;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .clock-group {
+    gap: 6px;
+    width: 100%;
+  }
+
+  .clock-separator {
+    display: none;
+  }
+
+  .tick {
+    font-size: clamp(0.78rem, 1.63vw, 1.15rem);
+  }
+
+  .tick-flip,
+  .tick-text-inline {
+    font-size: clamp(1.69em, 4.88vw, 2.75em);
+  }
+
+  .days-card-digit {
+    min-width: 1.1em;
+    height: 1.32em;
+    font-size: clamp(1.6rem, 4.25vw, 2.15rem);
+  }
+
+  .clock-date {
+    font-size: 0.96rem;
+  }
+
+  .clock-unit-label {
+    min-width: 3.2em;
+    font-size: 0.95rem;
+  }
+
+  .milestone {
+    margin: 22px 0;
+    padding: 18px 14px 14px;
+    border-radius: 14px;
+  }
+
+  .milestone-title {
+    font-size: 0.98rem;
+  }
+
+  .milestone-count-num {
+    font-size: clamp(1.6rem, 6.2vw, 2.1rem);
+  }
+
+  .milestone-note,
+  .milestone-sub {
+    font-size: 0.84rem;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  .milestone-history-item {
+    font-size: 0.8rem;
+  }
+
+  .web-fullscreen-mode {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  }
+
+  .flip-container {
+    width: 70px;
+    height: 85px;
+  }
+
+  .flip-top,
+  .flip-bottom,
+  .flip-top-flip {
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
+  }
+
+  .flip-unit {
+    flex: 0 0 45%;
+    margin-bottom: 15px;
+  }
+
+  .flip-timer {
+    gap: 10px;
+  }
+
+  .flip-label {
+    font-size: 0.9rem;
+  }
+
+  .btn-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 220px;
+    justify-content: center;
+  }
+
+  .ldr-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .ldr-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ldr-controls .btn {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .tick-flip,
+  .tick-text-inline {
+    font-size: clamp(1.18em, 6.8vw, 2.02em);
+  }
+
+  .tick-unit .tick-flip {
+    font-size: clamp(1.22rem, 6.2vw, 1.56rem);
+  }
+
+  .tick-unit .tick-flip-panel {
+    min-width: 1.1em;
+  }
+
+  .days-value span {
+    font-size: 2rem;
+  }
+
+  .days-card-digit {
+    min-width: 1.1em;
+    height: 1.32em;
+    font-size: clamp(1.2rem, 6.2vw, 1.56rem);
+  }
+
+  .clock-separator {
+    font-size: 1.4rem;
+    margin-top: 0;
+    transform: translateY(-0.05em);
+  }
+
+  .clock-unit-label {
+    min-width: 2.5em;
+    font-size: 0.78rem;
+  }
+
+  .clock-display {
+    min-height: 160px;
+    padding: 10px 6px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    justify-content: center;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .clock-main-row {
+    gap: 10px 10px;
+    min-width: 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .milestone {
+    margin: 18px 0;
+    padding: 16px 10px 12px;
+    border-radius: 12px;
+  }
+
+  .milestone-head {
+    gap: 8px;
+  }
+
+  .milestone-tag {
+    font-size: 0.76rem;
+    padding: 5px 8px;
+  }
+
+  .milestone-title {
+    font-size: 0.9rem;
+  }
+
+  .milestone-count {
+    gap: 6px;
+  }
+
+  .milestone-count-num {
+    font-size: clamp(1.35rem, 7.6vw, 1.8rem);
+  }
+
+  .milestone-count-unit {
+    font-size: 0.86rem;
+  }
+
+  .milestone-note,
+  .milestone-sub {
+    font-size: 0.8rem;
+  }
+
+  .milestone-history-toggle {
+    font-size: 0.78rem;
+    padding: 7px 8px;
+  }
+
+  .milestone-history-item {
+    font-size: 0.76rem;
+    padding: 6px 8px;
+  }
+}
+
+/* 翻页动画优化 */
+.flip-container {
+  perspective: 1000px;
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@pqina/flip/dist/flip.min.js" defer></script>
+  </head>
+
+  <body class="ldr-compact-mode">
+    <!-- 心形背景 -->
+    <div class="heart-bg" id="heartBg"></div>
+
+    <!-- 主容器 -->
+    <div class="container">
+      <div class="header">
+        <h1>
+          <i class="fas fa-heart heartbeat"></i> 小苹果和二狗子
+          <i class="fas fa-heart heartbeat"></i>
+        </h1>
+        <p>已经在一起度过了：</p>
+      </div>
+
+    <!-- 时钟区域：迁移自 clock.html -->
+  <div class="love-clock-wrap clock-theme module-title-corner" id="clockThemePanel" data-module-title="恋爱时钟">
+        <div class="clock-display" id="loveClockDisplay" title="恋爱时钟">
+          <div class="clock-main-row">
+            <div class="clock-group days-group">
+              <div class="days-cards-group" id="daysCardsGroup" aria-label="天数卡片">
+                <span class="days-card-digit" data-digit="0">0</span>
+                <span class="days-card-digit" data-digit="0">0</span>
+                <span class="days-card-digit" data-digit="0">0</span>
+              </div>
+              <span class="clock-unit-label">天数</span>
+            </div>
+
+            <span class="clock-separator" aria-hidden="true">:</span>
+
+            <div class="clock-group">
+              <div
+                class="tick tick-unit"
+                id="love-flip-hours"
+                data-did-init="handleHourTickInit"
+                data-credits="false"
+              >
+                <div data-layout="horizontal fit">
+                  <span data-key="hourTens" data-view="flip"></span>
+                  <span data-key="hourOnes" data-view="flip"></span>
+                </div>
+              </div>
+              <span class="clock-unit-label">小时</span>
+            </div>
+
+            <span class="clock-separator" aria-hidden="true">:</span>
+
+            <div class="clock-group">
+              <div
+                class="tick tick-unit"
+                id="love-flip-minutes"
+                data-did-init="handleMinuteTickInit"
+                data-credits="false"
+              >
+                <div data-layout="horizontal fit">
+                  <span data-key="minuteTens" data-view="flip"></span>
+                  <span data-key="minuteOnes" data-view="flip"></span>
+                </div>
+              </div>
+              <span class="clock-unit-label">分钟</span>
+            </div>
+
+            <span class="clock-separator" aria-hidden="true">:</span>
+
+            <div class="clock-group">
+              <div
+                class="tick tick-unit"
+                id="love-flip-seconds"
+                data-did-init="handleSecondTickInit"
+                data-credits="false"
+              >
+                <div data-layout="horizontal fit">
+                  <span data-key="secondTens" data-view="flip"></span>
+                  <span data-key="secondOnes" data-view="flip"></span>
+                </div>
+              </div>
+              <span class="clock-unit-label">秒</span>
+            </div>
+          </div>
+
+          <!-- <div class="clock-date" id="clockDate">--</div> -->
+        </div>
+      </div>
+
+      <div class="milestone module-title-corner" id="milestone" data-module-title="纪念日进度">
+        <!-- 纪念日信息会动态显示在这里 -->
+      </div>
+
+      <!-- 异地恋功能区域 -->
+      <div class="ldr-section module-title-corner" id="ldrSection" data-module-title="异地恋专区">
+        <div class="ldr-header">
+          <h3><i class="fas fa-heart"></i> 异地恋专区</h3>
+          <p>虽然相隔千里，但我们的心永远在一起</p>
+        </div>
+
+        <div class="ldr-stats">
+          <div class="ldr-stat-card">
+            <div class="ldr-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="ldr-label">当前距离</div>
+            <div class="ldr-value" id="distanceValue">-- 公里</div>
+          </div>
+
+          <div class="ldr-stat-card">
+            <div class="ldr-icon"><i class="fas fa-calendar-day"></i></div>
+            <div class="ldr-label">下次见面</div>
+            <div class="ldr-value" id="nextMeetValue">-- 天</div>
+          </div>
+
+          <div class="ldr-stat-card">
+            <div class="ldr-icon"><i class="fas fa-plane"></i></div>
+            <div class="ldr-label">见面倒计时</div>
+            <div class="ldr-value" id="meetCountdown">--</div>
+          </div>
+        </div>
+
+        <div class="ldr-controls">
+          <button class="btn btn-soft" id="setLocationBtn">
+            <i class="fas fa-map-pin"></i> 设置位置
+          </button>
+          <button class="btn btn-soft" id="setMeetDateBtn">
+            <i class="fas fa-heart"></i> 设置见面日
+          </button>
+          <button class="btn btn-soft" id="toggleLDRBtn">
+            <i class="fas fa-times"></i> 关闭异地恋
+          </button>
+        </div>
+
+        <div class="ldr-weather" id="weatherInfo">
+          <div class="weather-loading">开启异地恋功能查看天气</div>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn btn-soft" id="themeBtn">
+          <i class="fas fa-palette"></i> 切换主题
+        </button>
+        <button class="btn btn-soft" id="switchVersionBtn">
+          <i class="fas fa-right-left"></i> 切换版本
+        </button>
+        <button class="btn" id="shareBtn">
+          <i class="fas fa-share-alt"></i> 分享甜蜜
+        </button>
+        <button class="btn btn-soft" id="playMusicBtn">
+          <i class="fas fa-play"></i> 播放音乐
+        </button>
+        <button class="btn btn-soft" id="toggleLDRSectionBtn">
+          <i class="fas fa-heart"></i> 异地恋模式
+        </button>
+      </div>
+    </div>
+
+    <!-- 二维码弹窗 -->
+    <div class="qrcode-modal" id="qrcodeModal">
+      <div class="qrcode-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <h2 class="modal-title">分享我们的爱</h2>
+        <p class="modal-message">
+          小苹果和二狗子已经相爱<span class="love-days" id="loveDays">999</span
+          >天了<span class="modal-heart">💖</span>
+        </p>
+        <p class="modal-continue">我们的爱还在继续...</p>
+        <div id="qrcode"></div>
+        <p class="modal-tip">扫描二维码，分享甜蜜</p>
+        <div class="share-export-actions">
+          <div class="share-template-row">
+            <label class="share-template-label" for="shareCardTemplateSelect">分享卡片模板</label>
+            <select id="shareCardTemplateSelect" class="share-template-select">
+              <option value="0">甜蜜粉</option>
+              <option value="1">星空夜</option>
+              <option value="2">清新薄荷</option>
+            </select>
+          </div>
+          <button class="download-btn preview-toggle-btn" id="toggleSharePreviewBtn">
+            <i class="fas fa-eye-slash"></i> 隐藏预览
+          </button>
+          <div class="share-preview-wrap" id="sharePreviewWrap">
+            <div class="share-preview-title"><i class="fas fa-eye"></i> 导出前实时预览</div>
+            <canvas
+              id="shareCardPreviewCanvas"
+              class="share-preview-canvas"
+              width="540"
+              height="720"
+              aria-label="分享卡片模板实时预览"
+            ></canvas>
+          </div>
+          <button class="download-btn" id="downloadBtn">
+            <i class="fas fa-download"></i> 下载二维码
+          </button>
+          <button class="download-btn export-card-btn" id="exportShareCardBtn">
+            <i class="fas fa-image"></i> 导出分享卡片
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 位置设置弹窗 -->
+    <div class="modal" id="locationModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeLocationModal">&times;</button>
+        <h3><i class="fas fa-map-marked-alt"></i> 设置位置信息</h3>
+
+        <div class="location-form">
+          <div class="form-group">
+            <label for="myLocationName">我的位置名称</label>
+            <input
+              type="text"
+              id="myLocationName"
+              placeholder="务川"
+              value="务川"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="myLocation">我的坐标 (纬度,经度)</label>
+            <input
+              type="text"
+              id="myLocation"
+              placeholder="28.5595,107.9038"
+              value="28.5595,107.9038"
+            />
+            <button class="btn-small" id="getMyLocationBtn">
+              <i class="fas fa-location-arrow"></i> 获取当前位置
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label for="partnerLocationName">对方位置名称</label>
+            <input
+              type="text"
+              id="partnerLocationName"
+              placeholder="祥云"
+              value="祥云"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="partnerLocation">对方坐标 (纬度,经度)</label>
+            <input
+              type="text"
+              id="partnerLocation"
+              placeholder="25.418093,100.728523"
+              value="25.418093,100.728523"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button class="btn" id="saveLocationBtn">保存位置</button>
+            <button class="btn btn-secondary" id="cancelLocationBtn">
+              取消
+            </button>
+          </div>
+        </div>
+
+        <div class="location-tips">
+          <p>
+            <i class="fas fa-info-circle"></i>
+            提示：可以在百度地图或高德地图中获取坐标
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 见面日期设置弹窗 -->
+    <div class="modal" id="meetDateModal">
+      <div class="modal-content">
+        <button class="modal-close" id="closeMeetDateModal">&times;</button>
+        <h3><i class="fas fa-calendar-heart"></i> 设置下次见面日期</h3>
+
+        <div class="date-form">
+          <div class="form-group">
+            <label for="meetDate">下次见面日期</label>
+            <input type="date" id="meetDate" min="2026-03-01" />
+          </div>
+
+          <div class="form-group">
+            <label for="meetLocation">见面地点</label>
+            <input type="text" id="meetLocation" placeholder="例如：北京南站" />
+          </div>
+
+          <div class="form-group">
+            <label for="meetNote">备注/计划</label>
+            <textarea
+              id="meetNote"
+              rows="3"
+              placeholder="写下你们的见面计划..."
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn" id="saveMeetDateBtn">保存见面计划</button>
+            <button class="btn btn-secondary" id="cancelMeetDateBtn">
+              取消
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+let audio = null;
+let isPlaying = false;
+const VERSION_PREFERENCE_KEY = "lovePreferredVersion";
+const VERSION_SWITCH_DELAY = 220;
+
+function getPreferredVersionRedirectTarget(currentVersion) {
+  try {
+    const preferred = localStorage.getItem(VERSION_PREFERENCE_KEY);
+    if (!preferred || preferred === currentVersion) return null;
+    return preferred === "v2" ? "love_v2.html" : "index.html";
+  } catch {
+    return null;
+  }
+}
+
+function redirectToPreferredVersion(currentVersion) {
+  const target = getPreferredVersionRedirectTarget(currentVersion);
+  if (!target) return false;
+  window.location.replace(target);
+  return true;
+}
+
+function smoothSwitchVersion(targetHref, nextVersion, triggerEl) {
+  try {
+    localStorage.setItem(VERSION_PREFERENCE_KEY, nextVersion);
+  } catch {}
+
+  const motionReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (motionReduce) {
+    window.location.href = targetHref;
+    return;
+  }
+
+  const stage = document.querySelector(".container") || document.body;
+  if (triggerEl) triggerEl.disabled = true;
+  stage.style.transition = "opacity .22s ease, transform .22s ease";
+  stage.style.opacity = "0.38";
+  stage.style.transform = "translateY(4px) scale(0.995)";
+  window.setTimeout(() => {
+    window.location.href = targetHref;
+  }, VERSION_SWITCH_DELAY);
+}
+
+// 设置恋爱开始的日期和时间
+const startDate = new Date("2025-09-04T00:00:00");
+
+// 纪念日数据
+const milestones = [
+  { days: 7, name: "🌱 恋爱第1周", message: "第一周打卡成功！" },
+  { days: 30, name: "🎈 恋爱满月", message: "第一个月也要甜甜的。" },
+  { days: 50, name: "🍬 恋爱50天", message: "每天都比昨天更喜欢你。" },
+  { days: 66, name: "✨ 恋爱66天", message: "顺顺利利，长长久久。" },
+  { days: 77, name: "💘 恋爱77天", message: "双倍心动，继续热恋。" },
+  { days: 88, name: "🎀 恋爱88天", message: "甜蜜翻倍，幸福加倍。" },
+  { days: 99, name: "💯 恋爱99天", message: "离100天只差一步啦！" },
+  { days: 100, name: "💝 恋爱100天", message: "百分百的爱给你！" },
+  { days: 131, name: "🌸 恋爱131天", message: "一生一心，浪漫继续。" },
+  { days: 200, name: "🌹 恋爱200天", message: "爱意如玫瑰绽放！" },
+  { days: 233, name: "🍀 恋爱233天", message: "开心值持续暴击。" },
+  { days: 300, name: "🎶 恋爱300天", message: "故事越来越好听。" },
+  { days: 365, name: "🎉 恋爱一周年", message: "周年快乐！" },
+  { days: 400, name: "🌺 恋爱400天", message: "继续并肩看更多风景。" },
+  { days: 520, name: "💖 恋爱520天", message: "我爱你！" },
+  { days: 666, name: "🧸 恋爱666天", message: "一路顺风，甜度爆表。" },
+  { days: 777, name: "🌠 恋爱777天", message: "幸运值拉满。" },
+  { days: 888, name: "🎊 恋爱888天", message: "发发发，幸福常在。" },
+  { days: 999, name: "🌟 恋爱999天", message: "长长久久！" },
+  { days: 1000, name: "🏆 恋爱1000天", message: "千天成就达成！" },
+  { days: 1314, name: "💍 恋爱1314天", message: "一生一世，与你同频。" },
+  { days: 2000, name: "🌈 恋爱2000天", message: "把平凡日子过成诗。" },
+];
+
+// 主题颜色
+const themes = [
+  {
+    primary: "#ff6b8b",
+    secondary: "#8a6d8f",
+    bg: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)",
+    heart: "#ff6b8b",
+  },
+  {
+    primary: "#6a8caf",
+    secondary: "#4a6572",
+    bg: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
+    heart: "#6a8caf",
+  },
+  {
+    primary: "#6b5b95",
+    secondary: "#4b3b6d",
+    bg: "linear-gradient(135deg, #d9a7c7 0%, #fffcdc 100%)",
+    heart: "#6b5b95",
+  },
+  {
+    primary: "#44a08d",
+    secondary: "#2d6a6d",
+    bg: "linear-gradient(135deg, #a8ff78 0%, #78ffd6 100%)",
+    heart: "#44a08d",
+  },
+  {
+    primary: "#e65c78",
+    secondary: "#8a4b6e",
+    bg: "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)",
+    heart: "#e65c78",
+  },
+];
+
+let currentTheme = 0;
+let animationFrameId = null;
+let qrcodeInstance = null;
+let hourTickInstance = null;
+let minuteTickInstance = null;
+let secondTickInstance = null;
+let clickHeartHandler = null;
+let dayCardsDigitsCount = 0;
+const CLICK_HEART_COLOR = "#ff2d55";
+const TOAST_DURATION = 2600;
+const MILESTONE_HISTORY_LIMIT = 6;
+const THEME_STORAGE_KEY = "loveClockThemeIndex";
+const SHARE_CARD_TEMPLATES = [
+  {
+    id: "sweet-pink",
+    name: "甜蜜粉",
+    bgStart: "#fff2f7",
+    bgEnd: "#ffe1eb",
+    cardFill: "rgba(255,255,255,0.92)",
+    cardShadow: "rgba(255, 107, 139, 0.18)",
+    titleColor: "#ff6b8b",
+    textColor: "#7a536d",
+    accentColor: "#ff6b8b",
+    timeColor: "#8a6d8f",
+    footerColor: "#a78ca9",
+  },
+  {
+    id: "night-sky",
+    name: "星空夜",
+    bgStart: "#20243d",
+    bgEnd: "#3a2957",
+    cardFill: "rgba(255,255,255,0.1)",
+    cardShadow: "rgba(0, 0, 0, 0.28)",
+    titleColor: "#ffd1f1",
+    textColor: "#f7e9ff",
+    accentColor: "#ff9ed8",
+    timeColor: "#9de8ff",
+    footerColor: "#d9c4e6",
+  },
+  {
+    id: "mint-fresh",
+    name: "清新薄荷",
+    bgStart: "#e9fff7",
+    bgEnd: "#d8f7ff",
+    cardFill: "rgba(255,255,255,0.94)",
+    cardShadow: "rgba(68, 160, 141, 0.18)",
+    titleColor: "#2f9e89",
+    textColor: "#2d6a6d",
+    accentColor: "#3aa18d",
+    timeColor: "#4a7b8a",
+    footerColor: "#5f8a96",
+  },
+];
+
+// 存储当前时间值
+let currentValues = {
+  days: "0",
+  hours: "00",
+  minutes: "00",
+  seconds: "00",
+};
+let milestoneHistoryShowAll = false;
+let currentShareCardTemplateIndex = 0;
+let sharePreviewRenderVersion = 0;
+let sharePreviewTimerId = null;
+const shareQrCanvasCache = new Map();
+const WEATHER_CACHE_KEY = "loveClockWeatherCacheV1";
+const WEATHER_CACHE_TTL_MS = 12 * 60 * 1000;
+const WEATHER_CACHE_MAX_ENTRIES = 8;
+const SHARE_PREVIEW_STORAGE_KEY = "loveClockSharePreviewEnabled";
+const QRCODE_SCRIPT_URLS = [
+  "https://cdn.staticfile.net/qrcodejs/1.0.0/qrcode.min.js",
+  "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js",
+];
+let modalQrState = {
+  text: "",
+  themeIndex: -1,
+};
+let sharePreviewEnabled = true;
+let ldrHideTimerId = null;
+let qrCodeLibraryPromise = null;
+
+function detectDataSaverMode() {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (!connection) return false;
+  const saveDataEnabled = connection.saveData === true;
+  const lowEffectiveType = typeof connection.effectiveType === "string"
+    && /(^|-)2g|slow-2g/.test(connection.effectiveType);
+  return saveDataEnabled || lowEffectiveType;
+}
+
+const IS_DATA_SAVER = detectDataSaverMode();
+
+if (IS_DATA_SAVER && document.body) {
+  document.body.classList.add("data-saver-mode");
+}
+
+function loadScriptWithFallback(urls, timeout = 7000) {
+  return new Promise((resolve, reject) => {
+    let index = 0;
+
+    const tryLoad = () => {
+      if (index >= urls.length) {
+        reject(new Error("外部脚本加载失败"));
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = urls[index];
+      script.async = true;
+
+      const timer = setTimeout(() => {
+        script.remove();
+        index += 1;
+        tryLoad();
+      }, timeout);
+
+      script.onload = () => {
+        clearTimeout(timer);
+        resolve(urls[index]);
+      };
+
+      script.onerror = () => {
+        clearTimeout(timer);
+        script.remove();
+        index += 1;
+        tryLoad();
+      };
+
+      document.head.appendChild(script);
+    };
+
+    tryLoad();
+  });
+}
+
+function ensureQRCodeLibrary() {
+  if (window.QRCode) {
+    return Promise.resolve(true);
+  }
+  if (qrCodeLibraryPromise) {
+    return qrCodeLibraryPromise;
+  }
+
+  qrCodeLibraryPromise = loadScriptWithFallback(QRCODE_SCRIPT_URLS)
+    .then(() => Boolean(window.QRCode))
+    .catch((error) => {
+      console.warn("QRCode 脚本加载失败:", error);
+      return false;
+    })
+    .finally(() => {
+      if (!window.QRCode) {
+        qrCodeLibraryPromise = null;
+      }
+    });
+
+  return qrCodeLibraryPromise;
+}
+
+function showToast(message, type = "info") {
+  const container = document.getElementById("toastContainer");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 220);
+  }, TOAST_DURATION);
+}
+
+function spawnClickHeart(clientX, clientY) {
+  const heartEl = document.createElement("span");
+  heartEl.className = "click-heart";
+  heartEl.textContent = "❤";
+  heartEl.style.left = `${clientX}px`;
+  heartEl.style.top = `${clientY}px`;
+  heartEl.style.color = CLICK_HEART_COLOR;
+
+  const randomX = Math.round((Math.random() - 0.5) * 70);
+  const randomY = -55 - Math.round(Math.random() * 45);
+  heartEl.style.setProperty("--heart-x", `${randomX}px`);
+  heartEl.style.setProperty("--heart-y", `${randomY}px`);
+
+  document.body.appendChild(heartEl);
+  setTimeout(() => {
+    if (heartEl.parentNode) {
+      heartEl.parentNode.removeChild(heartEl);
+    }
+  }, 980);
+}
+
+function initClickHeartEffect() {
+  if (IS_DATA_SAVER) {
+    return;
+  }
+
+  clickHeartHandler = (event) => {
+    if (event.button !== 0) return;
+
+    const heartCount = 2 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < heartCount; i++) {
+      const offsetX = Math.round((Math.random() - 0.5) * 24);
+      const offsetY = Math.round((Math.random() - 0.5) * 14);
+      const delay = i * 35;
+      setTimeout(() => {
+        spawnClickHeart(event.clientX + offsetX, event.clientY + offsetY);
+      }, delay);
+    }
+  };
+
+  document.addEventListener("click", clickHeartHandler);
+}
+
+function renderMilestoneHistory(days) {
+  const achieved = milestones.filter((milestone) => days >= milestone.days);
+  if (achieved.length === 0) return "";
+
+  const isExpanded = milestoneHistoryShowAll;
+  const visibleMilestones = achieved.slice().reverse();
+
+  const historyItems = visibleMilestones
+    .map(
+      (item) => `
+      <li class="milestone-history-item">
+        <span>${item.name}</span>
+        <strong>第 ${item.days} 天</strong>
+      </li>
+    `,
+    )
+    .join("");
+
+  const toggleText = isExpanded ? "收起" : "查看历史";
+  const iconClass = isExpanded ? "fa-chevron-up" : "fa-chevron-down";
+  const historyMeta = isExpanded
+    ? `已显示全部 ${achieved.length} 条达成记录`
+    : `已达成 ${achieved.length} 条庆祝记录`;
+
+  return `
+    <div class="milestone-history">
+      <div class="milestone-history-meta">${historyMeta}</div>
+      <button type="button" class="milestone-history-toggle" data-role="milestone-history-toggle" aria-expanded="${isExpanded}"><i class="fas ${iconClass}" aria-hidden="true"></i><span>${toggleText}</span></button>
+      <ul class="milestone-history-list ${isExpanded ? "is-open" : ""}" data-role="milestone-history-list">
+        ${historyItems}
+      </ul>
+    </div>
+  `;
+}
+
+function bindMilestoneHistoryToggle(scopeEl) {
+  if (!scopeEl) return;
+  const toggleBtn = scopeEl.querySelector('[data-role="milestone-history-toggle"]');
+  if (!toggleBtn) return;
+
+  toggleBtn.addEventListener("click", () => {
+    milestoneHistoryShowAll = !milestoneHistoryShowAll;
+    const daysNow = Number.parseInt(currentValues.days, 10) || 0;
+    checkMilestone(daysNow);
+  });
+}
+
+function applyTheme(themeIndex, { persist = false } = {}) {
+  if (!Number.isInteger(themeIndex) || themeIndex < 0 || themeIndex >= themes.length) {
+    return;
+  }
+
+  currentTheme = themeIndex;
+  const theme = themes[currentTheme];
+
+  // 更新背景
+  document.body.style.background = theme.bg;
+
+  // 更新 clock-theme 变量（迁移自 clock.html 的变量化主题风格）
+  document.documentElement.style.setProperty("--theme-page-bg", "transparent");
+  document.documentElement.style.setProperty("--theme-card-bg", theme.primary);
+  document.documentElement.style.setProperty("--theme-text-color", "#ffffff");
+  document.documentElement.style.setProperty("--theme-separator-color", theme.primary);
+  document.documentElement.style.setProperty("--theme-shadow-color", "rgba(0,0,0,0.35)");
+  document.documentElement.style.setProperty("--days-accent", theme.primary);
+  document.documentElement.style.setProperty("--days-sub", theme.secondary);
+  document.documentElement.style.setProperty("--glass-bg", "rgba(255, 255, 255, 0.9)");
+  document.documentElement.style.setProperty("--glass-border", `${theme.primary}40`);
+  document.documentElement.style.setProperty("--glass-shadow", `0 12px 28px ${theme.primary}22`);
+
+  // 更新数字颜色
+  const flipNumbers = document.querySelectorAll(
+    ".flip-front, .flip-back",
+  );
+  flipNumbers.forEach((number) => {
+    number.style.color = theme.primary;
+  });
+
+  // 更新按钮颜色
+  const buttons = document.querySelectorAll(
+    ".btn:not(.btn-soft), .download-btn:not(.preview-toggle-btn), .btn-small:not(.btn-soft)",
+  );
+  buttons.forEach((button) => {
+    button.style.background = theme.primary;
+  });
+
+  const sectionCaps = document.querySelectorAll(".module-title-corner");
+  sectionCaps.forEach((cap) => {
+    cap.style.setProperty("--module-chip-color", theme.secondary);
+    cap.style.setProperty("--module-chip-border", `${theme.primary}66`);
+  });
+
+  // 更新心形颜色
+  const hearts = document.querySelectorAll(".heart");
+  hearts.forEach((heart) => {
+    heart.style.color = theme.heart;
+  });
+
+  // 更新标题颜色
+  const headers = document.querySelectorAll(
+    ".header h1, .modal-title, .ldr-header h3, .modal-content h3",
+  );
+  headers.forEach((header) => {
+    header.style.color = theme.primary;
+  });
+
+  // 更新翻页背面背景
+  const flipBacks = document.querySelectorAll(".flip-back");
+  flipBacks.forEach((flipBack) => {
+    flipBack.style.background = theme.bg;
+  });
+
+  // 更新异地恋区域颜色
+  const ldrValues = document.querySelectorAll(
+    ".ldr-value, .weather-temperature, .location-name",
+  );
+  ldrValues.forEach((value) => {
+    value.style.color = theme.primary;
+  });
+
+  const ldrIcons = document.querySelectorAll(".ldr-icon");
+  ldrIcons.forEach((icon) => {
+    icon.style.color = theme.primary;
+  });
+
+  if (persist) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, String(currentTheme));
+    } catch (error) {
+      console.warn("主题缓存写入失败:", error);
+    }
+  }
+}
+
+function loadThemeFromStorage() {
+  try {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (savedTheme == null) return;
+    const parsedIndex = Number.parseInt(savedTheme, 10);
+    if (Number.isInteger(parsedIndex) && parsedIndex >= 0 && parsedIndex < themes.length) {
+      applyTheme(parsedIndex, { persist: false });
+    }
+  } catch (error) {
+    console.warn("主题缓存读取失败:", error);
+  }
+}
+
+// Pqina Flip 初始化回调（由 HTML data-did-init 调用）
+function handleHourTickInit(tick) {
+  hourTickInstance = tick;
+}
+
+function handleMinuteTickInit(tick) {
+  minuteTickInstance = tick;
+}
+
+function handleSecondTickInit(tick) {
+  secondTickInstance = tick;
+}
+
+function updateClockDateDisplay(now) {
+  const dateEl = document.getElementById("clockDate");
+  if (!dateEl) return;
+  const dateText = now.toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "long",
+  });
+  dateEl.textContent = dateText;
+}
+
+function renderDaysCards(daysStr) {
+  const group = document.getElementById("daysCardsGroup");
+  if (!group) return;
+
+  const normalizedDays = daysStr.padStart(3, "0");
+  const digits = normalizedDays.split("");
+
+  if (digits.length !== dayCardsDigitsCount) {
+    group.innerHTML = digits
+      .map((digit) => `<span class="days-card-digit" data-digit="${digit}">${digit}</span>`)
+      .join("");
+    dayCardsDigitsCount = digits.length;
+  }
+
+  const cardEls = group.querySelectorAll(".days-card-digit");
+  digits.forEach((digit, index) => {
+    const cardEl = cardEls[index];
+    if (!cardEl) return;
+    if (cardEl.textContent !== digit) {
+      cardEl.textContent = digit;
+      cardEl.setAttribute("data-digit", digit);
+      cardEl.classList.remove("is-flipping");
+      requestAnimationFrame(() => cardEl.classList.add("is-flipping"));
+    }
+  });
+
+  const clockPanel = document.getElementById("clockThemePanel");
+  if (clockPanel) {
+    clockPanel.style.setProperty("--days-card-count", String(digits.length));
+  }
+}
+
+function updateClockTick(hoursStr, minutesStr, secondsStr) {
+  if (hourTickInstance) {
+    hourTickInstance.value = {
+      hourTens: hoursStr[0],
+      hourOnes: hoursStr[1],
+    };
+  }
+
+  if (minuteTickInstance) {
+    minuteTickInstance.value = {
+      minuteTens: minutesStr[0],
+      minuteOnes: minutesStr[1],
+    };
+  }
+
+  if (secondTickInstance) {
+    secondTickInstance.value = {
+      secondTens: secondsStr[0],
+      secondOnes: secondsStr[1],
+    };
+  }
+}
+
+// ======================== 高德天气API配置 ========================
+// 请在此处填写您的高德API Key
+const GAODE_API_KEY = "17b313fe31787de09faa089121652e70";
+// ======================== 配置结束 ========================
+
+// 天气图标映射表
+const weatherIconMap = {
+  晴: "☀️",
+  多云: "⛅",
+  阴: "☁️",
+  阵雨: "🌦️",
+  雷阵雨: "⛈️",
+  雷阵雨并伴有冰雹: "⛈️",
+  雨夹雪: "🌨️",
+  小雨: "🌧️",
+  中雨: "🌧️",
+  大雨: "🌧️",
+  暴雨: "🌧️",
+  大暴雨: "🌧️",
+  特大暴雨: "🌧️",
+  阵雪: "🌨️",
+  小雪: "🌨️",
+  中雪: "🌨️",
+  大雪: "🌨️",
+  暴雪: "🌨️",
+  雾: "🌫️",
+  冻雨: "🌨️",
+  沙尘暴: "🌪️",
+  "小雨-中雨": "🌧️",
+  "中雨-大雨": "🌧️",
+  "大雨-暴雨": "🌧️",
+  "暴雨-大暴雨": "🌧️",
+  "大暴雨-特大暴雨": "🌧️",
+  "小雪-中雪": "🌨️",
+  "中雪-大雪": "🌨️",
+  "大雪-暴雪": "🌨️",
+  浮尘: "🌫️",
+  扬沙: "🌪️",
+  强沙尘暴: "🌪️",
+  霾: "😷",
+  无: "🌤️",
+};
+
+// 异地恋功能数据
+let ldrData = {
+  enabled: false,
+  myLocation: {
+    lat: 28.5597,
+    lng: 107.904,
+    name: "务川",
+    citycode: 520326,
+  },
+  partnerLocation: {
+    lat: 25.418093,
+    lng: 100.728523,
+    name: "祥云",
+    citycode: 532923,
+  },
+  nextMeetDate: "2026-03-01",
+  meetLocation: "重庆",
+  meetNote: "很想宝宝，早点见面！",
+};
+
+// 计算两个坐标之间的距离（公里）
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // 地球半径（公里）
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c);
+}
+
+// 更新距离显示
+function updateDistanceDisplay() {
+  if (!ldrData.enabled) return;
+
+  const distance = calculateDistance(
+    ldrData.myLocation.lat,
+    ldrData.myLocation.lng,
+    ldrData.partnerLocation.lat,
+    ldrData.partnerLocation.lng,
+  );
+  document.getElementById("distanceValue").textContent =
+    `${distance} 公里`;
+  updateWeatherInfo();
+}
+
+// 更新见面倒计时
+function updateMeetCountdown() {
+  if (!ldrData.enabled || !ldrData.nextMeetDate) return;
+
+  const now = new Date();
+  const meetDate = new Date(ldrData.nextMeetDate);
+  const diff = meetDate - now;
+
+  if (diff <= 0) {
+    document.getElementById("nextMeetValue").textContent = "今天见面!";
+    document.getElementById("meetCountdown").innerHTML =
+      '<i class="fas fa-heart"></i> 就在今天!';
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById("nextMeetValue").textContent = `${days} 天`;
+  // 用秒表显示倒计时
+  const totalHours = days * 24 + hours;
+  document.getElementById("meetCountdown").textContent =
+    `${totalHours}小时 ${minutes}分 ${seconds}秒`;
+
+  // 如果小于7天，显示倒计时详情
+  if (days < 7) {
+    document.getElementById("meetCountdown").innerHTML = `
+    <div style="font-size: 0.9rem;">${days}天 ${hours}小时</div>
+    <div style="font-size: 0.7rem; color: #8a6d8f;">${minutes}分 ${seconds}秒</div>
+  `;
+  }
+}
+
+// 获取高德天气API数据
+function loadWeatherCacheMap() {
+  try {
+    const raw = localStorage.getItem(WEATHER_CACHE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    console.warn("读取天气缓存失败:", error);
+    return {};
+  }
+}
+
+function saveWeatherCacheMap(cacheMap) {
+  try {
+    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify(cacheMap));
+  } catch (error) {
+    console.warn("写入天气缓存失败:", error);
+  }
+}
+
+function readWeatherCache(citycode) {
+  const cacheMap = loadWeatherCacheMap();
+  const codeKey = String(citycode || "");
+  const entry = cacheMap[codeKey];
+  if (!entry || typeof entry !== "object") {
+    return null;
+  }
+
+  if (!entry.expiresAt || entry.expiresAt <= Date.now()) {
+    delete cacheMap[codeKey];
+    saveWeatherCacheMap(cacheMap);
+    return null;
+  }
+
+  return entry.payload || null;
+}
+
+function writeWeatherCache(citycode, payload) {
+  const codeKey = String(citycode || "");
+  if (!codeKey || !payload) return;
+
+  const cacheMap = loadWeatherCacheMap();
+  cacheMap[codeKey] = {
+    payload,
+    savedAt: Date.now(),
+    expiresAt: Date.now() + WEATHER_CACHE_TTL_MS,
+  };
+
+  const entries = Object.entries(cacheMap).sort(
+    (a, b) => (b[1]?.savedAt || 0) - (a[1]?.savedAt || 0),
+  );
+  const limitedEntries = entries.slice(0, WEATHER_CACHE_MAX_ENTRIES);
+  saveWeatherCacheMap(Object.fromEntries(limitedEntries));
+}
+
+async function getGaodeWeather(citycode) {
+  if (!GAODE_API_KEY || GAODE_API_KEY === "请在此处填写您的高德API Key") {
+    throw new Error("请先配置高德API Key");
+  }
+
+  const cachedWeather = readWeatherCache(citycode);
+  if (cachedWeather) {
+    return cachedWeather;
+  }
+
+  try {
+    const url = `https://restapi.amap.com/v3/weather/weatherInfo?city=${citycode}&key=${GAODE_API_KEY}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.status === "1" && data.lives && data.lives.length > 0) {
+      const weatherData = data.lives[0];
+      const normalizedWeather = {
+        temp: weatherData.temperature,
+        condition: weatherData.weather,
+        icon: weatherIconMap[weatherData.weather] || "🌤️",
+        humidity: weatherData.humidity,
+        windpower: weatherData.windpower,
+        winddirection: weatherData.winddirection,
+        reporttime: weatherData.reporttime,
+      };
+      writeWeatherCache(citycode, normalizedWeather);
+      return normalizedWeather;
+    } else {
+      throw new Error(data.info || "天气数据获取失败");
+    }
+  } catch (error) {
+    console.error("获取天气数据失败:", error);
+    throw error;
+  }
+}
+
+// 获取天气信息（高德API）
+async function updateWeatherInfo() {
+  const weatherElement = document.getElementById("weatherInfo");
+
+  if (!ldrData.enabled) {
+    weatherElement.innerHTML =
+      '<div class="weather-loading">开启异地恋功能查看天气</div>';
+    return;
+  }
+
+  weatherElement.innerHTML =
+    '<div class="weather-loading"><i class="fas fa-cloud-sun"></i> 获取天气信息中...</div>';
+
+  try {
+    // 同时获取两个城市的天气
+    const [myWeather, partnerWeather] = await Promise.all([
+      getGaodeWeather(ldrData.myLocation.citycode).catch((err) => {
+        console.error("获取我的位置天气失败:", err);
+        return getFallbackWeather(ldrData.myLocation.name);
+      }),
+      // 等待1秒以避免API请求过快
+      getGaodeWeather(ldrData.partnerLocation.citycode).catch((err) => {
+        console.error("获取对方位置天气失败:", err);
+        return getFallbackWeather(ldrData.partnerLocation.name);
+      }),
+    ]);
+    weatherElement.innerHTML = `
+    <div class="weather-info">
+      <div class="weather-locations">
+        <div class="weather-location">
+          <div class="location-name">${ldrData.myLocation.name}</div>
+          <div class="weather-icon">${myWeather.icon}</div>
+          <div class="weather-temperature">${myWeather.temp}°C</div>
+          <div class="weather-detail">${myWeather.condition}</div>
+          <div class="weather-detail">湿度: ${myWeather.humidity}%</div>
+          <div class="weather-detail">风力: ${myWeather.windpower}级</div>
+        </div>
+        
+        <div style="display: flex; align-items: center; color: #ff6b8b; font-size: 1.5rem;">
+          <i class="fas fa-heart"></i>
+        </div>
+        
+        <div class="weather-location">
+          <div class="location-name">${ldrData.partnerLocation.name}</div>
+          <div class="weather-icon">${partnerWeather.icon}</div>
+          <div class="weather-temperature">${partnerWeather.temp}°C</div>
+          <div class="weather-detail">${partnerWeather.condition}</div>
+          <div class="weather-detail">湿度: ${partnerWeather.humidity}%</div>
+          <div class="weather-detail">风力: ${partnerWeather.windpower}级</div>
+        </div>
+      </div>
+      <div style="color: #8a6d8f; font-size: 0.9rem; margin-top: 10px;">
+        <i class="fas fa-info-circle"></i> 虽然天气不同，但爱意相通
+      </div>
+    </div>
+  `;
+  } catch (error) {
+    console.error("天气信息获取失败:", error);
+    weatherElement.innerHTML = `
+    <div class="weather-loading">
+      <i class="fas fa-exclamation-triangle"></i> 天气信息获取失败
+      <div style="font-size: 0.8rem; margin-top: 10px;">
+        请检查：<br>
+        1. 是否已填写高德API Key<br>
+        2. 网络连接是否正常<br>
+        3. 城市名称是否正确
+      </div>
+    </div>
+  `;
+  }
+}
+
+// 备用天气数据（当API调用失败时使用）
+function getFallbackWeather(location) {
+  // 模拟天气数据作为备用
+  const conditions = ["晴", "多云", "阴", "小雨", "阵雨"];
+  const icons = ["☀️", "⛅", "☁️", "🌧️", "🌦️"];
+  const index = Math.floor(Math.random() * conditions.length);
+
+  return {
+    temp: Math.floor(15 + Math.random() * 20),
+    condition: conditions[index],
+    icon: icons[index],
+    humidity: Math.floor(40 + Math.random() * 40),
+    windpower: Math.floor(1 + Math.random() * 5) + "级",
+    winddirection: ["东风", "南风", "西风", "北风"][
+      Math.floor(Math.random() * 4)
+    ],
+  };
+}
+
+// 保存数据到localStorage
+function saveLDRData() {
+  localStorage.setItem("ldrData", JSON.stringify(ldrData));
+}
+
+// 从localStorage加载数据
+function loadLDRData() {
+  const saved = localStorage.getItem("ldrData");
+  if (saved) {
+    try {
+      ldrData = JSON.parse(saved);
+      getCityCodeByName(ldrData.myLocation.name).then(citycode => {
+        ldrData.myLocation.citycode = citycode;
+      });
+      getCityCodeByName(ldrData.partnerLocation.name).then(citycode => {
+        ldrData.partnerLocation.citycode = citycode;
+      });
+      // 如果异地恋功能已开启，显示异地恋区域
+      if (ldrData.enabled) {
+        updateDistanceDisplay();
+        updateMeetCountdown();
+        // updateWeatherInfo();
+      }
+    } catch (e) {
+      console.error("加载异地恋数据失败:", e);
+    }
+  }
+}
+
+// 通过名称获取城市编码
+async function getCityCodeByName(locationName) {
+  try {
+    // 1. 输入验证
+    if (!locationName || locationName.trim() === '') {
+      throw new Error('城市名称不能为空');
+    }
+
+    if (!GAODE_API_KEY || GAODE_API_KEY === '请在此处填写您的高德API Key') {
+      throw new Error('请先配置高德API Key');
+    }
+
+    // 2. 构建URL并进行网络请求
+    const gaoDeurl = `https://restapi.amap.com/v3/config/district?key=${GAODE_API_KEY}&keywords=${encodeURIComponent(locationName)}&subdistrict=0&extensions=base`;
+
+    const response = await fetch(gaoDeurl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP错误! 状态码: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // 3. 检查API返回的状态码
+    if (data.status !== '1') {
+      throw new Error(`高德API返回错误: ${data.info || '未知错误'}`);
+    }
+
+    // 4. 检查返回的数据结构
+    if (!data.districts || data.districts.length === 0) {
+      throw new Error(`未找到城市 "${locationName}" 的信息`);
+    }
+
+    // 5. 检查adcode是否存在
+    if (!data.districts[0].adcode) {
+      throw new Error('API返回的数据中缺少adcode字段');
+    }
+
+    const adcode = data.districts[0].adcode;
+
+    // 6. 验证adcode格式（应该是数字）
+    if (typeof adcode !== 'string' && typeof adcode !== 'number') {
+      throw new Error(`无效的adcode格式: ${adcode}`);
+    }
+
+    // 7. 确保返回的是数字字符串
+    return String(adcode).replace(/\D/g, '');
+
+  } catch (error) {
+    // 8. 统一的错误处理
+    console.error(`获取城市 "${locationName}" 编码失败:`, error);
+
+    // 9. 提供常见城市的备用编码
+    const defaultCityCodes = {
+      '务川': '520326',
+      '祥云': '532923',
+      '北京': '110000',
+      '上海': '310000',
+      '广州': '440100',
+      '深圳': '440300',
+      '杭州': '330100',
+      '成都': '510100',
+      '武汉': '420100',
+      '南京': '320100',
+      '重庆': '500000'
+    };
+
+    // 10. 尝试从默认编码中查找
+    const normalizedLocationName = locationName.replace(/市|县|区|自治州/g, '').trim();
+
+    for (const [city, code] of Object.entries(defaultCityCodes)) {
+      if (locationName.includes(city) || city.includes(locationName) ||
+        normalizedLocationName.includes(city) || city.includes(normalizedLocationName)) {
+        console.warn(`使用备用编码: ${city} -> ${code}`);
+        return code;
+      }
+    }
+
+    // 11. 如果找不到默认编码，抛出原始错误
+    throw error;
+  }
+}
+
+// 获取当前位置
+function getMyLocation() {
+  if (!navigator.geolocation) {
+    showToast("您的浏览器不支持地理位置功能", "warning");
+    return;
+  }
+
+  const loadingBtn = document.getElementById("getMyLocationBtn");
+  const originalText = loadingBtn.innerHTML;
+  loadingBtn.innerHTML =
+    '<i class="fas fa-spinner fa-spin"></i> 获取中...';
+  loadingBtn.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      document.getElementById("myLocation").value =
+        `${lat.toFixed(4)},${lng.toFixed(4)}`;
+
+      // 尝试反向地理编码获取位置名称
+      getLocationName(lat, lng).then((name) => {
+        if (name) {
+          document.getElementById("myLocationName").value = name;
+        }
+      });
+
+      loadingBtn.innerHTML = originalText;
+      loadingBtn.disabled = false;
+    },
+    (error) => {
+      showToast("获取位置失败，请手动输入坐标", "error");
+      console.error("获取位置失败:", error);
+      loadingBtn.innerHTML = originalText;
+      loadingBtn.disabled = false;
+    },
+  );
+}
+
+// 获取位置名称（模拟）
+function getLocationName(lat, lng) {
+  return new Promise((resolve) => {
+    // 这里应该调用真正的反向地理编码API
+    // 模拟返回
+    const cities = [
+      "北京",
+      "上海",
+      "广州",
+      "深圳",
+      "杭州",
+      "成都",
+      "武汉",
+      "南京",
+      "务川",
+      "祥云",
+    ];
+    resolve(cities[Math.floor(Math.random() * cities.length)]);
+  });
+}
+
+function setLDRSectionVisibility(enabled) {
+  const ldrSection = document.getElementById("ldrSection");
+  const toggleBtn = document.getElementById("toggleLDRSectionBtn");
+  const modeBadge = document.getElementById("ldrModeBadge");
+
+  if (ldrHideTimerId) {
+    clearTimeout(ldrHideTimerId);
+    ldrHideTimerId = null;
+  }
+  if (ldrSection) {
+    if (enabled) {
+      ldrSection.style.display = "block";
+      ldrSection.classList.remove("is-hiding");
+      ldrSection.classList.add("is-entering");
+      setTimeout(() => {
+        ldrSection.classList.remove("is-entering");
+      }, 240);
+    } else {
+      ldrSection.classList.remove("is-entering");
+      ldrSection.classList.add("is-hiding");
+      ldrHideTimerId = setTimeout(() => {
+        ldrSection.classList.remove("is-hiding");
+        ldrSection.style.display = "none";
+        ldrHideTimerId = null;
+      }, 190);
+    }
+  }
+
+  if (toggleBtn) {
+    toggleBtn.innerHTML = enabled
+      ? '<i class="fas fa-heart"></i> 关闭异地恋'
+      : '<i class="fas fa-heart"></i> 异地恋模式';
+  }
+
+  if (modeBadge) {
+    modeBadge.classList.toggle("is-on", enabled);
+    modeBadge.classList.toggle("is-off", !enabled);
+    modeBadge.innerHTML = enabled
+      ? '<i class="fas fa-toggle-on"></i> 已开启'
+      : '<i class="fas fa-toggle-off"></i> 未开启';
+  }
+
+  if (document.body) {
+    document.body.classList.toggle("ldr-compact-mode", !enabled);
+  }
+}
+
+// 切换异地恋区域显示
+function toggleLDRSection() {
+  if (!ldrData.enabled) {
+    // 开启异地恋功能
+    ldrData.enabled = true;
+    setLDRSectionVisibility(true);
+
+    // 更新显示
+    updateDistanceDisplay();
+    updateMeetCountdown();
+    // updateWeatherInfo();
+
+    // 如果还没有位置数据，提示设置位置
+    if (!ldrData.myLocation.name || !ldrData.partnerLocation.name) {
+      setTimeout(() => {
+        showToast("请先设置你们的位置信息", "warning");
+        document.getElementById("locationModal").style.display = "flex";
+      }, 500);
+    }
+  } else {
+    // 关闭异地恋功能
+    ldrData.enabled = false;
+    setLDRSectionVisibility(false);
+  }
+
+  saveLDRData();
+}
+
+// 保存位置信息
+function saveLocation() {
+  const myLocationInput = document
+    .getElementById("myLocation")
+    .value.trim();
+  const myLocationName = document
+    .getElementById("myLocationName")
+    .value.trim();
+  const partnerLocationInput = document
+    .getElementById("partnerLocation")
+    .value.trim();
+  const partnerLocationName = document
+    .getElementById("partnerLocationName")
+    .value.trim();
+
+  // 验证输入
+  if (!myLocationInput || !partnerLocationInput) {
+    showToast("请填写完整的位置信息", "warning");
+    return;
+  }
+
+  // 解析坐标
+  const myCoords = myLocationInput
+    .split(",")
+    .map((coord) => parseFloat(coord.trim()));
+  const partnerCoords = partnerLocationInput
+    .split(",")
+    .map((coord) => parseFloat(coord.trim()));
+
+  if (
+    myCoords.length !== 2 ||
+    partnerCoords.length !== 2 ||
+    isNaN(myCoords[0]) ||
+    isNaN(myCoords[1]) ||
+    isNaN(partnerCoords[0]) ||
+    isNaN(partnerCoords[1])
+  ) {
+    showToast(
+      '坐标格式不正确，请使用"纬度,经度"格式，例如：39.9042,116.4074',
+      "error",
+    );
+    return;
+  }
+
+  // 保存数据
+  ldrData.myLocation = {
+    lat: myCoords[0],
+    lng: myCoords[1],
+    name: myLocationName || "我的位置",
+  };
+
+  ldrData.partnerLocation = {
+    lat: partnerCoords[0],
+    lng: partnerCoords[1],
+    name: partnerLocationName || "对方的位置",
+  };
+
+  // 更新显示
+  updateDistanceDisplay();
+  saveLDRData();
+
+  // 关闭模态框
+  document.getElementById("locationModal").style.display = "none";
+
+  showToast("位置信息已保存！", "success");
+}
+
+// 保存见面日期
+function saveMeetDate() {
+  const meetDate = document.getElementById("meetDate").value;
+  const meetLocation = document
+    .getElementById("meetLocation")
+    .value.trim();
+  const meetNote = document.getElementById("meetNote").value.trim();
+
+  if (!meetDate) {
+    showToast("请选择见面日期", "warning");
+    return;
+  }
+
+  ldrData.nextMeetDate = new Date(meetDate).toISOString();
+  ldrData.meetLocation = meetLocation;
+  ldrData.meetNote = meetNote;
+
+  // 更新显示
+  updateMeetCountdown();
+  saveLDRData();
+
+  // 关闭模态框
+  document.getElementById("meetDateModal").style.display = "none";
+
+  showToast("见面计划已保存！", "success");
+}
+
+// 初始化异地恋功能
+function initLongDistanceRelationship() {
+  // 加载保存的数据
+  loadLDRData();
+  setLDRSectionVisibility(Boolean(ldrData.enabled));
+
+  // 绑定事件
+  document
+    .getElementById("toggleLDRSectionBtn")
+    .addEventListener("click", toggleLDRSection);
+  document
+    .getElementById("setLocationBtn")
+    .addEventListener("click", () => {
+      document.getElementById("locationModal").style.display = "flex";
+    });
+  document
+    .getElementById("setMeetDateBtn")
+    .addEventListener("click", () => {
+      // 设置默认日期为明天
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const formattedDate = tomorrow.toISOString().split("T")[0];
+      document.getElementById("meetDate").value = formattedDate;
+      document.getElementById("meetDate").min = formattedDate;
+
+      // 加载已保存的数据
+      if (ldrData.nextMeetDate) {
+        document.getElementById("meetDate").value =
+          ldrData.nextMeetDate.split("T")[0];
+      }
+      if (ldrData.meetLocation) {
+        document.getElementById("meetLocation").value =
+          ldrData.meetLocation;
+      }
+      if (ldrData.meetNote) {
+        document.getElementById("meetNote").value = ldrData.meetNote;
+      }
+
+      document.getElementById("meetDateModal").style.display = "flex";
+    });
+  document
+    .getElementById("toggleLDRBtn")
+    .addEventListener("click", toggleLDRSection);
+
+  // 位置模态框事件
+  document
+    .getElementById("getMyLocationBtn")
+    .addEventListener("click", getMyLocation);
+  document
+    .getElementById("saveLocationBtn")
+    .addEventListener("click", saveLocation);
+  document
+    .getElementById("cancelLocationBtn")
+    .addEventListener("click", () => {
+      document.getElementById("locationModal").style.display = "none";
+    });
+  document
+    .getElementById("closeLocationModal")
+    .addEventListener("click", () => {
+      document.getElementById("locationModal").style.display = "none";
+    });
+
+  // 见面日期模态框事件
+  document
+    .getElementById("saveMeetDateBtn")
+    .addEventListener("click", saveMeetDate);
+  document
+    .getElementById("cancelMeetDateBtn")
+    .addEventListener("click", () => {
+      document.getElementById("meetDateModal").style.display = "none";
+    });
+  document
+    .getElementById("closeMeetDateModal")
+    .addEventListener("click", () => {
+      document.getElementById("meetDateModal").style.display = "none";
+    });
+
+  // 点击模态框外部关闭
+  document.querySelectorAll(".modal").forEach((modal) => {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  });
+
+  // 每秒更新见面倒计时
+  if (ldrData.enabled) {
+    setInterval(updateMeetCountdown, 1000);
+  }
+}
+
+function getHeartRenderSettings() {
+  const prefersReducedMotion =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.innerWidth <= 768;
+  const cpuCores = Number(navigator.hardwareConcurrency) || 4;
+  const memory = Number(navigator.deviceMemory) || 4;
+
+  let multiplier = 1;
+  if (isMobile) multiplier *= 0.75;
+  if (cpuCores <= 4) multiplier *= 0.72;
+  if (memory <= 4) multiplier *= 0.72;
+  if (prefersReducedMotion) multiplier *= 0.45;
+  if (IS_DATA_SAVER) multiplier *= 0.28;
+
+  return {
+    prefersReducedMotion,
+    multiplier,
+    minCount: prefersReducedMotion ? 4 : isMobile ? 6 : 10,
+    maxCount: IS_DATA_SAVER ? 8 : prefersReducedMotion ? 16 : isMobile ? 24 : 40,
+  };
+}
+
+// 初始化心形背景
+function initHeartBackground() {
+  const heartBg = document.getElementById("heartBg");
+  if (!heartBg) return;
+
+  if (IS_DATA_SAVER) {
+    heartBg.innerHTML = "";
+    return;
+  }
+
+  const settings = getHeartRenderSettings();
+  const baseCount = Math.floor((window.innerWidth * window.innerHeight) / 15000);
+  const heartCount = Math.max(
+    settings.minCount,
+    Math.min(settings.maxCount, Math.round(baseCount * settings.multiplier)),
+  );
+
+  heartBg.innerHTML = "";
+
+  for (let i = 0; i < heartCount; i++) {
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤";
+    heart.classList.add("heart");
+
+    heart.style.left = `${Math.random() * 100}%`;
+    heart.style.top = `${Math.random() * 100}%`;
+    heart.style.animationDelay = `${Math.random() * 12}s`;
+  const durationBase = settings.prefersReducedMotion ? 10 : 6;
+  const durationRange = settings.prefersReducedMotion ? 6 : 10;
+  heart.style.animationDuration = `${durationBase + Math.random() * durationRange}s`;
+  const minSize = settings.prefersReducedMotion ? 14 : 16;
+  const sizeRange = settings.prefersReducedMotion ? 8 : 12;
+  const size = minSize + Math.random() * sizeRange;
+    heart.style.fontSize = `${size}px`;
+
+    heartBg.appendChild(heart);
+  }
+}
+
+// 启动计时器 - 使用setInterval提高效率
+function startLoveTimer() {
+  // 先清理已有计时器，避免重复调度
+  if (animationFrameId) {
+    clearTimeout(animationFrameId);
+    animationFrameId = null;
+  }
+
+  // 立即更新一次，然后将后续更新对齐到每个整秒
+  updateLoveTimer();
+
+  const scheduleNextTick = () => {
+    const now = Date.now();
+    const delay = 1000 - (now % 1000) + 8;
+    animationFrameId = setTimeout(() => {
+      updateLoveTimer();
+      scheduleNextTick();
+    }, delay);
+  };
+
+  scheduleNextTick();
+}
+
+// 更新计时器
+function updateLoveTimer() {
+  const now = new Date();
+  const diff = now - startDate;
+
+  // 计算时间差
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  // 格式化为字符串
+  const daysStr = days.toString();
+  const hoursStr = hours.toString().padStart(2, "0");
+  const minutesStr = minutes.toString().padStart(2, "0");
+  const secondsStr = seconds.toString().padStart(2, "0");
+  // console.log(`更新计时器: ${daysStr}天 ${hoursStr}小时 ${minutesStr}分 ${secondsStr}秒`);
+
+  // 渲染天数卡片（至少三位，超过三位自适应扩展）
+  renderDaysCards(daysStr);
+
+  // 使用 Pqina Tick 更新时钟（时分秒）
+  updateClockTick(hoursStr, minutesStr, secondsStr);
+  updateClockDateDisplay(now);
+
+  // 保留旧翻页 DOM 的向后兼容（如果仍存在则继续更新）
+  if (document.getElementById("flip-days")) {
+    flipUpdate("days", daysStr);
+    flipUpdate("hours", hoursStr);
+    flipUpdate("minutes", minutesStr);
+    flipUpdate("seconds", secondsStr);
+  }
+
+  // 存储当前值
+  currentValues = {
+    days: daysStr,
+    hours: hoursStr,
+    minutes: minutesStr,
+    seconds: secondsStr,
+  };
+
+  if (isShareModalVisible()) {
+    scheduleShareCardPreviewRender();
+  }
+
+  // 检查并显示纪念日
+  checkMilestone(days);
+}
+
+function isShareModalVisible() {
+  const modal = document.getElementById("qrcodeModal");
+  return Boolean(modal && modal.style.display === "flex");
+}
+
+function scheduleShareCardPreviewRender() {
+  if (!sharePreviewEnabled) {
+    return;
+  }
+  if (sharePreviewTimerId) {
+    clearTimeout(sharePreviewTimerId);
+  }
+  sharePreviewTimerId = setTimeout(() => {
+    sharePreviewTimerId = null;
+    renderShareCardPreview();
+  }, 40);
+}
+
+function setSharePreviewEnabled(enabled, { persist = true } = {}) {
+  sharePreviewEnabled = Boolean(enabled);
+  const previewWrap = document.getElementById("sharePreviewWrap");
+  const toggleBtn = document.getElementById("toggleSharePreviewBtn");
+
+  if (previewWrap) {
+    previewWrap.classList.toggle("is-hidden", !sharePreviewEnabled);
+  }
+
+  if (toggleBtn) {
+    toggleBtn.innerHTML = sharePreviewEnabled
+      ? '<i class="fas fa-eye-slash"></i> 隐藏预览'
+      : '<i class="fas fa-eye"></i> 显示预览';
+  }
+
+  if (sharePreviewEnabled && isShareModalVisible()) {
+    scheduleShareCardPreviewRender();
+  }
+
+  if (persist) {
+    try {
+      localStorage.setItem(
+        SHARE_PREVIEW_STORAGE_KEY,
+        sharePreviewEnabled ? "1" : "0",
+      );
+    } catch (error) {
+      console.warn("预览偏好保存失败:", error);
+    }
+  }
+}
+
+function loadSharePreviewPreference() {
+  try {
+    const raw = localStorage.getItem(SHARE_PREVIEW_STORAGE_KEY);
+    const defaultEnabled = !IS_DATA_SAVER;
+    setSharePreviewEnabled(raw == null ? defaultEnabled : raw !== "0", { persist: false });
+  } catch (error) {
+    setSharePreviewEnabled(!IS_DATA_SAVER, { persist: false });
+  }
+}
+
+// 翻页更新函数 - 上下两半页面翻页效果
+function flipUpdate(unit, newValue) {
+  const container = document.getElementById(`flip-${unit}`);
+  if (!container) return;
+
+  const flipTop = container.querySelector(".flip-top");
+  const flipBottom = container.querySelector(".flip-bottom");
+  const flipTopFlip = container.querySelector(".flip-top-flip");
+
+  // 获取当前值
+  const currentValue = flipTop.getAttribute("data-digit") || flipTop.textContent;
+
+  // 只有当值改变时才触发翻页动画
+  if (currentValue !== newValue) {
+    // 准备下半部显示当前旧值，避免翻页过程中出现空白
+    flipBottom.setAttribute("data-digit", currentValue);
+    flipBottom.textContent = currentValue;
+
+    // 设置翻转部分的值（新值），并触发翻转动画
+    flipTopFlip.setAttribute("data-digit", newValue);
+    flipTopFlip.textContent = newValue;
+
+    // 触发翻转动画（上半部分翻下）
+    flipTopFlip.classList.add("flipping");
+    // 给上半部分以及下半部分加上折叠类以配合机械式翻页（轻微抬起/回弹）
+    flipTop.classList.add("folding");
+    flipBottom.classList.add("folding");
+
+    // 动画进行到一半时（约 50%），更新上半部分的值为新值（此时翻转面遮挡）
+    setTimeout(() => {
+      flipTop.setAttribute("data-digit", newValue);
+      flipTop.textContent = newValue;
+    }, 300);
+
+    // 动画结束后（全程），更新下半部分的值为新值，并重置动画状态
+    setTimeout(() => {
+      flipBottom.setAttribute("data-digit", newValue);
+      flipBottom.textContent = newValue;
+
+      // 重置翻转动画状态，准备下一次翻页
+      flipTopFlip.classList.remove("flipping");
+      flipTop.classList.remove("folding");
+      flipBottom.classList.remove("folding");
+    }, 600);
+  }
+}
+
+// 检查纪念日
+function checkMilestone(days) {
+  const milestoneElement = document.getElementById("milestone");
+  if (!milestoneElement) return;
+  const historySection = renderMilestoneHistory(days);
+
+  let nextMilestone = null;
+  let achievedMilestone = null;
+
+  for (const milestone of milestones) {
+    if (days >= milestone.days) {
+      achievedMilestone = milestone;
+    } else if (!nextMilestone) {
+      nextMilestone = milestone;
+      break;
+    }
+  }
+
+  if (
+    achievedMilestone &&
+    (!nextMilestone || days - achievedMilestone.days < 7)
+  ) {
+    const passedDays = days - achievedMilestone.days;
+    const nextHint = nextMilestone
+      ? `下一个目标：${nextMilestone.name}（还差 ${nextMilestone.days - days} 天）`
+      : "已经超越所有预设庆祝节点，继续创造新纪录！";
+
+  milestoneElement.className = "milestone module-title-corner milestone--achieved";
+    milestoneElement.innerHTML = `
+    <div class="milestone-head">
+      <span class="milestone-tag"><i class="fas fa-crown"></i> 已达成</span>
+      <span class="milestone-tag">${achievedMilestone.name}</span>
+    </div>
+    <div class="milestone-title">庆祝成功，继续甜蜜冲刺</div>
+    <div class="milestone-count">
+      <span class="milestone-count-num">+${passedDays}</span>
+      <span class="milestone-count-unit">天</span>
+    </div>
+    <div class="milestone-note">${achievedMilestone.message}</div>
+    <div class="milestone-sub">${nextHint}</div>
+    ${historySection}
+  `;
+    bindMilestoneHistoryToggle(milestoneElement);
+  } else if (nextMilestone) {
+    const daysLeft = nextMilestone.days - days;
+    const previousMilestoneDays = achievedMilestone ? achievedMilestone.days : 0;
+    const segmentTotal = Math.max(nextMilestone.days - previousMilestoneDays, 1);
+    const segmentPassed = Math.max(days - previousMilestoneDays, 0);
+    const progressPercent = Math.min(100, Math.max(0, Math.round((segmentPassed / segmentTotal) * 100)));
+
+  milestoneElement.className = "milestone module-title-corner milestone--upcoming";
+    milestoneElement.innerHTML = `
+    <div class="milestone-head">
+      <span class="milestone-tag"><i class="fas fa-gift"></i> 倒计时庆祝</span>
+      <span class="milestone-tag">目标：${nextMilestone.name}</span>
+    </div>
+    <div class="milestone-title">距离下一次庆祝还有</div>
+    <div class="milestone-count">
+      <span class="milestone-count-num">${daysLeft}</span>
+      <span class="milestone-count-unit">天</span>
+    </div>
+    <div class="milestone-note">${nextMilestone.message}</div>
+    <div class="milestone-progress" aria-hidden="true">
+      <span class="milestone-progress-bar" style="width: ${progressPercent}%;"></span>
+    </div>
+    <div class="milestone-sub">当前阶段进度：${progressPercent}%（${segmentPassed}/${segmentTotal} 天）</div>
+    ${historySection}
+  `;
+    bindMilestoneHistoryToggle(milestoneElement);
+  } else {
+    const lastMilestone = milestones[milestones.length - 1];
+  milestoneElement.className = "milestone module-title-corner milestone--infinity";
+    milestoneElement.innerHTML = `
+    <div class="milestone-head">
+      <span class="milestone-tag"><i class="fas fa-infinity"></i> 无限甜蜜</span>
+      <span class="milestone-tag">总天数：${days}</span>
+    </div>
+    <div class="milestone-title">爱意持续增长中...</div>
+    <div class="milestone-note">已超越 ${lastMilestone.name}，继续刷新记录！</div>
+    <div class="milestone-sub">未来可继续新增 2500 天、3000 天等庆祝节点。</div>
+    ${historySection}
+  `;
+    bindMilestoneHistoryToggle(milestoneElement);
+  }
+}
+
+// 切换主题
+function changeTheme() {
+  const nextTheme = (currentTheme + 1) % themes.length;
+  applyTheme(nextTheme, { persist: true });
+
+  if (isShareModalVisible()) {
+    void ensureModalQRCode(window.location.href);
+    scheduleShareCardPreviewRender();
+  }
+}
+
+// 分享功能
+async function shareLove() {
+  const shareUrl = window.location.href;
+
+  // 更新弹窗中的天数显示
+  document.getElementById("loveDays").textContent = currentValues.days;
+
+  // 显示二维码弹窗
+  await showQRCodeModal(shareUrl);
+}
+
+// 显示二维码弹窗
+async function showQRCodeModal(url) {
+  const modal = document.getElementById("qrcodeModal");
+  const templateSelect = document.getElementById("shareCardTemplateSelect");
+  const qrcodeContainer = document.getElementById("qrcode");
+
+  // 显示弹窗
+  modal.style.display = "flex";
+
+  if (templateSelect) {
+    templateSelect.value = String(currentShareCardTemplateIndex);
+  }
+
+  scheduleShareCardPreviewRender();
+  if (qrcodeContainer) {
+    qrcodeContainer.innerHTML = '<div style="font-size:0.86rem;color:#8a6d8f;">二维码加载中...</div>';
+  }
+  await ensureModalQRCode(url);
+}
+
+async function ensureModalQRCode(url) {
+  const qrcodeContainer = document.getElementById("qrcode");
+  if (!qrcodeContainer) return;
+
+  const qrReady = await ensureQRCodeLibrary();
+  if (!qrReady || !window.QRCode) {
+    qrcodeContainer.innerHTML = '<p style="color:#c92a2a;padding:16px;line-height:1.5;">二维码库加载失败，请稍后重试。</p>';
+    return;
+  }
+
+  const shouldRender =
+    !qrcodeContainer.querySelector("canvas") ||
+    !qrcodeInstance ||
+    modalQrState.text !== url ||
+    modalQrState.themeIndex !== currentTheme;
+
+  if (!shouldRender) return;
+
+  // 使用QRCode.js生成二维码
+  try {
+    qrcodeContainer.innerHTML = "";
+
+    // 创建新的二维码
+    qrcodeInstance = new QRCode(qrcodeContainer, {
+      text: url,
+      width: 180,
+      height: 180,
+      colorDark: themes[currentTheme].primary,
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+    modalQrState = {
+      text: url,
+      themeIndex: currentTheme,
+    };
+  } catch (error) {
+    console.error("QRCode库加载失败:", error);
+    qrcodeContainer.innerHTML =
+      '<p style="color:red; padding: 20px;">生成二维码失败，请刷新重试。</p>';
+  }
+}
+
+// 下载二维码
+function downloadQRCode() {
+  const canvas = document.querySelector("#qrcode canvas");
+  if (canvas) {
+    const link = document.createElement("a");
+    link.download = "恋爱时钟二维码.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  } else {
+    showToast("请先生成二维码！", "warning");
+  }
+}
+
+function generateShareQrCanvas(text, size = 150) {
+  const cacheKey = `${text}|${size}`;
+  if (shareQrCanvasCache.has(cacheKey)) {
+    return Promise.resolve(shareQrCanvasCache.get(cacheKey));
+  }
+
+  return new Promise((resolve, reject) => {
+    ensureQRCodeLibrary().then((isReady) => {
+      if (!isReady || !window.QRCode) {
+        reject(new Error("二维码脚本不可用"));
+        return;
+      }
+
+    try {
+      const tempWrap = document.createElement("div");
+      tempWrap.style.position = "fixed";
+      tempWrap.style.left = "-9999px";
+      tempWrap.style.top = "-9999px";
+      tempWrap.style.pointerEvents = "none";
+      document.body.appendChild(tempWrap);
+
+      new QRCode(tempWrap, {
+        text,
+        width: size,
+        height: size,
+        colorDark: "#2f2a30",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+
+      setTimeout(() => {
+        const qrCanvas = tempWrap.querySelector("canvas");
+        tempWrap.remove();
+        if (!qrCanvas) {
+          reject(new Error("二维码角标生成失败"));
+          return;
+        }
+        const cachedCanvas = document.createElement("canvas");
+        cachedCanvas.width = qrCanvas.width;
+        cachedCanvas.height = qrCanvas.height;
+        const cacheCtx = cachedCanvas.getContext("2d");
+        if (cacheCtx) {
+          cacheCtx.drawImage(qrCanvas, 0, 0);
+        }
+        shareQrCanvasCache.set(cacheKey, cachedCanvas);
+        resolve(cachedCanvas);
+      }, 80);
+    } catch (error) {
+      reject(error);
+    }
+    }).catch(reject);
+  });
+}
+
+function drawRoundedRectPath(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+}
+
+function drawShareCardContent(ctx, width, height, options = {}) {
+  const theme = themes[currentTheme] || themes[0];
+  const template =
+    SHARE_CARD_TEMPLATES[currentShareCardTemplateIndex] ||
+    SHARE_CARD_TEMPLATES[0];
+  const scale = width / 1080;
+  const nowText = options.nowText || new Date().toLocaleString("zh-CN", { hour12: false });
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, template.bgStart);
+  gradient.addColorStop(1, template.bgEnd);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  const cardX = 78 * scale;
+  const cardY = 95 * scale;
+  const cardW = width - cardX * 2;
+  const cardH = height - 180 * scale;
+
+  ctx.fillStyle = template.cardFill;
+  ctx.shadowColor = template.cardShadow;
+  ctx.shadowBlur = 24 * scale;
+  ctx.shadowOffsetY = 10 * scale;
+  drawRoundedRectPath(ctx, cardX, cardY, cardW, cardH, 36 * scale);
+  ctx.fill();
+
+  ctx.shadowColor = "transparent";
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = template.titleColor;
+  ctx.font = `bold ${Math.round(56 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText("💖 我们的恋爱时光", width / 2, cardY + 110 * scale);
+
+  const daysText = `${currentValues.days} 天`;
+  const timeText = `${currentValues.hours}:${currentValues.minutes}:${currentValues.seconds}`;
+
+  ctx.fillStyle = template.textColor;
+  ctx.font = `600 ${Math.round(34 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText("我们已经在一起", width / 2, cardY + 260 * scale);
+
+  ctx.fillStyle = template.accentColor || theme.primary;
+  ctx.font = `bold ${Math.round(122 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText(daysText, width / 2, cardY + 410 * scale);
+
+  ctx.fillStyle = template.textColor;
+  ctx.font = `600 ${Math.round(32 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText("此刻计时", width / 2, cardY + 520 * scale);
+
+  ctx.fillStyle = template.timeColor || theme.secondary;
+  ctx.font = `bold ${Math.round(72 * scale)}px 'Segoe UI', 'Microsoft YaHei', sans-serif`;
+  ctx.fillText(timeText, width / 2, cardY + 620 * scale);
+
+  ctx.fillStyle = template.textColor;
+  ctx.font = `500 ${Math.round(30 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText("你在我心里，永远是最特别的存在", width / 2, cardY + 760 * scale);
+  ctx.fillText("愿我们一直这样甜甜蜜蜜走下去", width / 2, cardY + 815 * scale);
+
+  ctx.fillStyle = template.footerColor;
+  ctx.font = `500 ${Math.round(24 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText(`生成时间：${nowText}`, width / 2, cardY + cardH - 78 * scale);
+  ctx.fillText("来自：小苹果和二狗子的恋爱时钟", width / 2, cardY + cardH - 36 * scale);
+
+  return {
+    cardX,
+    cardY,
+    cardW,
+    cardH,
+    scale,
+  };
+}
+
+function drawShareCardQrBadge(ctx, qrCanvas, layout) {
+  const { cardX, cardY, cardW, cardH, scale } = layout;
+  const badgeSize = 190 * scale;
+  const badgeX = cardX + cardW - badgeSize - 28 * scale;
+  const badgeY = cardY + cardH - badgeSize - 26 * scale;
+
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.strokeStyle = "rgba(255,182,193,0.55)";
+  ctx.lineWidth = Math.max(1.2, 2 * scale);
+  drawRoundedRectPath(ctx, badgeX, badgeY, badgeSize, badgeSize, 18 * scale);
+  ctx.fill();
+  ctx.stroke();
+
+  const qrSize = 150 * scale;
+  ctx.drawImage(qrCanvas, badgeX + 20 * scale, badgeY + 30 * scale, qrSize, qrSize);
+  ctx.fillStyle = "#7a536d";
+  ctx.font = `600 ${Math.round(20 * scale)}px 'Microsoft YaHei', 'Segoe UI', sans-serif`;
+  ctx.fillText("扫码看同款", badgeX + badgeSize / 2, badgeY + 22 * scale);
+}
+
+async function renderShareCardPreview() {
+  const previewCanvas = document.getElementById("shareCardPreviewCanvas");
+  if (!previewCanvas || !isShareModalVisible() || !sharePreviewEnabled) {
+    return;
+  }
+
+  const renderVersion = ++sharePreviewRenderVersion;
+  const ctx = previewCanvas.getContext("2d");
+  if (!ctx) return;
+
+  const layout = drawShareCardContent(ctx, previewCanvas.width, previewCanvas.height, {
+    nowText: "导出时自动生成",
+  });
+
+  try {
+    const qrCanvas = await generateShareQrCanvas(window.location.href, 110);
+    if (renderVersion !== sharePreviewRenderVersion) {
+      return;
+    }
+    drawShareCardQrBadge(ctx, qrCanvas, layout);
+  } catch (error) {
+    console.warn("预览二维码绘制失败:", error);
+  }
+}
+
+async function exportShareCardImage() {
+  try {
+    const canvas = document.createElement("canvas");
+    const width = 1080;
+    const height = 1440;
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas 初始化失败");
+
+    const nowText = new Date().toLocaleString("zh-CN", { hour12: false });
+    const layout = drawShareCardContent(ctx, width, height, { nowText });
+    const qrCanvas = await generateShareQrCanvas(window.location.href, 150);
+    drawShareCardQrBadge(ctx, qrCanvas, layout);
+
+    const link = document.createElement("a");
+    link.download = `恋爱分享卡片-${Date.now()}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    showToast("分享卡片已导出", "success");
+  } catch (error) {
+    console.error("导出分享卡片失败:", error);
+    showToast("导出分享卡片失败，请重试", "error");
+  }
+}
+
+function toggleMusic() {
+  if (!audio) {
+    audio = new Audio(
+      "https://music.163.com/song/media/outer/url?id=1407540299.mp3",
+    );
+    audio.loop = true;
+  }
+
+  const btn = document.getElementById("playMusicBtn");
+
+  if (!isPlaying) {
+    audio.play().catch((err) => {
+      console.error("播放失败:", err);
+    });
+    btn.innerHTML = '<i class="fas fa-pause"></i> 暂停音乐';
+    isPlaying = true;
+  } else {
+    audio.pause();
+    btn.innerHTML = '<i class="fas fa-play"></i> 播放音乐';
+    isPlaying = false;
+  }
+}
+
+// 页面加载完成后初始化
+window.addEventListener("DOMContentLoaded", () => {
+  if (redirectToPreferredVersion("v1")) return;
+
+  initHeartBackground();
+  if (!IS_DATA_SAVER) {
+    initClickHeartEffect();
+  }
+  loadThemeFromStorage();
+  loadSharePreviewPreference();
+  startLoveTimer();
+
+  // 添加事件监听器
+  document
+    .getElementById("themeBtn")
+    .addEventListener("click", changeTheme);
+  document
+    .getElementById("shareBtn")
+    .addEventListener("click", () => {
+      void shareLove();
+    });
+  document
+    .getElementById("playMusicBtn")
+    .addEventListener("click", toggleMusic);
+  document
+    .getElementById("switchVersionBtn")
+    .addEventListener("click", (event) => {
+      event.preventDefault();
+      smoothSwitchVersion("love_v2.html", "v2", event.currentTarget);
+    });
+
+  // 二维码弹窗关闭按钮
+  document.getElementById("modalClose").addEventListener("click", () => {
+    document.getElementById("qrcodeModal").style.display = "none";
+  });
+
+  // 下载二维码按钮
+  document
+    .getElementById("downloadBtn")
+    .addEventListener("click", downloadQRCode);
+
+  // 分享卡片预览开关
+  document
+    .getElementById("toggleSharePreviewBtn")
+    .addEventListener("click", () => {
+      setSharePreviewEnabled(!sharePreviewEnabled);
+    });
+
+  // 分享卡片模板切换
+  document
+    .getElementById("shareCardTemplateSelect")
+    .addEventListener("change", (event) => {
+      const nextIndex = Number.parseInt(event.target.value, 10);
+      if (Number.isInteger(nextIndex) && nextIndex >= 0 && nextIndex < SHARE_CARD_TEMPLATES.length) {
+        currentShareCardTemplateIndex = nextIndex;
+        scheduleShareCardPreviewRender();
+      }
+    });
+
+  // 导出分享卡片按钮
+  document
+    .getElementById("exportShareCardBtn")
+    .addEventListener("click", exportShareCardImage);
+
+  // 点击模态框外部关闭
+  document
+    .getElementById("qrcodeModal")
+    .addEventListener("click", (e) => {
+      if (e.target.id === "qrcodeModal") {
+        document.getElementById("qrcodeModal").style.display = "none";
+      }
+    });
+
+  // 窗口大小改变时重新初始化心形背景
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      initHeartBackground();
+    }, 250);
+  });
+
+  // 初始化异地恋功能
+  setTimeout(initLongDistanceRelationship, 1000);
+});
+
+// 页面卸载时清理资源
+window.addEventListener("beforeunload", () => {
+  if (animationFrameId) {
+    clearTimeout(animationFrameId);
+  }
+  if (clickHeartHandler) {
+    document.removeEventListener("click", clickHeartHandler);
+  }
+});
+    </script>
+  </body>
+</html>
