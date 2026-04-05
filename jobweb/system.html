@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统状态 - FinIntern Hub</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 app-shell">
+    <div id="app" class="min-h-screen flex">
+        <div id="navbar-container"></div>
+        <main class="flex-1 ml-0 md:ml-64 pt-20 md:pt-0">
+            <header class="bg-white shadow-sm border-b px-8 py-4 sticky top-0 z-40">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 id="page-title" class="text-2xl font-bold text-gray-800">系统状态</h2>
+                        <p class="text-sm text-gray-500 mt-1">统一配置中心、数据库状态、AI 状态与求职进度概览。</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="system-version-badge" class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-sm font-semibold">v3.9.0</span>
+                        <button id="refresh-btn" class="btn btn-outline"><i class="fas fa-sync-alt"></i> 刷新</button>
+                    </div>
+                </div>
+            </header>
+            <div class="p-8 space-y-6">
+                <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" id="status-cards"></section>
+                <section class="card">
+                    <div class="card-header"><h3 class="font-semibold">统一任务中心</h3></div>
+                    <div class="card-body">
+                        <div id="task-center" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">加载中...</div>
+                    </div>
+                </section>
+                <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">统一配置中心</h3></div>
+                        <div class="card-body space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="form-group mb-0">
+                                    <span class="form-label">爬虫并发数</span>
+                                    <input id="cfg-crawler-max-concurrent" class="form-input" type="number" min="1">
+                                </label>
+                                <label class="form-group mb-0">
+                                    <span class="form-label">请求超时（秒）</span>
+                                    <input id="cfg-crawler-request-timeout" class="form-input" type="number" min="5">
+                                </label>
+                                <label class="form-group mb-0">
+                                    <span class="form-label">重试次数</span>
+                                    <input id="cfg-crawler-retry-attempts" class="form-input" type="number" min="0">
+                                </label>
+                                <label class="form-group mb-0">
+                                    <span class="form-label">AI 超时（秒）</span>
+                                    <input id="cfg-siliconflow-timeout" class="form-input" type="number" min="10">
+                                </label>
+                                <label class="form-group mb-0">
+                                    <span class="form-label">AI 输出 token</span>
+                                    <input id="cfg-siliconflow-max-output-tokens" class="form-input" type="number" min="100">
+                                </label>
+                                <label class="form-group mb-0">
+                                    <span class="form-label">AI 日预算 token</span>
+                                    <input id="cfg-siliconflow-daily-token-budget" class="form-input" type="number" min="0">
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-4 flex-wrap">
+                                <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+                                    <input id="cfg-crawler-headless" type="checkbox">
+                                    无头爬虫
+                                </label>
+                                <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+                                    <input id="cfg-debug" type="checkbox">
+                                    调试模式
+                                </label>
+                            </div>
+                            <div class="flex gap-3">
+                                <button id="save-config-btn" class="btn btn-primary">保存配置</button>
+                                <button id="clean-history-btn" class="btn btn-outline">清洗历史岗位</button>
+                            </div>
+                            <pre id="config-output" class="text-sm whitespace-pre-wrap text-gray-700 bg-gray-50 rounded-xl p-4">加载中...</pre>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">求职进度概览</h3></div>
+                        <div class="card-body space-y-3" id="progress-output">加载中...</div>
+                    </div>
+                </section>
+                <section class="grid grid-cols-1 xl:grid-cols-[0.95fr_1.05fr] gap-6">
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">岗位订阅提醒</h3></div>
+                        <div class="card-body space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input id="sub-name" class="form-input" placeholder="订阅名称，如：上海基金实习">
+                                <input id="sub-keyword" class="form-input" placeholder="关键词，如：量化 / 投研">
+                                <input id="sub-locations" class="form-input" placeholder="地点，逗号分隔">
+                                <input id="sub-industries" class="form-input" placeholder="行业，逗号分隔">
+                                <input id="sub-job-types" class="form-input" placeholder="类型，逗号分隔">
+                                <input id="sub-education" class="form-input" placeholder="学历，如：硕士">
+                            </div>
+                            <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+                                <input id="sub-enabled" type="checkbox" checked>
+                                启用该订阅
+                            </label>
+                            <button id="save-subscription-btn" class="btn btn-primary">保存订阅</button>
+                            <div id="subscription-list" class="space-y-3">加载中...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">订阅命中预览</h3></div>
+                        <div class="card-body space-y-3" id="subscription-preview">选择一个订阅后显示匹配岗位。</div>
+                    </div>
+                </section>
+                <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">最近错误</h3></div>
+                        <div class="card-body space-y-3" id="recent-errors">加载中...</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">爬虫诊断面板</h3></div>
+                        <div class="card-body space-y-3" id="crawler-diagnostics">加载中...</div>
+                    </div>
+                </section>
+                <section class="grid grid-cols-1 xl:grid-cols-[0.9fr_1.1fr] gap-6">
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">AI 成本控制面板</h3></div>
+                        <div class="card-body space-y-3" id="ai-cost-panel">加载中...</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="font-semibold">来源质量评分</h3></div>
+                        <div class="card-body space-y-3" id="source-quality-panel">加载中...</div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <!-- 元数据（优先加载） -->
+    <script src="./data/jobs.meta.js"></script>
+    <!-- 优先加载前20条数据（约100KB，快速渲染） -->
+    <script src="./data/jobs.chunk.0.js"></script>
+    <script src="./js/api.js?v=20260405-v391"></script>
+    <script src="./js/auth.js?v=20260405-v391"></script>
+    <script src="./js/navbar.js?v=20260405-v391"></script>
+    <script src="./js/ui-components.js?v=20260405-v391"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavbar('#navbar-container', 'system', {
+            navbar: { version: 'v3.9.0' }
+            });
+            document.getElementById('refresh-btn').addEventListener('click', loadSystemData);
+            document.getElementById('save-config-btn').addEventListener('click', saveRuntimeConfig);
+            document.getElementById('clean-history-btn').addEventListener('click', cleanHistoricalData);
+            document.getElementById('save-subscription-btn').addEventListener('click', saveSubscription);
+            loadSystemData();
+        });
+
+        async function loadSystemData() {
+            const [status, config, subscriptions] = await Promise.all([
+                API.getSystemStatus(),
+                API.getSystemConfig(),
+                API.getSubscriptions(),
+            ]);
+            window.__systemAiFailures = status.ai_runtime?.recent_failures || [];
+                document.getElementById('system-version-badge').textContent = `v${status.app?.version || '3.7.3'}`;
+
+            document.getElementById('status-cards').innerHTML = [
+                renderMetricCard({ label: '应用版本', value: status.app?.version || '-', icon: 'fa-code-branch', tone: 'blue', hint: '当前运行中的后端版本' }),
+                renderMetricCard({ label: '岗位总数', value: status.database?.total_jobs || 0, icon: 'fa-database', tone: 'emerald', hint: '数据库内已结构化的岗位数量' }),
+                renderMetricCard({ label: '今日新增', value: status.today_jobs || 0, icon: 'fa-calendar-day', tone: 'amber', hint: '按发布时间统计的今日岗位' }),
+                renderMetricCard({ label: '爬虫成功率', value: `${status.crawler_success_rate || 0}%`, icon: 'fa-spider', tone: 'violet', hint: '最近采集任务的成功率' }),
+                renderMetricCard({ label: 'AI 超时率', value: `${status.ai_runtime?.timeout_rate || 0}%`, icon: 'fa-hourglass-half', tone: 'rose', hint: 'AI 请求超时占比' }),
+                renderMetricCard({ label: 'AI 缓存命中', value: `${status.ai_runtime?.cache_hit_rate || 0}%`, icon: 'fa-bolt', tone: 'blue', hint: '同画像同岗位缓存命中率' }),
+            ].join('');
+            document.getElementById('task-center').innerHTML = (status.task_center || []).length
+                ? status.task_center.map(renderTaskItem).join('')
+                : renderPanelState({ title: '暂无任务', body: '当前没有可展示的运行任务。', tone: 'slate', icon: 'fa-list-check' });
+
+            document.getElementById('config-output').textContent = JSON.stringify(config, null, 2);
+            fillConfigForm(config);
+            renderRecentErrors(status.recent_errors || []);
+            renderCrawlerDiagnostics(status.crawler_diagnostics || {});
+            renderAiCostPanel(status.ai_runtime || {});
+            renderSourceQualityPanel(status.crawler_diagnostics || {});
+
+            const progress = status.progress_summary || [];
+            document.getElementById('progress-output').innerHTML = progress.length
+                ? progress.map(item => `
+                    <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                        <span class="text-gray-700">${item.status}</span>
+                        <span class="font-semibold text-gray-900 count-rolling" data-countup="${Number(item.count || 0)}">${item.count}</span>
+                    </div>
+                `).join('')
+                : renderPanelState({ title: '暂无进度数据', body: '还没有投递状态流转记录。', tone: 'slate', icon: 'fa-timeline' });
+
+            renderSystemVisualSummary(status, progress);
+            renderSubscriptions(subscriptions || []);
+            if (typeof animateCountUpIn === 'function') {
+                animateCountUpIn(document.getElementById('status-cards'));
+                animateCountUpIn(document.getElementById('progress-output'));
+                animateCountUpIn(document.getElementById('crawler-diagnostics'));
+                animateCountUpIn(document.getElementById('ai-cost-panel'));
+                animateCountUpIn(document.getElementById('source-quality-panel'));
+                animateCountUpIn(document.getElementById('system-visual-summary'));
+            }
+        }
+
+        function renderRecentErrors(errors) {
+            const container = document.getElementById('recent-errors');
+            const aiFailures = (window.__systemAiFailures || []).map(item => ({
+                source: `AI · ${item.model || 'unknown'}`,
+                time: item.time || '',
+                status: 'ai_failure',
+                message: item.message || 'AI 调用失败',
+            }));
+            const merged = [...aiFailures, ...(errors || [])].slice(0, 8);
+            if (!merged.length) {
+                container.innerHTML = renderPanelState({ title: '暂无最近错误', body: '最近采集和 AI 任务运行比较稳定。', tone: 'sky', icon: 'fa-shield-heart' });
+                return;
+            }
+            container.innerHTML = merged.map(item => `
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="font-semibold text-rose-700">${escapeHtml(item.source || 'unknown')}</span>
+                        <span class="text-xs text-rose-600">${escapeHtml(item.time || '')}</span>
+                    </div>
+                    <div class="text-xs text-rose-500 mt-1">${escapeHtml(item.status || 'error')}</div>
+                    <div class="text-sm text-rose-700 mt-2 leading-6">${escapeHtml(item.message || '运行异常')}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderCrawlerDiagnostics(diagnostics) {
+            const container = document.getElementById('crawler-diagnostics');
+            const entries = Object.entries(diagnostics || {}).slice(0, 8);
+            if (!entries.length) {
+                container.innerHTML = renderPanelState({ title: '暂无诊断数据', body: '运行过一次数据采集后，这里会显示各来源抓取、重复和失败情况。', tone: 'amber', icon: 'fa-chart-column' });
+                return;
+            }
+            container.innerHTML = entries.map(([source, item]) => `
+                <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <span class="font-semibold text-gray-900">${escapeHtml(source)}</span>
+                        <span class="text-xs text-gray-500">运行 ${escapeHtml(String(item.runs || 0))} 次</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-sm">
+                        <div><span class="text-gray-500">抓取</span><div class="font-semibold text-gray-900 count-rolling" data-countup="${Number(item.fetched || 0)}">${escapeHtml(String(item.fetched || 0))}</div></div>
+                        <div><span class="text-gray-500">保存</span><div class="font-semibold text-emerald-700 count-rolling" data-countup="${Number(item.saved || 0)}">${escapeHtml(String(item.saved || 0))}</div></div>
+                        <div><span class="text-gray-500">重复</span><div class="font-semibold text-amber-700 count-rolling" data-countup="${Number(item.duplicates || 0)}">${escapeHtml(String(item.duplicates || 0))}</div></div>
+                        <div><span class="text-gray-500">失败</span><div class="font-semibold text-rose-700 count-rolling" data-countup="${Number(item.failed || 0)}">${escapeHtml(String(item.failed || 0))}</div></div>
+                        <div><span class="text-gray-500">写库失败</span><div class="font-semibold text-red-700 count-rolling" data-countup="${Number(item.write_failures || 0)}">${escapeHtml(String(item.write_failures || 0))}</div></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAiCostPanel(runtime) {
+            const container = document.getElementById('ai-cost-panel');
+            const budget = Number(runtime.daily_budget || 0);
+            const used = Number(runtime.daily_tokens || 0);
+            const usageRate = budget > 0 ? ((used / budget) * 100).toFixed(1) : '0.0';
+            const byModel = Object.entries(runtime.by_model || {});
+            container.innerHTML = `
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 motion-card"><div class="text-xs text-gray-500">今日 Token</div><div class="text-xl font-semibold text-gray-900 mt-1 count-rolling" data-countup="${used}">${used}</div></div>
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 motion-card"><div class="text-xs text-gray-500">预算占比</div><div class="text-xl font-semibold text-gray-900 mt-1 count-rolling" data-countup="${Number(usageRate || 0)}" data-countup-suffix="%" data-countup-decimals="1">${usageRate}%</div></div>
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 motion-card"><div class="text-xs text-gray-500">模型切换</div><div class="text-xl font-semibold text-gray-900 mt-1 count-rolling" data-countup="${Number(runtime.model_switches || 0)}">${runtime.model_switches || 0}</div></div>
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 motion-card"><div class="text-xs text-gray-500">缓存命中</div><div class="text-xl font-semibold text-gray-900 mt-1 count-rolling" data-countup="${Number(runtime.cache_hit_rate || 0)}" data-countup-suffix="%">${runtime.cache_hit_rate || 0}%</div></div>
+                </div>
+                <div class="rounded-xl border border-gray-200 bg-white p-4">
+                    <div class="text-sm font-semibold text-gray-900 mb-3">模型消耗</div>
+                    ${(byModel.length ? byModel : [['暂无模型记录', 0]]).map(([model, value]) => `
+                        <div class="flex items-center justify-between py-2 text-sm border-b last:border-b-0 border-gray-100">
+                            <span class="text-gray-600 break-all pr-3">${escapeHtml(String(model))}</span>
+                            <span class="font-semibold text-gray-900 count-rolling" data-countup="${Number(value || 0)}">${escapeHtml(String(value))}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderSourceQualityPanel(diagnostics) {
+            const container = document.getElementById('source-quality-panel');
+            const entries = Object.entries(diagnostics || {}).slice(0, 8);
+            if (!entries.length) {
+                container.innerHTML = '<div class="text-gray-500">暂无来源质量评分</div>';
+                return;
+            }
+            container.innerHTML = entries.map(([source, item]) => `
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="font-semibold text-gray-900">${escapeHtml(source)}</div>
+                        <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-xs font-semibold">Tier ${escapeHtml(String(item.tier || 'C'))}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3 text-sm">
+                        <div><span class="text-gray-500">抓取频率</span><div class="font-semibold text-gray-900">${escapeHtml(String(item.frequency || '低频'))}</div></div>
+                        <div><span class="text-gray-500">质量权重</span><div class="font-semibold text-gray-900 count-rolling" data-countup="${Number(item.quality_weight || 0)}" data-countup-decimals="${String(item.quality_weight || 0).includes('.') ? 1 : 0}">${escapeHtml(String(item.quality_weight || 0))}</div></div>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-3 leading-6">${escapeHtml(String(item.reason || '暂无说明'))}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderSystemVisualSummary(status, progress) {
+            let section = document.getElementById('system-visual-summary');
+            const host = document.querySelector('main .p-8');
+            if (!host) return;
+
+            if (!section) {
+                section = document.createElement('section');
+                section.id = 'system-visual-summary';
+                section.className = 'grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6 view-visual-only';
+                const taskSection = document.getElementById('task-center')?.closest('section');
+                if (taskSection && taskSection.nextSibling) {
+                    host.insertBefore(section, taskSection.nextSibling);
+                } else {
+                    host.appendChild(section);
+                }
+            }
+
+            const isVisualMode = typeof getDisplayMode === 'function' ? getDisplayMode() === 'visual' : true;
+            if (!isVisualMode) {
+                section.innerHTML = '';
+                return;
+            }
+
+            const taskItems = (status.task_center || []).map(task => ({
+                label: task.name || '未命名任务',
+                value: task.status === 'healthy' ? 100 : task.status === 'running' ? 82 : task.status === 'active' ? 68 : task.status === 'disabled' ? 20 : task.status === 'error' ? 12 : 45,
+            })).slice(0, 6);
+            const totalJobs = Number(status.database?.total_jobs || 0);
+            const todayJobs = Number(status.today_jobs || 0);
+            const topProgress = (progress || []).slice(0, 5).map(item => ({
+                label: item.status || '未命名状态',
+                value: Number(item.count || 0),
+            }));
+
+            section.innerHTML = `
+                ${renderVisualBarPanel({
+                    title: '系统任务活跃度',
+                    items: taskItems,
+                    tone: 'violet',
+                    emptyText: '当前没有可视化任务数据',
+                    icon: 'fa-gauge-high'
+                })}
+                <div class="grid grid-cols-1 gap-6">
+                    ${renderVisualRing({
+                        label: '今日新增占比',
+                        value: todayJobs,
+                        total: Math.max(totalJobs, 1),
+                        tone: 'emerald',
+                        caption: '今日新增 / 全部岗位',
+                        icon: 'fa-calendar-day'
+                    })}
+                    ${renderVisualBarPanel({
+                        title: '投递进度分布',
+                        items: topProgress,
+                        tone: 'amber',
+                        emptyText: '当前还没有投递进度数据',
+                        icon: 'fa-timeline'
+                    })}
+                </div>
+            `;
+        }
+
+        function fillConfigForm(config) {
+            const overrides = config.runtime_overrides || {};
+            const crawler = config.crawler || {};
+            const ai = config.ai || {};
+            document.getElementById('cfg-debug').checked = Boolean(overrides.debug ?? config.app?.debug);
+            document.getElementById('cfg-crawler-max-concurrent').value = overrides.crawler_max_concurrent ?? crawler.max_concurrent ?? '';
+            document.getElementById('cfg-crawler-request-timeout').value = overrides.crawler_request_timeout ?? crawler.request_timeout ?? '';
+            document.getElementById('cfg-crawler-retry-attempts').value = overrides.crawler_retry_attempts ?? crawler.retry_attempts ?? '';
+            document.getElementById('cfg-crawler-headless').checked = Boolean(overrides.crawler_headless ?? crawler.headless);
+            document.getElementById('cfg-siliconflow-timeout').value = overrides.siliconflow_timeout ?? ai.timeout ?? '';
+            document.getElementById('cfg-siliconflow-max-output-tokens').value = overrides.siliconflow_max_output_tokens ?? ai.max_output_tokens ?? '';
+            document.getElementById('cfg-siliconflow-daily-token-budget').value = overrides.siliconflow_daily_token_budget ?? ai.daily_token_budget ?? '';
+        }
+
+        async function saveRuntimeConfig() {
+            const payload = {
+                debug: document.getElementById('cfg-debug').checked,
+                crawler_max_concurrent: Number(document.getElementById('cfg-crawler-max-concurrent').value || 0),
+                crawler_request_timeout: Number(document.getElementById('cfg-crawler-request-timeout').value || 0),
+                crawler_retry_attempts: Number(document.getElementById('cfg-crawler-retry-attempts').value || 0),
+                crawler_headless: document.getElementById('cfg-crawler-headless').checked,
+                siliconflow_timeout: Number(document.getElementById('cfg-siliconflow-timeout').value || 0),
+                siliconflow_max_output_tokens: Number(document.getElementById('cfg-siliconflow-max-output-tokens').value || 0),
+                siliconflow_daily_token_budget: Number(document.getElementById('cfg-siliconflow-daily-token-budget').value || 0),
+            };
+            const result = await API.updateSystemConfig(payload);
+            alert(result.message || '配置已保存');
+            loadSystemData();
+        }
+
+        async function cleanHistoricalData() {
+            const result = await API.cleanHistoricalData(800);
+            alert(result.message || '历史岗位清洗已执行');
+            loadSystemData();
+        }
+
+        function renderSubscriptions(subscriptions) {
+            const container = document.getElementById('subscription-list');
+            if (!subscriptions.length) {
+                container.innerHTML = '<div class="text-gray-500">暂无订阅</div>';
+                return;
+            }
+            container.innerHTML = subscriptions.map(item => `
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <div class="font-semibold text-gray-900">${escapeHtml(item.name)}</div>
+                            <div class="text-xs text-gray-500 mt-1">${escapeHtml(item.keyword || '无关键词')}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="btn btn-outline btn-sm" onclick="previewSubscription(${item.id})">预览命中</button>
+                            <button class="btn btn-ghost btn-sm" onclick="deleteSubscription(${item.id})">删除</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function saveSubscription() {
+            const payload = {
+                name: document.getElementById('sub-name').value.trim(),
+                keyword: document.getElementById('sub-keyword').value.trim(),
+                locations: splitList(document.getElementById('sub-locations').value),
+                industries: splitList(document.getElementById('sub-industries').value),
+                job_types: splitList(document.getElementById('sub-job-types').value),
+                education: document.getElementById('sub-education').value.trim(),
+                enabled: document.getElementById('sub-enabled').checked,
+            };
+            if (!payload.name) {
+                alert('先填写订阅名称');
+                return;
+            }
+            await API.saveSubscription(payload);
+            ['sub-name','sub-keyword','sub-locations','sub-industries','sub-job-types','sub-education'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('sub-enabled').checked = true;
+            loadSystemData();
+        }
+
+        async function deleteSubscription(id) {
+            await API.deleteSubscription(id);
+            document.getElementById('subscription-preview').innerHTML = '选择一个订阅后显示匹配岗位。';
+            loadSystemData();
+        }
+
+        async function previewSubscription(id) {
+            const jobs = await API.previewSubscription(id);
+            const container = document.getElementById('subscription-preview');
+            if (!jobs.length) {
+                container.innerHTML = renderPanelState({ title: '暂无命中岗位', body: '当前订阅条件还没有匹配到岗位。', tone: 'amber', icon: 'fa-bell-slash' });
+                return;
+            }
+            container.innerHTML = jobs.map(job => `
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <div class="font-semibold text-gray-900">${escapeHtml(job.title || '未命名岗位')}</div>
+                    <div class="text-sm text-gray-500 mt-1">${escapeHtml(job.company || '未知公司')} · ${escapeHtml(job.location || '地点待定')}</div>
+                    <div class="text-xs text-gray-500 mt-2">数据质量：${escapeHtml(job.quality_level || '一般')} · ${escapeHtml(String(job.quality_score || 0))} 分</div>
+                </div>
+            `).join('');
+        }
+
+        function splitList(text) {
+            return String(text || '').split(/[，,]/).map(item => item.trim()).filter(Boolean);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+    </script>
+</body>
+</html>
+
+
+

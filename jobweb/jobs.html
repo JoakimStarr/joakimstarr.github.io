@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinIntern Hub - 金融实习岗位列表，浏览和搜索金融实习机会">
+    <meta name="keywords" content="金融实习, 实习岗位, 招聘, FinIntern, 岗位列表">
+    <meta name="author" content="FinIntern Hub">
+    <meta name="theme-color" content="#3b82f6">
+    <title>岗位列表 - FinIntern Hub</title>
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+
+    <!-- 公共资源 -->
+    <link rel="stylesheet" href="./css/common.css">
+    <style>
+        #facet-board.facet-board-animating {
+            pointer-events: none;
+        }
+
+        #facet-board .facet-card {
+            animation: facetCardIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+            transform-origin: center top;
+        }
+
+        #facet-board .facet-card:nth-child(2) { animation-delay: 30ms; }
+        #facet-board .facet-card:nth-child(3) { animation-delay: 60ms; }
+        #facet-board .facet-card:nth-child(4) { animation-delay: 90ms; }
+        #facet-board .facet-card:nth-child(5) { animation-delay: 120ms; }
+
+        #facet-board.is-chart-view .facet-pie-visual {
+            animation: pieReveal 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+            transform-origin: center center;
+        }
+
+        #facet-board.is-chart-view .facet-pie-legend-row {
+            animation: facetLegendIn 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        #facet-board.is-chart-view .facet-pie-legend-row:nth-child(2) { animation-delay: 60ms; }
+        #facet-board.is-chart-view .facet-pie-legend-row:nth-child(3) { animation-delay: 110ms; }
+        #facet-board.is-chart-view .facet-pie-legend-row:nth-child(4) { animation-delay: 160ms; }
+        #facet-board.is-chart-view .facet-pie-legend-row:nth-child(5) { animation-delay: 210ms; }
+
+        .facet-pie-visual {
+            width: 96px;
+            height: 96px;
+            border-radius: 999px;
+        }
+
+        .facet-pie-legend-row {
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+            transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+            min-width: 0;
+            min-height: 28px;
+        }
+
+        .facet-pie-legend-row:hover {
+            transform: none;
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        #chart-toggle-btn .fa-chart-pie {
+            transition: transform 220ms ease, color 220ms ease;
+        }
+
+        #chart-toggle-btn[aria-pressed="true"] .fa-chart-pie {
+            transform: rotate(20deg) scale(1.06);
+        }
+
+        @keyframes facetCardIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.985);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pieReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.76) rotate(-36deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes facetLegendIn {
+            from {
+                opacity: 0;
+                transform: translateX(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .grouped-columns-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .group-column {
+            border: 1px solid #e5e7eb;
+            border-radius: 1.25rem;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+        }
+
+        .group-column-body {
+            max-height: 720px;
+            overflow-y: auto;
+        }
+
+        .grouped-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(88px, 0.55fr);
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 180ms ease;
+        }
+
+        .grouped-row:hover {
+            background: #f8fafc;
+        }
+
+        .grouped-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 app-shell">
+    <!-- noscript 提示 -->
+    <noscript>
+        <div style="padding: 20px; background: #fef3c7; border: 1px solid #f59e0b; text-align: center;">
+            <i class="fas fa-exclamation-triangle" style="color: #f59e0b; margin-right: 10px;"></i>
+            <strong>请启用 JavaScript</strong> 以获得最佳浏览体验。部分功能需要 JavaScript 支持。
+        </div>
+    </noscript>
+
+    <!-- 页面根容器 -->
+    <div id="app" class="min-h-screen flex">
+        <!-- 导航栏容器（由 navbar.js 渲染） -->
+        <div id="navbar-container"></div>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 ml-0 md:ml-64 pt-20 md:pt-0">
+            <!-- 顶部栏 -->
+            <header class="bg-white shadow-sm border-b px-8 py-4 sticky top-0 z-40">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <!-- 页面标题 -->
+                    <h2 id="page-title" class="text-2xl font-bold text-gray-800">岗位列表</h2>
+                    
+                    <!-- 搜索和操作区 -->
+                    <div class="flex items-center gap-4">
+                        <!-- 搜索框 -->
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="搜索岗位、公司..." 
+                                class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                        
+                        <!-- 刷新按钮 -->
+                        <button id="refresh-btn" class="btn btn-outline" title="刷新数据">
+                            <i class="fas fa-sync-alt"></i>
+                            <span class="hidden sm:inline">刷新</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面内容 -->
+            <div id="content" class="p-8">
+                <!-- 筛选器区域 -->
+                <section id="filter-section" class="card mb-6 relative z-[70]" style="overflow: visible;">
+                    <div class="card-body">
+                        <div class="flex flex-wrap items-end gap-4">
+                            <!-- 地点筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">工作地点</label>
+                                <select id="filter-location" class="form-select w-56">
+                                    <option value="">全部地点</option>
+                                </select>
+                            </div>
+
+                            <!-- 类型筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">工作类型</label>
+                                <select id="filter-type" class="form-select w-32">
+                                    <option value="">全部类型</option>
+                                </select>
+                            </div>
+
+                            <!-- 行业筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">行业赛道</label>
+                                <select id="filter-industry" class="form-select w-40">
+                                    <option value="">全部行业</option>
+                                </select>
+                            </div>
+
+                            <!-- 类别筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">岗位方向</label>
+                                <select id="filter-category" class="form-select w-40">
+                                    <option value="">全部方向</option>
+                                </select>
+                            </div>
+
+                            <!-- 学历筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">学历要求</label>
+                                <select id="filter-education" class="form-select w-32">
+                                    <option value="">全部学历</option>
+                                </select>
+                            </div>
+
+                            <!-- 数据来源筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">数据来源</label>
+                                <select id="filter-source" class="form-select w-44">
+                                    <option value="">全部来源</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 发布时间筛选 -->
+                            <div class="form-group mb-0">
+                                <label class="form-label">发布时间</label>
+                                <select id="filter-date" class="form-select w-32">
+                                    <option value="">全部时间</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 清除按钮 -->
+                            <button id="clear-filters-btn" class="btn btn-ghost text-gray-600">
+                                <i class="fas fa-times-circle"></i>
+                                清除筛选
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 统计信息 -->
+                <section id="stats-section" class="mb-4 flex items-center justify-between gap-4 text-sm text-gray-600">
+                    <span id="stats-text">加载中...</span>
+                    <div class="flex items-center gap-3">
+                        <button
+                            id="compact-toggle-btn"
+                            type="button"
+                            class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
+                            title="切换紧凑布局"
+                            aria-pressed="false"
+                        >
+                            <i class="fas fa-compress-alt"></i>
+                            <span>紧凑</span>
+                        </button>
+                        <button
+                            id="chart-toggle-btn"
+                            type="button"
+                            class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
+                            title="切换统计图表样式"
+                            aria-pressed="false"
+                        >
+                            <i class="fas fa-chart-pie"></i>
+                            <span>图表</span>
+                        </button>
+                        <span id="loading-indicator" class="hidden">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>加载中...
+                        </span>
+                    </div>
+                </section>
+
+                <section id="facet-board" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4 mb-6 hidden"></section>
+
+                <!-- 岗位列表容器 -->
+                <section id="jobs-container" class="space-y-4">
+                    <!-- 静态内容：无JS时显示 -->
+                    <div id="static-content" class="text-center py-12 text-gray-500">
+                        <i class="fas fa-briefcase text-6xl mb-4 text-gray-300"></i>
+                        <p class="text-lg mb-2">正在加载岗位数据...</p>
+                        <p class="text-sm">如果页面长时间未加载，请检查网络连接或启用 JavaScript</p>
+                    </div>
+                    
+                    <!-- 动态内容将由 JavaScript 渲染 -->
+                    <div id="jobs-list" class="space-y-4 hidden"></div>
+                    
+                    <!-- 空状态 -->
+                    <div id="empty-state" class="hidden text-center py-12">
+                        <i class="fas fa-inbox text-6xl mb-4 text-gray-300"></i>
+                        <p class="text-lg text-gray-600 mb-2">暂无符合条件的岗位</p>
+                        <p class="text-sm text-gray-500 mb-4">尝试调整筛选条件或搜索关键词</p>
+                        <button id="empty-clear-btn" class="btn btn-primary">
+                            <i class="fas fa-times-circle mr-2"></i>清除筛选
+                        </button>
+                    </div>
+                    
+                    <!-- 错误状态 -->
+                    <div id="error-state" class="hidden text-center py-12">
+                        <i class="fas fa-exclamation-circle text-6xl mb-4 text-red-400"></i>
+                        <p class="text-lg text-gray-600 mb-2">加载失败</p>
+                        <p id="error-message" class="text-sm text-gray-500 mb-4">请稍后重试</p>
+                        <button id="retry-btn" class="btn btn-primary">
+                            <i class="fas fa-redo mr-2"></i>重新加载
+                        </button>
+                    </div>
+                </section>
+
+                <!-- 分页组件 -->
+                <section id="pagination-section" class="mt-8 flex items-center justify-between">
+                    <!-- 分页信息 -->
+                    <div class="text-sm text-gray-600">
+                        <span id="pagination-info">共 0 条记录</span>
+                    </div>
+                    
+                    <!-- 分页按钮 -->
+                    <div id="pagination-controls" class="flex items-center gap-2">
+                        <button id="prev-page-btn" class="btn btn-outline btn-sm" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                            上一页
+                        </button>
+                        
+                        <div id="page-numbers" class="flex items-center gap-1">
+                            <!-- 页码按钮由 JS 生成 -->
+                        </div>
+                        
+                        <button id="next-page-btn" class="btn btn-outline btn-sm" disabled>
+                            下一页
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 每页数量选择 -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">每页显示</span>
+                        <select id="page-size-select" class="form-select w-20 py-1">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span class="text-gray-600">条</span>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- 引入公共资源 -->
+    <script src="./js/logger.js"></script>
+    <script src="./js/utils.js"></script>
+    <!-- 元数据（优先加载） -->
+    <script src="./data/jobs.meta.js"></script>
+    <!-- 优先加载前20条数据（约100KB，快速渲染） -->
+    <script src="./data/jobs.chunk.0.js"></script>
+    <!-- API和加载器 -->
+    <script src="./js/api.js?v=20260405-v391"></script>
+    <script src="./js/auth.js?v=20260405-v391"></script>
+    <script src="./js/navbar.js?v=20260405-v391"></script>
+    <script src="./js/ui-components.js?v=20260405-v391"></script>
+
+    <!-- 页面脚本 -->
+    <script>
+        // ==================== 全局状态 ====================
+        const state = {
+            jobs: [],
+            total: 0,
+            page: 1,
+            pageSize: 20,
+            totalPages: 0,
+            filters: {
+                keyword: '',
+                location: '',
+                jobType: '',
+                industry: '',
+                category: '',
+                education: '',
+                source: '',
+                dateRange: ''
+            },
+            filterOptions: {
+                locations: [],
+                education: [],
+                job_types: [],
+                industries: [],
+                sources: [],
+                categories: [],
+                publish_date_ranges: []
+            },
+            locationTree: [],
+            facets: null,
+            facetView: 'list',
+            facetOffsets: {},
+            compactMode: false,
+            isLoading: false,
+            currentJobId: null,
+            aiHistory: [],
+            // 数据加载状态
+            dataLoading: {
+                priorityLoaded: false,
+                allLoaded: false,
+                progress: 0,
+                isBackgroundLoading: false
+            }
+        };
+
+        const APPLICATION_STATUSES = ['未投递', '已收藏', '已投递', '笔试中', '面试中', '已拿Offer', '已结束'];
+        const JOBS_FACET_VIEW_KEY = 'finintern-jobs-facet-view-v1';
+        const JOBS_COMPACT_VIEW_KEY = 'finintern-jobs-compact-view-v1';
+
+        const FIXED_PROVINCES = [
+            '北京市', '天津市', '上海市', '重庆市',
+            '河北省', '山西省', '辽宁省', '吉林省', '黑龙江省',
+            '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省',
+            '河南省', '湖北省', '湖南省', '广东省', '海南省',
+            '四川省', '贵州省', '云南省', '陕西省', '甘肃省', '青海省',
+            '台湾省', '内蒙古自治区', '广西壮族自治区', '西藏自治区',
+            '宁夏回族自治区', '新疆维吾尔自治区',
+            '香港特别行政区', '澳门特别行政区', '其他'
+        ];
+
+        // ==================== DOM 元素引用 ====================
+        const elements = {};
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initElements();
+            initNavbar('#navbar-container', 'jobs');
+            restoreViewPreferences();
+            initEventListeners();
+
+            // 检查优先数据是否已加载，然后初始化页面
+            initDataLoading();
+        });
+
+        // 初始化数据加载
+        async function initDataLoading() {
+            // 检查 DataLoader 是否可用
+            if (typeof DataLoader !== 'undefined') {
+                // 优先数据（前20条）应该已经通过 script 标签加载
+                state.dataLoading.priorityLoaded = DataLoader.isPriorityLoaded();
+
+                // 立即加载筛选选项和第一页数据（使用已加载的优先数据）
+                await loadFilterOptions();
+                restoreStateFromURL();
+                await loadJobs();
+
+                // 启动后台加载剩余数据
+                if (!DataLoader.isAllLoaded()) {
+                    startBackgroundLoading();
+                } else {
+                    state.dataLoading.allLoaded = true;
+                }
+            } else {
+                // 降级方案：直接加载
+                await loadFilterOptions();
+                restoreStateFromURL();
+                await loadJobs();
+            }
+        }
+
+        // 启动后台数据加载
+        function startBackgroundLoading() {
+            state.dataLoading.isBackgroundLoading = true;
+
+            // 显示后台加载提示
+            showBackgroundLoadingToast();
+
+            // 启动后台加载
+            DataLoader.loadRemaining((progressInfo) => {
+                state.dataLoading.progress = progressInfo.progress;
+
+                // 更新统计信息（只更新数字，不刷新列表）
+                updateStatsAfterBackgroundLoad();
+            }).then(() => {
+                state.dataLoading.allLoaded = true;
+                state.dataLoading.isBackgroundLoading = false;
+
+                // 更新统计信息，显示全部数据量
+                updateStatsAfterBackgroundLoad();
+                showToast(`所有数据加载完成，共 ${DataLoader.getJobs().length} 条岗位`, 'success');
+            }).catch((err) => {
+                console.warn('后台加载失败:', err);
+                state.dataLoading.isBackgroundLoading = false;
+            });
+        }
+
+        // 后台加载完成后更新统计（不刷新列表，避免干扰用户）
+        function updateStatsAfterBackgroundLoad() {
+            // 只更新统计数字，不重新渲染列表
+            const allJobs = DataLoader.getJobs ? DataLoader.getJobs() : [];
+            if (elements.statsText && allJobs.length > 0) {
+                const currentText = elements.statsText.textContent;
+                // 如果用户没有进行筛选，更新总数显示
+                if (!state.filters.keyword && !state.filters.location && !state.filters.jobType &&
+                    !state.filters.industry && !state.filters.category && !state.filters.education &&
+                    !state.filters.source && !state.filters.dateRange) {
+                    elements.statsText.innerHTML = `当前共 <span id="stats-count" class="font-semibold text-gray-900">${allJobs.length}</span> 个岗位` +
+                        (state.dataLoading.isBackgroundLoading ? ` <span class="text-blue-500 text-xs">(加载中 ${state.dataLoading.progress}%)</span>` : '') +
+                        `，可继续按来源、方向、行业、地点等维度查看分布`;
+                }
+            }
+        }
+
+        // 显示后台加载提示
+        function showBackgroundLoadingToast() {
+            const toast = document.createElement('div');
+            toast.id = 'bg-loading-toast';
+            toast.className = 'fixed bottom-4 right-4 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg shadow-lg z-50 text-sm flex items-center gap-2';
+            toast.innerHTML = `
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>正在后台加载更多数据...</span>
+            `;
+            document.body.appendChild(toast);
+
+            // 3秒后自动隐藏提示（后台继续加载）
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.5s';
+                    setTimeout(() => toast.remove(), 500);
+                }
+            }, 3000);
+        }
+
+        function restoreViewPreferences() {
+            try {
+                state.facetView = localStorage.getItem(JOBS_FACET_VIEW_KEY) || state.facetView;
+                state.compactMode = localStorage.getItem(JOBS_COMPACT_VIEW_KEY) === 'true';
+            } catch (error) {
+                console.warn('恢复岗位列表展示偏好失败:', error);
+            }
+        }
+
+        function persistViewPreferences() {
+            try {
+                localStorage.setItem(JOBS_FACET_VIEW_KEY, state.facetView);
+                localStorage.setItem(JOBS_COMPACT_VIEW_KEY, String(Boolean(state.compactMode)));
+            } catch (error) {
+                console.warn('保存岗位列表展示偏好失败:', error);
+            }
+        }
+
+        /**
+         * 初始化 DOM 元素引用
+         */
+        function initElements() {
+            elements.searchInput = document.getElementById('search-input');
+            elements.refreshBtn = document.getElementById('refresh-btn');
+            elements.filterLocation = document.getElementById('filter-location');
+            elements.filterEducation = document.getElementById('filter-education');
+            elements.filterType = document.getElementById('filter-type');
+            elements.filterIndustry = document.getElementById('filter-industry');
+            elements.filterCategory = document.getElementById('filter-category');
+            elements.filterSource = document.getElementById('filter-source');
+            elements.filterDate = document.getElementById('filter-date');
+            elements.clearFiltersBtn = document.getElementById('clear-filters-btn');
+            elements.statsText = document.getElementById('stats-text');
+            elements.compactToggleBtn = document.getElementById('compact-toggle-btn');
+            elements.chartToggleBtn = document.getElementById('chart-toggle-btn');
+            elements.loadingIndicator = document.getElementById('loading-indicator');
+            elements.facetBoard = document.getElementById('facet-board');
+            elements.staticContent = document.getElementById('static-content');
+            elements.jobsList = document.getElementById('jobs-list');
+            elements.emptyState = document.getElementById('empty-state');
+            elements.emptyClearBtn = document.getElementById('empty-clear-btn');
+            elements.errorState = document.getElementById('error-state');
+            elements.errorMessage = document.getElementById('error-message');
+            elements.retryBtn = document.getElementById('retry-btn');
+            elements.paginationInfo = document.getElementById('pagination-info');
+            elements.prevPageBtn = document.getElementById('prev-page-btn');
+            elements.nextPageBtn = document.getElementById('next-page-btn');
+            elements.pageNumbers = document.getElementById('page-numbers');
+            elements.pageSizeSelect = document.getElementById('page-size-select');
+        }
+
+        /**
+         * 初始化事件监听器
+         */
+        function initEventListeners() {
+            // 搜索框防抖处理
+            elements.searchInput.addEventListener('input', debounce(function(e) {
+                state.filters.keyword = e.target.value.trim();
+                state.page = 1;
+                updateURL();
+                loadJobs();
+            }, 500));
+
+            // 刷新按钮
+            elements.refreshBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                loadJobs().finally(() => {
+                    setTimeout(() => icon.classList.remove('fa-spin'), 500);
+                });
+            });
+
+            if (elements.compactToggleBtn) {
+                elements.compactToggleBtn.addEventListener('click', function() {
+                    state.compactMode = !state.compactMode;
+                    persistViewPreferences();
+                    syncCompactToggleButton();
+                    renderJobs();
+                });
+            }
+
+            if (elements.chartToggleBtn) {
+                elements.chartToggleBtn.addEventListener('click', function() {
+                    state.facetView = state.facetView === 'chart' ? 'list' : 'chart';
+                    persistViewPreferences();
+                    renderFacetBoard();
+                    syncFacetToggleButton();
+                });
+            }
+
+            if (elements.filterLocation) {
+                elements.filterLocation.addEventListener('change', function() {
+                    if (this.value === '__custom__') {
+                        const custom = prompt('请输入地点关键词：', state.filters.location || '');
+                        state.filters.location = custom && custom.trim() ? custom.trim() : '';
+                    } else {
+                        state.filters.location = this.value;
+                    }
+                    state.page = 1;
+                    updateURL();
+                    loadJobs();
+                });
+            }
+
+            elements.filterType.addEventListener('change', function() {
+                state.filters.jobType = this.value;
+                state.page = 1;
+                updateURL();
+                loadJobs();
+            });
+
+            if (elements.filterIndustry) {
+                elements.filterIndustry.addEventListener('change', function() {
+                    if (this.value === '__custom__') {
+                        const custom = prompt('请输入行业关键词：', state.filters.industry || '');
+                        if (custom && custom.trim()) {
+                            state.filters.industry = custom.trim();
+                        } else {
+                            state.filters.industry = '';
+                        }
+                    } else {
+                        state.filters.industry = this.value;
+                    }
+                    state.page = 1;
+                    updateURL();
+                    loadJobs();
+                });
+            }
+
+            if (elements.filterCategory) {
+                elements.filterCategory.addEventListener('change', function() {
+                    if (this.value === '__custom__') {
+                        const custom = prompt('请输入岗位方向关键词：', state.filters.category || '');
+                        if (custom && custom.trim()) {
+                            state.filters.category = custom.trim();
+                        } else {
+                            state.filters.category = '';
+                        }
+                    } else {
+                        state.filters.category = this.value;
+                    }
+                    state.page = 1;
+                    updateURL();
+                    loadJobs();
+                });
+            }
+
+            // 学历筛选
+            if (elements.filterEducation) {
+                elements.filterEducation.addEventListener('change', function() {
+                    state.filters.education = this.value;
+                    state.page = 1;
+                    updateURL();
+                    loadJobs();
+                });
+            }
+
+            // 数据来源筛选
+            if (elements.filterSource) {
+                elements.filterSource.addEventListener('change', function() {
+                    if (this.value === '__custom__') {
+                        const custom = prompt('请输入数据来源关键词：', state.filters.source || '');
+                        if (custom && custom.trim()) {
+                            state.filters.source = custom.trim();
+                        } else {
+                            state.filters.source = '';
+                        }
+                    } else {
+                        state.filters.source = this.value;
+                    }
+                    state.page = 1;
+                    updateURL();
+                    loadJobs();
+                });
+            }
+
+            // 发布时间筛选
+            if (elements.filterDate) {
+                elements.filterDate.addEventListener('change', function() {
+                    state.filters.dateRange = this.value;
+                    state.page = 1;
+                    updateURL();
+                    loadJobs();
+                });
+            }
+
+            // 清除筛选
+            elements.clearFiltersBtn.addEventListener('click', clearFilters);
+            elements.emptyClearBtn.addEventListener('click', clearFilters);
+
+            // 重试按钮
+            elements.retryBtn.addEventListener('click', loadJobs);
+
+            // 分页按钮
+            elements.prevPageBtn.addEventListener('click', () => changePage(state.page - 1));
+            elements.nextPageBtn.addEventListener('click', () => changePage(state.page + 1));
+
+            // 每页数量变化
+            elements.pageSizeSelect.addEventListener('change', function() {
+                state.pageSize = parseInt(this.value);
+                state.page = 1;
+                updateURL();
+                loadJobs();
+            });
+
+            // 监听全局刷新事件
+            window.addEventListener('app:refresh', loadJobs);
+        }
+
+        /**
+         * 加载筛选选项
+         */
+        async function loadFilterOptions() {
+            try {
+                const data = await API.getFilterOptions();
+                state.filterOptions = data;
+                populateFilterOptions();
+            } catch (error) {
+                console.error('加载筛选选项失败:', error);
+            }
+        }
+
+        async function loadLocationTree() {
+            try {
+                const tree = await API.getLocationTree();
+                state.locationTree = normalizeLocationTree(Array.isArray(tree) ? tree : [], state.filterOptions?.locations || []);
+                populateProvinceOptions();
+            } catch (error) {
+                console.error('加载地点层级失败:', error);
+                state.locationTree = buildLocationTreeFallback();
+                populateProvinceOptions();
+            }
+        }
+
+        function buildLocationTreeFallback() {
+            return normalizeLocationTree([], state.filterOptions?.locations || []);
+        }
+
+        function inferProvinceByLocation(rawText = '') {
+            const text = String(rawText || '').trim();
+            if (!text) return '其他';
+
+            const directMappings = [
+                ['北京', '北京市'], ['天津', '天津市'], ['上海', '上海市'], ['重庆', '重庆市'],
+                ['河北', '河北省'], ['山西', '山西省'], ['辽宁', '辽宁省'], ['吉林', '吉林省'], ['黑龙江', '黑龙江省'],
+                ['江苏', '江苏省'], ['浙江', '浙江省'], ['安徽', '安徽省'], ['福建', '福建省'], ['江西', '江西省'], ['山东', '山东省'],
+                ['河南', '河南省'], ['湖北', '湖北省'], ['湖南', '湖南省'], ['广东', '广东省'], ['海南', '海南省'],
+                ['四川', '四川省'], ['贵州', '贵州省'], ['云南', '云南省'], ['陕西', '陕西省'], ['甘肃', '甘肃省'], ['青海', '青海省'],
+                ['台湾', '台湾省'], ['内蒙古', '内蒙古自治区'], ['广西', '广西壮族自治区'], ['西藏', '西藏自治区'],
+                ['宁夏', '宁夏回族自治区'], ['新疆', '新疆维吾尔自治区'],
+                ['香港', '香港特别行政区'], ['澳门', '澳门特别行政区']
+            ];
+
+            for (const [keyword, province] of directMappings) {
+                if (text.includes(keyword)) return province;
+            }
+            return '其他';
+        }
+
+        function normalizeLocationTree(tree, fallbackLocations = []) {
+            const provinceMap = new Map(FIXED_PROVINCES.map(name => [name, new Map()]));
+
+            const safeTree = Array.isArray(tree) ? tree : [];
+            safeTree.forEach(node => {
+                const province = (node?.province || '').trim();
+                const targetProvince = provinceMap.has(province) ? province : '其他';
+                const cityMap = provinceMap.get(targetProvince);
+                (node?.cities || []).forEach(city => {
+                    const cityName = typeof city === 'object' ? String(city?.name || '').trim() : String(city || '').trim();
+                    if (!cityName) return;
+                    const rawCount = typeof city === 'object' ? Number(city?.count || 0) : 0;
+                    const cityCount = Number.isFinite(rawCount) ? rawCount : 0;
+                    cityMap.set(cityName, (cityMap.get(cityName) || 0) + cityCount);
+                });
+            });
+
+            const safeLocations = Array.isArray(fallbackLocations) ? fallbackLocations : [];
+            safeLocations.forEach(location => {
+                const city = String(location || '').trim();
+                if (!city) return;
+                const province = inferProvinceByLocation(city);
+                const cityMap = provinceMap.get(province) || provinceMap.get('其他');
+                if (!cityMap.has(city)) {
+                    cityMap.set(city, 0);
+                }
+            });
+
+            return FIXED_PROVINCES.map(name => ({
+                province: name,
+                count: Array.from((provinceMap.get(name) || new Map()).values()).reduce((sum, item) => sum + Number(item || 0), 0),
+                cities: Array
+                    .from((provinceMap.get(name) || new Map()).entries())
+                    .sort((a, b) => {
+                        if (b[1] !== a[1]) return b[1] - a[1];
+                        return String(a[0]).localeCompare(String(b[0]), 'zh-CN');
+                    })
+                    .map(([cityName, count]) => ({ name: cityName, count: Number(count || 0) }))
+            }));
+        }
+
+        function buildFacetCountMap(buckets = []) {
+            const map = new Map();
+            (buckets || []).forEach(item => {
+                const label = String(item?.label || '').trim();
+                if (!label) return;
+                const count = Number(item?.count || 0);
+                map.set(label, Number.isFinite(count) ? count : 0);
+            });
+            return map;
+        }
+
+        /**
+         * 填充筛选下拉框
+         */
+        function populateFilterOptions() {
+            const facetMaps = {
+                locations: buildFacetCountMap(state.facets?.locations),
+                jobTypes: buildFacetCountMap(state.facets?.job_types),
+                industries: buildFacetCountMap(state.facets?.industries),
+                categories: buildFacetCountMap(state.facets?.categories),
+                sources: buildFacetCountMap(state.facets?.sources),
+                educations: buildFacetCountMap(state.facets?.educations),
+            };
+
+            if (state.filterOptions.locations && elements.filterLocation) {
+                fillSelectWithCustomOption(
+                    elements.filterLocation,
+                    state.filterOptions.locations,
+                    '全部地点',
+                    state.filters.location,
+                    facetMaps.locations
+                );
+            }
+
+            // 学历选项
+            if (state.filterOptions.education && elements.filterEducation) {
+                elements.filterEducation.innerHTML = '<option value="">全部学历</option>' +
+                    state.filterOptions.education.map(edu => {
+                        const count = facetMaps.educations.get(edu);
+                        const suffix = Number.isFinite(count) ? ` (${count})` : '';
+                        return `<option value="${edu}">${edu}${suffix}</option>`;
+                    }
+                    ).join('');
+                elements.filterEducation.value = state.filters.education || '';
+            }
+
+            // 类型选项
+            if (state.filterOptions.job_types && elements.filterType) {
+                elements.filterType.innerHTML = '<option value="">全部类型</option>' +
+                    state.filterOptions.job_types.map(type => {
+                        const count = facetMaps.jobTypes.get(type);
+                        const suffix = Number.isFinite(count) ? ` (${count})` : '';
+                        return `<option value="${type}">${type}${suffix}</option>`;
+                    }
+                    ).join('');
+                elements.filterType.value = state.filters.jobType || '';
+            }
+
+            if (state.filterOptions.industries && elements.filterIndustry) {
+                fillSelectWithCustomOption(
+                    elements.filterIndustry,
+                    state.filterOptions.industries,
+                    '全部行业',
+                    state.filters.industry,
+                    facetMaps.industries
+                );
+            }
+
+            if (state.filterOptions.categories && elements.filterCategory) {
+                fillSelectWithCustomOption(
+                    elements.filterCategory,
+                    state.filterOptions.categories,
+                    '全部方向',
+                    state.filters.category,
+                    facetMaps.categories
+                );
+            }
+
+            // 数据来源下拉
+            if (state.filterOptions.sources && elements.filterSource) {
+                fillSelectWithCustomOption(
+                    elements.filterSource,
+                    state.filterOptions.sources,
+                    '全部来源',
+                    state.filters.source,
+                    facetMaps.sources
+                );
+            }
+
+            // 发布时间选项
+            if (state.filterOptions.publish_date_ranges && elements.filterDate) {
+                elements.filterDate.innerHTML = '<option value="">全部时间</option>' +
+                    state.filterOptions.publish_date_ranges.map(range => 
+                        `<option value="${range.value}">${range.label}</option>`
+                    ).join('');
+                elements.filterDate.value = state.filters.dateRange || '';
+            }
+        }
+
+        function populateProvinceOptions() {
+            if (!elements.locationProvinceList || !elements.locationCityList) return;
+            const tree = state.locationTree || [];
+            if (tree.length === 0) {
+                elements.locationProvinceList.innerHTML = `<p class="text-sm text-gray-400 px-2 py-1">暂无省份数据</p>`;
+                elements.locationCityList.innerHTML = `<p class="text-sm text-gray-400 px-2 py-1">暂无城市数据</p>`;
+                return;
+            }
+
+            elements.locationProvinceList.innerHTML = tree
+                .map((node, idx) => `
+                    <button
+                        type="button"
+                        class="location-province-btn w-full text-left px-2 py-2 rounded-lg text-sm hover:bg-blue-50 ${idx === 0 ? 'bg-blue-50 text-blue-700' : 'text-gray-700'}"
+                        data-province="${escapeHtml(node.province || '其他')}"
+                    >
+                        <span class="flex items-center justify-between gap-2">
+                            <span class="truncate">${escapeHtml(node.province || '其他')}</span>
+                            <span class="text-xs ${idx === 0 ? 'text-blue-700' : 'text-gray-400'}">${Number(node.count || 0)}</span>
+                        </span>
+                    </button>
+                `)
+                .join('');
+
+            elements.locationProvinceList.querySelectorAll('.location-province-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    const province = btn.dataset.province || '';
+                    elements.locationProvinceList.querySelectorAll('.location-province-btn').forEach(item => {
+                        item.classList.remove('bg-blue-50', 'text-blue-700');
+                        item.classList.add('text-gray-700');
+                    });
+                    btn.classList.add('bg-blue-50', 'text-blue-700');
+                    btn.classList.remove('text-gray-700');
+                    renderCityList(province);
+                });
+            });
+
+            renderCityList(tree[0].province || '');
+        }
+
+        function renderCityList(province) {
+            if (!elements.locationCityList) return;
+            const node = (state.locationTree || []).find(item => (item.province || '') === province);
+            const cities = (node?.cities || []).map(item => {
+                if (typeof item === 'object' && item !== null) {
+                    return {
+                        name: String(item.name || '').trim(),
+                        count: Number(item.count || 0)
+                    };
+                }
+                return { name: String(item || '').trim(), count: 0 };
+            }).filter(item => item.name);
+            if (cities.length === 0) {
+                elements.locationCityList.innerHTML = `<p class="text-sm text-gray-400 px-2 py-1">该省暂无城市数据</p>`;
+                return;
+            }
+
+            elements.locationCityList.innerHTML = cities
+                .map(city => `
+                    <button
+                        type="button"
+                        class="w-full text-left px-2 py-2 rounded-lg text-sm hover:bg-gray-100 ${state.filters.location === city.name ? 'bg-gray-100 text-blue-700' : 'text-gray-700'}"
+                        data-city="${escapeHtml(city.name)}"
+                    >
+                        <span class="flex items-center justify-between gap-2">
+                            <span class="truncate">${escapeHtml(city.name)}</span>
+                            <span class="text-xs text-gray-400">${Number(city.count || 0)}</span>
+                        </span>
+                    </button>
+                `)
+                .join('');
+
+            elements.locationCityList.querySelectorAll('button[data-city]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const city = btn.dataset.city || '';
+                    const label = province ? `${province} / ${city}` : city;
+                    applyLocationSelection(city, label);
+                });
+            });
+        }
+
+        function applyLocationSelection(locationValue, locationLabel) {
+            state.filters.location = (locationValue || '').trim();
+            updateLocationLabel(locationLabel || state.filters.location || '全部地点');
+            if (elements.locationDropdownPanel) {
+                elements.locationDropdownPanel.classList.add('hidden');
+            }
+            state.page = 1;
+            updateURL();
+            loadJobs();
+        }
+
+        function updateLocationLabel(labelText) {
+            if (!elements.locationDropdownLabel) return;
+            const text = (labelText || '').trim();
+            elements.locationDropdownLabel.textContent = text || '全部地点';
+        }
+
+        function fillSelectWithCustomOption(selectEl, values, allLabel, selectedValue = '', countMap = null) {
+            const cleanValues = (values || []).filter(Boolean);
+            let html = `<option value="">${allLabel}</option>`;
+            html += cleanValues.map(item => {
+                const count = countMap instanceof Map ? countMap.get(item) : undefined;
+                const suffix = Number.isFinite(count) ? ` (${count})` : '';
+                return `<option value="${item}">${item}${suffix}</option>`;
+            }).join('');
+            html += '<option value="__custom__">自定义输入...</option>';
+
+            if (selectedValue && !cleanValues.includes(selectedValue)) {
+                html += `<option value="${selectedValue}">${selectedValue}（自定义）</option>`;
+            }
+
+            selectEl.innerHTML = html;
+            if (selectedValue) {
+                selectEl.value = selectedValue;
+            } else {
+                selectEl.value = '';
+            }
+        }
+
+        /**
+         * 从 URL 恢复状态
+         */
+        function restoreStateFromURL() {
+            const params = URLParams.getAll();
+            
+            if (params.page) state.page = parseInt(params.page) || 1;
+            if (params.pageSize) state.pageSize = parseInt(params.pageSize) || 20;
+            if (params.keyword) {
+                state.filters.keyword = params.keyword;
+                elements.searchInput.value = params.keyword;
+            }
+            if (params.location) {
+                state.filters.location = params.location;
+                if (elements.filterLocation) elements.filterLocation.value = params.location;
+            }
+            if (params.jobType) {
+                state.filters.jobType = params.jobType;
+                if (elements.filterType) elements.filterType.value = params.jobType;
+            }
+            if (params.industry) {
+                state.filters.industry = params.industry;
+                if (elements.filterIndustry) elements.filterIndustry.value = params.industry;
+            }
+            if (params.category) {
+                state.filters.category = params.category;
+                if (elements.filterCategory) elements.filterCategory.value = params.category;
+            }
+            if (params.education) {
+                state.filters.education = params.education;
+                if (elements.filterEducation) elements.filterEducation.value = params.education;
+            }
+            if (params.source) {
+                state.filters.source = params.source;
+                if (elements.filterSource) elements.filterSource.value = params.source;
+            }
+            if (params.dateRange) {
+                state.filters.dateRange = params.dateRange;
+                if (elements.filterDate) elements.filterDate.value = params.dateRange;
+            }
+
+            if (elements.pageSizeSelect) elements.pageSizeSelect.value = state.pageSize;
+        }
+
+        /**
+         * 更新 URL 参数
+         */
+        function updateURL() {
+            const params = {
+                page: state.page > 1 ? state.page : null,
+                pageSize: state.pageSize !== 20 ? state.pageSize : null,
+                keyword: state.filters.keyword || null,
+                location: state.filters.location || null,
+                jobType: state.filters.jobType || null,
+                industry: state.filters.industry || null,
+                category: state.filters.category || null,
+                education: state.filters.education || null,
+                source: state.filters.source || null,
+                dateRange: state.filters.dateRange || null
+            };
+            URLParams.set(params, true);
+        }
+
+        /**
+         * 加载岗位列表
+         */
+        async function loadJobs() {
+            if (state.isLoading) return;
+            
+            state.isLoading = true;
+            showLoading(true);
+            hideError();
+
+            try {
+                const params = {
+                    page: state.page,
+                    page_size: state.pageSize,
+                    keyword: state.filters.keyword,
+                    location: state.filters.location,
+                    job_type: state.filters.jobType,
+                    industry: state.filters.industry,
+                    category: state.filters.category,
+                    education: state.filters.education,
+                    source: state.filters.source,
+                    date_range: state.filters.dateRange
+                };
+
+                const facetParams = {
+                    keyword: state.filters.keyword,
+                    location: state.filters.location,
+                    job_type: state.filters.jobType,
+                    industry: state.filters.industry,
+                    category: state.filters.category,
+                    education: state.filters.education,
+                    source: state.filters.source,
+                    date_range: state.filters.dateRange
+                };
+
+                const [data, facets] = await Promise.all([
+                    API.getJobs(params),
+                    API.getJobFacets(facetParams)
+                ]);
+                
+                state.jobs = data.items || [];
+                state.total = data.total || 0;
+                state.totalPages = data.pages || Math.ceil(state.total / state.pageSize);
+                state.facets = facets;
+                populateFilterOptions();
+
+                renderJobs();
+                renderPagination();
+                updateStats();
+                renderFacetBoard();
+
+            } catch (error) {
+                console.error('加载岗位列表失败:', error);
+                showError(error.message || '加载失败，请稍后重试');
+            } finally {
+                state.isLoading = false;
+                showLoading(false);
+            }
+        }
+
+        function renderFacetBoard() {
+            if (!elements.facetBoard || !state.facets || state.total === 0) {
+                if (elements.facetBoard) elements.facetBoard.classList.add('hidden');
+                syncFacetToggleButton();
+                return;
+            }
+
+            elements.facetBoard.classList.remove('hidden');
+            elements.facetBoard.classList.add('facet-board-animating');
+            elements.facetBoard.classList.toggle('is-chart-view', state.facetView === 'chart');
+            const cardRenderer = state.facetView === 'chart' ? renderFacetPieCard : renderFacetCard;
+            elements.facetBoard.innerHTML = [
+                cardRenderer('来源分布', 'fa-database', state.facets.sources),
+                cardRenderer('岗位方向', 'fa-sitemap', state.facets.categories),
+                cardRenderer('行业赛道', 'fa-industry', state.facets.industries),
+                cardRenderer('地点热度', 'fa-map-marker-alt', state.facets.locations),
+                cardRenderer('岗位类型', 'fa-briefcase', state.facets.job_types),
+            ].join('');
+            requestAnimationFrame(() => {
+                elements.facetBoard.classList.remove('facet-board-animating');
+            });
+            if (typeof animateCountUpIn === 'function') {
+                animateCountUpIn(elements.facetBoard);
+            }
+            syncFacetToggleButton();
+        }
+
+        function renderFacetCard(title, icon, buckets) {
+            const page = getFacetPageState(title, buckets);
+            const items = page.items;
+            return `
+                <div class="facet-card bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <div class="flex items-center gap-2 text-gray-800 font-semibold">
+                            <i class="fas ${icon} text-blue-500"></i>
+                            <span>${title}</span>
+                        </div>
+                        ${renderFacetPager(title, page)}
+                    </div>
+                    <div class="space-y-2">
+                        ${items.length ? items.map(item => `
+                            <div class="flex items-center justify-between gap-3 text-sm">
+                                <span class="text-gray-600 truncate">${escapeHtml(item.label)}</span>
+                                <span class="text-gray-900 font-semibold count-rolling" data-countup="${Number(item.count || 0)}">${item.count}</span>
+                            </div>
+                        `).join('') : '<div class="text-sm text-gray-400">暂无数据</div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function syncFacetToggleButton() {
+            if (!elements.chartToggleBtn) return;
+            const isChart = state.facetView === 'chart' && state.total > 0;
+            elements.chartToggleBtn.setAttribute('aria-pressed', isChart ? 'true' : 'false');
+            elements.chartToggleBtn.className = isChart
+                ? 'inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-100'
+                : 'inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600';
+        }
+
+        function syncCompactToggleButton() {
+            if (!elements.compactToggleBtn) return;
+            const enabled = Boolean(state.compactMode);
+            elements.compactToggleBtn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+            elements.compactToggleBtn.className = enabled
+                ? 'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:border-slate-700 hover:bg-slate-800'
+                : 'inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600';
+        }
+
+        function renderFacetPieCard(title, icon, buckets) {
+            const page = getFacetPageState(title, (buckets || []).filter(item => Number(item?.count || 0) > 0));
+            const items = page.items;
+
+            if (!items.length) {
+                return `
+                    <div class="facet-card bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                        <div class="flex items-center gap-2 mb-3 text-gray-800 font-semibold">
+                            <i class="fas ${icon} text-blue-500"></i>
+                            <span>${title}</span>
+                        </div>
+                        <div class="text-sm text-gray-400">暂无数据</div>
+                    </div>
+                `;
+            }
+
+            const total = items.reduce((sum, item) => sum + Number(item.count || 0), 0);
+            const colors = ['#2563eb', '#06b6d4', '#10b981', '#f59e0b'];
+            let offset = 0;
+            const segments = items.map((item, index) => {
+                const value = Number(item.count || 0);
+                const ratio = total > 0 ? (value / total) * 100 : 0;
+                const start = offset;
+                const end = offset + ratio;
+                offset = end;
+                return `${colors[index % colors.length]} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
+            }).join(', ');
+
+            return `
+                <div class="facet-card bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <div class="flex items-center gap-2 text-gray-800 font-semibold">
+                            <i class="fas ${icon} text-blue-500"></i>
+                            <span>${title}</span>
+                        </div>
+                        ${renderFacetPager(title, page)}
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative shrink-0">
+                            <div class="facet-pie-visual" style="background: conic-gradient(${segments});"></div>
+                        </div>
+                        <div class="flex-1 space-y-2 min-w-0">
+                            ${items.map((item, index) => {
+                                const count = Number(item.count || 0);
+                                const percent = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+                                return `
+                                    <div class="facet-pie-legend-row flex items-center justify-between gap-2 text-xs min-w-0">
+                                        <div class="flex items-start gap-2 min-w-0 flex-1 overflow-hidden">
+                                            <span class="inline-block w-2.5 h-2.5 rounded-full shrink-0 mt-1" style="background:${colors[index % colors.length]}"></span>
+                                            <span class="text-gray-500 truncate min-w-0 block" title="${escapeHtml(item.label)}">${escapeHtml(item.label)}</span>
+                                        </div>
+                                        <span class="shrink-0 font-semibold text-gray-900 text-right text-[11px] sm:text-xs">
+                                            <span class="count-rolling" data-countup="${count}">${count}</span>
+                                            /
+                                            <span class="count-rolling" data-countup="${Number(percent || 0)}" data-countup-suffix="%" data-countup-decimals="1">${percent}%</span>
+                                        </span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getFacetPageState(title, buckets) {
+            const safeBuckets = Array.isArray(buckets) ? buckets : [];
+            const pageSize = 4;
+            const maxOffset = Math.max(0, safeBuckets.length - pageSize);
+            const currentOffset = Math.min(state.facetOffsets[title] || 0, maxOffset);
+            state.facetOffsets[title] = currentOffset;
+            return {
+                offset: currentOffset,
+                total: safeBuckets.length,
+                pageSize,
+                items: safeBuckets.slice(currentOffset, currentOffset + pageSize),
+                hasPrev: currentOffset > 0,
+                hasNext: currentOffset + pageSize < safeBuckets.length,
+            };
+        }
+
+        function renderFacetPager(title, page) {
+            if ((page.total || 0) <= page.pageSize) return '';
+            return `
+                <div class="inline-flex items-center gap-1">
+                    <button type="button" class="w-7 h-7 rounded-full border border-gray-200 text-gray-500 hover:border-blue-200 hover:text-blue-600 disabled:opacity-40" onclick="event.stopPropagation(); shiftFacetPage('${escapeHtml(title)}', -1)" ${page.hasPrev ? '' : 'disabled'}>
+                        <i class="fas fa-chevron-left text-[10px]"></i>
+                    </button>
+                    <button type="button" class="w-7 h-7 rounded-full border border-gray-200 text-gray-500 hover:border-blue-200 hover:text-blue-600 disabled:opacity-40" onclick="event.stopPropagation(); shiftFacetPage('${escapeHtml(title)}', 1)" ${page.hasNext ? '' : 'disabled'}>
+                        <i class="fas fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function shiftFacetPage(title, direction) {
+            const titleMap = {
+                '来源分布': state.facets?.sources,
+                '岗位方向': state.facets?.categories,
+                '行业赛道': state.facets?.industries,
+                '地点热度': state.facets?.locations,
+                '岗位类型': state.facets?.job_types,
+            };
+            const buckets = titleMap[title] || [];
+            const pageSize = 4;
+            const maxOffset = Math.max(0, buckets.length - pageSize);
+            const next = Math.max(0, Math.min(maxOffset, (state.facetOffsets[title] || 0) + direction * pageSize));
+            state.facetOffsets[title] = next;
+            renderFacetBoard();
+        }
+
+        /**
+         * 渲染岗位列表
+         */
+        function renderJobs() {
+            // 隐藏静态内容
+            elements.staticContent.classList.add('hidden');
+
+            if (state.jobs.length === 0) {
+                elements.jobsList.classList.add('hidden');
+                elements.emptyState.classList.remove('hidden');
+                return;
+            }
+
+            elements.emptyState.classList.add('hidden');
+            elements.jobsList.classList.remove('hidden');
+            syncCompactToggleButton();
+            elements.jobsList.innerHTML = state.jobs.map(job => renderJobCard(job)).join('');
+        }
+
+        /**
+         * 渲染单个岗位卡片
+         */
+        function renderJobCard(job) {
+            const publishText = formatJobDate(job.publish_date || job.created_at);
+            const salaryText = job.salary || '薪资面议';
+            const locationText = job.location || '地点不限';
+            const companyText = job.company || '未知公司';
+            const titleText = job.title || '未命名岗位';
+            const summaryText = cleanJobText(job.requirements || job.description || '暂无职位描述');
+            const coreBadges = [job.job_type, job.industry, job.category].filter(Boolean);
+            const tagBadges = parseTagList(job.tags).filter(tag => !coreBadges.includes(tag));
+            const isCompact = Boolean(state.compactMode);
+            const articleClass = isCompact ? 'card card-hover fade-in cursor-pointer' : 'card card-hover fade-in cursor-pointer';
+            const bodyClass = isCompact ? 'card-body p-4' : 'card-body p-5';
+            const wrapperClass = isCompact ? 'flex items-start justify-between gap-3' : 'flex items-start justify-between gap-4';
+            const titleClass = isCompact ? 'text-lg font-bold text-gray-900 leading-6' : 'text-xl font-bold text-gray-900 leading-7';
+            const companyClass = isCompact ? 'text-sm text-gray-600 mb-2 truncate' : 'text-gray-600 mb-3 truncate';
+            const metaClass = isCompact ? 'flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 mb-2' : 'flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-600 mb-3';
+            const badgeGapClass = isCompact ? 'flex flex-wrap gap-1.5 mb-2' : 'flex flex-wrap gap-2 mb-3';
+            const sourceBadgeClass = isCompact
+                ? 'inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-[11px] font-medium'
+                : 'inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium';
+            const summaryClass = isCompact ? 'text-gray-600 text-xs leading-5 line-clamp-2' : 'text-gray-600 text-sm leading-6 line-clamp-2';
+            const sideClass = isCompact ? 'text-right shrink-0 min-w-[96px]' : 'text-right shrink-0 min-w-[120px]';
+            const salaryClass = isCompact ? 'text-base font-bold text-blue-600' : 'text-lg font-bold text-blue-600';
+            const expClass = isCompact ? 'text-[11px] text-gray-500 mt-1' : 'text-xs text-gray-500 mt-1';
+            const actionWrapClass = isCompact ? 'flex items-center justify-end gap-1.5 mt-3' : 'flex items-center justify-end gap-2 mt-4';
+            const detailBtnClass = isCompact ? 'btn btn-primary btn-sm px-3 py-1.5 text-xs' : 'btn btn-primary btn-sm';
+            const detailBtnText = isCompact ? '详情' : '查看详情';
+
+            return `
+                <article class="${articleClass}" data-job-id="${job.id}" onclick="viewJobDetail(${job.id})">
+                    <div class="${bodyClass}">
+                        <div class="${wrapperClass}">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start gap-2 mb-1.5">
+                                    <h3 class="${titleClass}">${escapeHtml(titleText)}</h3>
+                                    ${job.is_favorite ? '<i class="fas fa-star text-yellow-500 text-sm mt-1"></i>' : ''}
+                                </div>
+                                <div class="${companyClass}">${escapeHtml(companyText)}</div>
+
+                                <div class="${metaClass}">
+                                    <span><i class="fas fa-map-marker-alt text-gray-400 mr-1"></i>${escapeHtml(locationText)}</span>
+                                    <span><i class="fas fa-briefcase text-gray-400 mr-1"></i>${escapeHtml(job.job_type || '未识别')}</span>
+                                    <span><i class="fas fa-graduation-cap text-gray-400 mr-1"></i>${escapeHtml(job.education || '学历不限')}</span>
+                                    ${publishText ? `<span><i class="fas fa-calendar-alt text-gray-400 mr-1"></i>${escapeHtml(publishText)}</span>` : ''}
+                                </div>
+
+                                <div class="${badgeGapClass}">
+                                    <span class="${sourceBadgeClass}">${escapeHtml(job.source || '未知来源')}</span>
+                                    ${renderBadgeList(coreBadges.slice(0, 3), 'primary')}
+                                    ${renderBadgeList(tagBadges.slice(0, 2), 'neutral')}
+                                </div>
+
+                                <p class="${summaryClass}">${escapeHtml(summaryText)}</p>
+                            </div>
+
+                            <div class="${sideClass}">
+                                <div class="${salaryClass}">${escapeHtml(salaryText)}</div>
+                                <div class="${expClass}">${escapeHtml(job.experience || '经验不限')}</div>
+                                <div class="${actionWrapClass}">
+                                    <button class="${detailBtnClass}" onclick="event.stopPropagation(); viewJobDetail(${job.id})">${detailBtnText}</button>
+                                    <button class="btn btn-ghost btn-icon ${job.is_favorite ? 'text-yellow-500' : 'text-gray-400'}"
+                                            onclick="event.stopPropagation(); toggleFavorite(${job.id}, this)" title="${job.is_favorite ? '取消收藏' : '添加收藏'}">
+                                        <i class="${job.is_favorite ? 'fas' : 'far'} fa-star"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function parseTagList(tags) {
+            if (!tags) return [];
+            return String(tags)
+                .split(/[，,]/)
+                .map(tag => tag.trim())
+                .filter(Boolean);
+        }
+
+        function renderBadgeList(values, style = 'neutral') {
+            const palette = style === 'primary'
+                ? 'bg-slate-100 text-slate-700'
+                : 'bg-gray-100 text-gray-600';
+
+            return values.map(value => `
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium ${palette}">
+                    ${escapeHtml(value)}
+                </span>
+            `).join('');
+        }
+
+        function formatJobDate(dateText) {
+            if (!dateText) return '';
+            try {
+                const date = new Date(dateText);
+                if (!Number.isNaN(date.getTime())) {
+                    return `${formatDate(date, 'YYYY-MM-DD')} 发布`;
+                }
+            } catch (error) {
+                console.debug('日期解析失败:', error);
+            }
+            return `${dateText} 发布`;
+        }
+
+        function cleanJobText(text) {
+            if (!text) return '';
+            const html = String(text)
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/<\/?(ul|ol)[^>]*>/gi, '\n')
+                .replace(/<\/?(table|tbody|thead|tr)[^>]*>/gi, '\n')
+                .replace(/<\/?(td|th)[^>]*>/gi, ' ')
+                .replace(/<\/?(h[1-6])[^>]*>/gi, '\n')
+                .replace(/<\/p>/gi, '\n')
+                .replace(/<\/div>/gi, '\n')
+                .replace(/<\/li>/gi, '\n');
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            const textContent = (container.textContent || '')
+                .replace(/\u00a0/g, ' ')
+                .replace(/[ \t]+\n/g, '\n')
+                .replace(/\n[ \t]+/g, '\n')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
+            return sanitizeJobNarrative(textContent);
+        }
+
+        function sanitizeJobNarrative(text) {
+            let cleaned = String(text || '').trim();
+            if (!cleaned) return '';
+
+            cleaned = cleaned.replace(/^([\u4e00-\u9fffA-Za-z0-9（）()·\s]{2,40})\s+\1\b/, '$1');
+            cleaned = cleaned.replace(/过期时间[:：][^\n]*?(?=发布时间[:：]|浏览次数[:：]|温馨提示|招聘公告详情|$)/g, ' ');
+            cleaned = cleaned.replace(/发布时间[:：][^\n]*?(?=浏览次数[:：]|分享至|温馨提示|招聘公告详情|$)/g, ' ');
+            cleaned = cleaned.replace(/浏览次数[:：][^\n]*?(?=分享至|温馨提示|招聘公告详情|$)/g, ' ');
+            cleaned = cleaned.replace(/分享至/g, ' ');
+            cleaned = cleaned.replace(/收藏/g, ' ');
+            cleaned = cleaned.replace(/温馨提示[:：]?抵制招聘诈骗，加强自我保护，以任何理由索取财物，均涉嫌违法，请提高警惕！?/g, ' ');
+            cleaned = cleaned.replace(/招聘公告详情/g, '\n');
+            cleaned = cleaned.replace(/职位列表/g, '\n');
+            cleaned = cleaned.replace(/序号\s+职位信息\s+需求专业\s+操作/g, '\n');
+            cleaned = cleaned.replace(/\b投递简历\b/g, ' ');
+            cleaned = cleaned.replace(/\s{2,}/g, ' ');
+
+            const rowMatch = cleaned.match(/^\s*\d{2}\s+(.+?)\s+(\d{3,}(?:-\d{3,})?)\s+([\u4e00-\u9fff]{2,}(?:省|市).{0,20}?)\s+(全职|实习|兼职|校招)\s+(本科|硕士|博士|大专|不限)\s+(【[^】]+】.+)$/);
+            if (rowMatch) {
+                const [, title, salary, location, jobType, education, majors] = rowMatch;
+                cleaned = [
+                    `岗位信息：${title.trim()}`,
+                    `薪资待遇：${salary.trim()}`,
+                    `工作地点：${location.trim()}`,
+                    `岗位类型：${jobType.trim()}`,
+                    `学历要求：${education.trim()}`,
+                    `相关专业：${majors.trim()}`,
+                ].join('\n');
+            }
+
+            return cleaned
+                .replace(/\n{3,}/g, '\n\n')
+                .replace(/[ \t]{2,}/g, ' ')
+                .trim();
+        }
+
+        function renderStructuredJobContent(text) {
+            const cleaned = cleanJobText(text);
+            if (!cleaned) return '';
+
+            const rawLines = cleaned
+                .split('\n')
+                .map(line => line.trim())
+                .filter(Boolean);
+            const lines = [];
+            rawLines.forEach((line) => {
+                if (isNoiseJobLine(line)) return;
+                if (lines.length > 0 && normalizeDisplayLine(lines[lines.length - 1]) === normalizeDisplayLine(line)) {
+                    return;
+                }
+                lines.push(line);
+            });
+
+            const blocks = [];
+            let listItems = [];
+
+            const flushList = () => {
+                if (!listItems.length) return;
+                blocks.push(`
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700 leading-7">
+                        ${listItems.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+                    </ul>
+                `);
+                listItems = [];
+            };
+
+            lines.forEach((line) => {
+                const normalized = line.replace(/^[\-\*\u2022·•\d]+[\.、)）\s]*/, '').trim();
+                const isHeading = /^(岗位职责|工作内容|任职要求|职位要求|岗位要求|岗位亮点|薪资待遇|福利待遇|岗位信息|投递方式|联系方式|工作地点|招聘对象|职位描述)[:：]?$/.test(line)
+                    || (/[:：]$/.test(line) && line.length <= 18);
+                const isListItem = /^([\-\*\u2022·•]|\d+[\.、)）])/.test(line);
+                const isLabeledLine = /^(岗位信息|薪资待遇|工作地点|岗位类型|学历要求|相关专业|岗位职责|任职要求|职位描述)[:：]\s*/.test(line);
+
+                if (isHeading) {
+                    flushList();
+                    blocks.push(`<h4 class="text-sm font-semibold text-slate-900 mt-3 first:mt-0">${escapeHtml(line.replace(/[:：]+$/, ''))}</h4>`);
+                    return;
+                }
+
+                if (isLabeledLine) {
+                    flushList();
+                    const [label, ...rest] = line.split(/[:：]/);
+                    blocks.push(`
+                        <div class="rounded-xl bg-white border border-gray-200 px-4 py-3">
+                            <div class="text-xs font-semibold tracking-wide text-slate-500 mb-1">${escapeHtml(label)}</div>
+                            <div class="text-gray-700 leading-7">${escapeHtml(rest.join('：').trim() || '未注明')}</div>
+                        </div>
+                    `);
+                    return;
+                }
+
+                if (isListItem) {
+                    listItems.push(normalized || line);
+                    return;
+                }
+
+                flushList();
+                blocks.push(`<p class="text-gray-700 leading-7">${escapeHtml(line)}</p>`);
+            });
+
+            flushList();
+            return `<div class="space-y-3">${blocks.join('')}</div>`;
+        }
+
+        function isNoiseJobLine(line) {
+            const text = String(line || '').trim();
+            if (!text) return true;
+
+            const exactNoise = new Set([
+                '分享至',
+                '招聘公告详情',
+                '职位列表',
+                '序号',
+                '职位信息',
+                '需求专业',
+                '操作',
+                '投递简历',
+                '收藏',
+            ]);
+            if (exactNoise.has(text)) return true;
+
+            if (/^(发布时间|浏览次数|过期时间|更新时间)[:：]/.test(text)) return true;
+            if (/^温馨提示[:：]?/.test(text)) return true;
+            if (/^抵制招聘诈骗/.test(text)) return true;
+            if (/^以任何理由索取财物/.test(text)) return true;
+            if (/^请提高警惕/.test(text)) return true;
+            if (/^(吉林银行股份有限公司)\s+\1$/.test(text)) return true;
+            if (/^\d{2,}\s+/.test(text) && /投递简历$/.test(text)) return true;
+            if (/^(本科|硕士|博士)[\s【\[]/.test(text) && /投递简历$/.test(text)) return true;
+
+            return false;
+        }
+
+        function normalizeDisplayLine(line) {
+            return String(line || '')
+                .replace(/\s+/g, ' ')
+                .replace(/[：:]+$/, '')
+                .trim()
+                .toLowerCase();
+        }
+
+        async function requestJobAIAnalysis(question = '') {
+            if (!state.currentJobId) {
+                showToast('当前没有可分析的岗位', 'error');
+                return;
+            }
+
+            const output = document.getElementById('ai-analysis-result');
+            if (output) {
+                renderMarkdownOutput(output, 'AI 正在分析当前岗位，请稍候...');
+            }
+
+            try {
+                const response = await API.analyzeJob(state.currentJobId, {
+                    question,
+                    history: state.aiHistory
+                });
+
+                if (output) {
+                    await streamMarkdownOutput(output, response.answer || 'AI 暂未返回结果');
+                }
+
+                if (question) {
+                    state.aiHistory.push({ role: 'user', content: question });
+                    appendJobAiHistoryBubble('user', question);
+                }
+                state.aiHistory.push({ role: 'assistant', content: response.answer || '' });
+                appendJobAiHistoryBubble('assistant', response.answer || 'AI 暂未返回结果');
+                persistJobAiHistory();
+            } catch (error) {
+                if (output) {
+                    renderMarkdownOutput(output, `AI 分析失败：${error.message}`);
+                }
+                showToast(`AI 分析失败：${error.message}`, 'error');
+            }
+        }
+
+        async function streamMarkdownOutput(element, markdownText, speed = 18) {
+            const text = String(markdownText || '');
+            let cursor = Math.min(24, text.length);
+            renderMarkdownOutput(element, text.slice(0, cursor));
+            while (cursor < text.length) {
+                cursor = Math.min(text.length, cursor + Math.max(12, Math.floor(text.length / 20)));
+                renderMarkdownOutput(element, text.slice(0, cursor));
+                element.scrollTop = element.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, speed));
+            }
+        }
+
+        function appendJobAiHistoryBubble(role, content) {
+            const container = document.getElementById('ai-chat-history');
+            if (!container) return;
+            const div = document.createElement('div');
+            div.className = role === 'user'
+                ? 'ml-auto max-w-[85%] rounded-2xl bg-teal-700 px-4 py-3 text-sm text-white'
+                : 'max-w-[92%] rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700';
+            if (role === 'user') {
+                div.textContent = content;
+            } else {
+                renderMarkdownOutput(div, content);
+            }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function getJobAiHistoryStorageKey(jobId) {
+            return `finintern-job-ai-history-${jobId}`;
+        }
+
+        function persistJobAiHistory() {
+            if (!state.currentJobId) return;
+            localStorage.setItem(getJobAiHistoryStorageKey(state.currentJobId), JSON.stringify((state.aiHistory || []).slice(-12)));
+        }
+
+        function loadJobAiHistory(jobId) {
+            state.aiHistory = [];
+            try {
+                state.aiHistory = JSON.parse(localStorage.getItem(getJobAiHistoryStorageKey(jobId)) || '[]');
+            } catch (error) {
+                state.aiHistory = [];
+            }
+            const container = document.getElementById('ai-chat-history');
+            if (!container) return;
+            container.innerHTML = '';
+            if (!state.aiHistory.length) {
+                container.innerHTML = '<div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">点击“生成分析”后，这里会保留本岗位最近的 AI 分析和追问记录。</div>';
+                return;
+            }
+            state.aiHistory.forEach(item => appendJobAiHistoryBubble(item.role, item.content || ''));
+        }
+
+        function renderMarkdownOutput(element, markdownText) {
+            if (!element) return;
+            const text = String(markdownText || '').trim();
+            if (!text) {
+                element.innerHTML = '';
+                return;
+            }
+
+            if (window.marked && window.DOMPurify) {
+                const rawHtml = marked.parse(text, { breaks: true, gfm: true });
+                element.innerHTML = DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } });
+                element.classList.remove('whitespace-pre-line');
+                return;
+            }
+
+            element.textContent = text;
+            element.classList.add('whitespace-pre-line');
+        }
+
+        function askPresetQuestion(question) {
+            requestJobAIAnalysis(question);
+        }
+
+        function submitAIQuestion() {
+            const input = document.getElementById('ai-question-input');
+            const question = input?.value.trim();
+            if (!question) {
+                showToast('先输入你想追问的问题', 'warning');
+                return;
+            }
+
+            requestJobAIAnalysis(question);
+            input.value = '';
+        }
+
+        /**
+         * 渲染分页
+         */
+        function renderPagination() {
+            // 更新分页信息
+            const start = (state.page - 1) * state.pageSize + 1;
+            const end = Math.min(state.page * state.pageSize, state.total);
+            elements.paginationInfo.textContent = state.total > 0 
+                ? `显示 ${start}-${end} 条，共 ${state.total} 条记录`
+                : '共 0 条记录';
+
+            // 更新按钮状态
+            elements.prevPageBtn.disabled = state.page <= 1;
+            elements.nextPageBtn.disabled = state.page >= state.totalPages;
+
+            // 渲染页码
+            renderPageNumbers();
+        }
+
+        /**
+         * 渲染页码按钮
+         */
+        function renderPageNumbers() {
+            const maxVisible = 5;
+            let startPage = Math.max(1, state.page - Math.floor(maxVisible / 2));
+            let endPage = Math.min(state.totalPages, startPage + maxVisible - 1);
+            
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            let html = '';
+            
+            // 第一页
+            if (startPage > 1) {
+                html += `<button class="btn btn-ghost btn-sm" onclick="changePage(1)">1</button>`;
+                if (startPage > 2) {
+                    html += `<span class="px-2 text-gray-400">...</span>`;
+                }
+            }
+
+            // 中间页码
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === state.page) {
+                    html += `<button class="btn btn-primary btn-sm">${i}</button>`;
+                } else {
+                    html += `<button class="btn btn-ghost btn-sm" onclick="changePage(${i})">${i}</button>`;
+                }
+            }
+
+            // 最后一页
+            if (endPage < state.totalPages) {
+                if (endPage < state.totalPages - 1) {
+                    html += `<span class="px-2 text-gray-400">...</span>`;
+                }
+                html += `<button class="btn btn-ghost btn-sm" onclick="changePage(${state.totalPages})">${state.totalPages}</button>`;
+            }
+
+            elements.pageNumbers.innerHTML = html;
+        }
+
+        /**
+         * 切换页面
+         */
+        function changePage(page) {
+            if (page < 1 || page > state.totalPages || page === state.page) return;
+            state.page = page;
+            updateURL();
+            loadJobs();
+            // 滚动到顶部
+            document.getElementById('jobs-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /**
+         * 更新统计信息
+         */
+        function updateStats() {
+            if (state.total === 0) {
+                elements.statsText.textContent = '当前筛选下没有符合条件的岗位';
+                return;
+            }
+
+            const filters = [];
+            if (state.filters.keyword) filters.push(`关键词"${state.filters.keyword}"`);
+            if (state.filters.location) filters.push(`地点"${state.filters.location}"`);
+            if (state.filters.jobType) filters.push(`类型"${state.filters.jobType}"`);
+            if (state.filters.industry) filters.push(`行业"${state.filters.industry}"`);
+            if (state.filters.category) filters.push(`方向"${state.filters.category}"`);
+            if (state.filters.education) filters.push(`学历"${state.filters.education}"`);
+            if (state.filters.source) filters.push(`来源"${state.filters.source}"`);
+
+            if (filters.length > 0) {
+                elements.statsText.innerHTML = `当前命中 <span id="stats-count" class="font-semibold text-gray-900">${state.total}</span> 个岗位，已按 ${escapeHtml(filters.join('、'))} 进行筛选`;
+            } else {
+                elements.statsText.innerHTML = `当前共 <span id="stats-count" class="font-semibold text-gray-900">${state.total}</span> 个岗位，可继续按来源、方向、行业、地点等维度查看分布`;
+            }
+            animateStatCount('stats-count', state.total);
+        }
+
+        function animateStatCount(id, targetValue) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            if (typeof animateCountUp === 'function') {
+                animateCountUp(element, Number(targetValue || 0), { duration: 920 });
+                return;
+            }
+            const finalValue = Number(targetValue || 0);
+            const startValue = Number(element.dataset.current || 0);
+            const duration = 540;
+            const startedAt = performance.now();
+
+            function tick(now) {
+                const progress = Math.min(1, (now - startedAt) / duration);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const value = Math.round(startValue + (finalValue - startValue) * eased);
+                element.textContent = value.toLocaleString('zh-CN');
+                if (progress < 1) {
+                    requestAnimationFrame(tick);
+                } else {
+                    element.dataset.current = String(finalValue);
+                }
+            }
+
+            requestAnimationFrame(tick);
+        }
+
+        /**
+         * 清除所有筛选条件
+         */
+        function clearFilters() {
+            state.filters = {
+                keyword: '',
+                location: '',
+                jobType: '',
+                industry: '',
+                category: '',
+                education: '',
+                source: '',
+                dateRange: ''
+            };
+            state.page = 1;
+
+            // 重置表单控件
+            if (elements.searchInput) elements.searchInput.value = '';
+            if (elements.filterLocation) elements.filterLocation.value = '';
+            if (elements.filterType) elements.filterType.value = '';
+            if (elements.filterIndustry) elements.filterIndustry.value = '';
+            if (elements.filterCategory) elements.filterCategory.value = '';
+            if (elements.filterEducation) elements.filterEducation.value = '';
+            if (elements.filterSource) elements.filterSource.value = '';
+            if (elements.filterDate) elements.filterDate.value = '';
+
+            updateURL();
+            loadJobs();
+        }
+
+        /**
+         * 显示/隐藏加载状态
+         */
+        function showLoading(show) {
+            if (show) {
+                elements.loadingIndicator.classList.remove('hidden');
+            } else {
+                elements.loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        /**
+         * 显示错误信息
+         */
+        function showError(message) {
+            elements.errorMessage.textContent = message;
+            elements.staticContent.classList.add('hidden');
+            elements.jobsList.classList.add('hidden');
+            elements.emptyState.classList.add('hidden');
+            elements.errorState.classList.remove('hidden');
+        }
+
+        /**
+         * 隐藏错误信息
+         */
+        function hideError() {
+            elements.errorState.classList.add('hidden');
+        }
+
+        // ==================== 全局函数（供 HTML 调用） ====================
+
+        /**
+         * 查看岗位详情（弹窗显示）
+         */
+        async function viewJobDetail(jobId) {
+            // 确保 jobId 是有效的
+            if (!jobId || jobId === 'undefined' || jobId === 'null') {
+                console.error('Invalid jobId:', jobId);
+                showToast('岗位ID无效', 'error');
+                return;
+            }
+            
+            // 转换为数字
+            const id = parseInt(jobId, 10);
+            if (isNaN(id)) {
+                console.error('Invalid jobId (NaN):', jobId);
+                showToast('岗位ID格式错误', 'error');
+                return;
+            }
+            
+            try {
+                const job = await API.getJob(id);
+                const tagBadges = renderBadgeList(parseTagList(job.tags), 'neutral');
+                state.currentJobId = id;
+
+                document.getElementById('job-modal-content').innerHTML = `
+                    <div class="space-y-5 job-detail-shell">
+                        <div class="flex items-start justify-between job-detail-section reveal-up motion-card">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">${escapeHtml(job.title)}</h2>
+                                <p class="text-lg text-gray-600 mt-2">${escapeHtml(job.company || '未知公司')}</p>
+                            </div>
+                            <button onclick="toggleFavoriteFromModal(${job.id})" class="p-2 text-2xl ${job.is_favorite ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400">
+                                <i class="${job.is_favorite ? 'fas' : 'far'} fa-star"></i>
+                            </button>
+                        </div>
+                        <div class="border rounded-lg bg-gray-50 p-4 job-detail-section reveal-up motion-card">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700">
+                                <div><span class="font-medium text-gray-500">工作地点：</span>${escapeHtml(job.location || '地点不限')}</div>
+                                <div><span class="font-medium text-gray-500">薪资待遇：</span>${escapeHtml(job.salary || '薪资面议')}</div>
+                                <div><span class="font-medium text-gray-500">岗位类型：</span>${escapeHtml(job.job_type || '未识别')}</div>
+                                <div><span class="font-medium text-gray-500">所属行业：</span>${escapeHtml(job.industry || '待识别')}</div>
+                                <div><span class="font-medium text-gray-500">岗位方向：</span>${escapeHtml(job.category || '待分类')}</div>
+                                <div><span class="font-medium text-gray-500">学历要求：</span>${escapeHtml(job.education || '学历不限')}</div>
+                                <div><span class="font-medium text-gray-500">经验要求：</span>${escapeHtml(job.experience || '经验不限')}</div>
+                                <div><span class="font-medium text-gray-500">数据来源：</span>${escapeHtml(job.source || '未知来源')}</div>
+                                ${job.publish_date ? `<div><span class="font-medium text-gray-500">发布时间：</span>${escapeHtml(job.publish_date)}</div>` : ''}
+                                ${job.deadline ? `<div><span class="font-medium text-gray-500">截止时间：</span>${escapeHtml(job.deadline)}</div>` : ''}
+                            </div>
+                        </div>
+                        ${tagBadges ? `
+                        <div class="job-detail-section reveal-up motion-card">
+                            <h3 class="font-bold mb-2 text-gray-800">岗位标签</h3>
+                            <div class="flex flex-wrap gap-2">${tagBadges}</div>
+                        </div>
+                        ` : ''}
+                        <div class="job-detail-section reveal-up motion-card">
+                            <h3 class="font-bold mb-2 text-gray-800">岗位描述</h3>
+                            <div class="border rounded-lg bg-white p-4">${renderStructuredJobContent(job.description) || '<p class="text-gray-500">暂无描述</p>'}</div>
+                        </div>
+                        ${job.requirements ? `
+                        <div class="job-detail-section reveal-up motion-card">
+                            <h3 class="font-bold mb-2 text-gray-800">任职要求</h3>
+                            <div class="border rounded-lg bg-white p-4">${renderStructuredJobContent(job.requirements)}</div>
+                        </div>
+                        ` : ''}
+                        <div class="border rounded-lg bg-white p-4 job-detail-section reveal-up motion-card">
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">求职进度管理</h3>
+                                    <p class="text-sm text-gray-500">记录收藏、投递、面试与 Offer 进度。</p>
+                                </div>
+                                <span class="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-600">${escapeHtml(job.application_status || '未投递')}</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)] gap-3">
+                                <select id="job-progress-status" class="form-select">
+                                    ${APPLICATION_STATUSES.map(status => `<option value="${status}" ${status === (job.application_status || '未投递') ? 'selected' : ''}>${status}</option>`).join('')}
+                                </select>
+                                <textarea id="job-progress-notes" class="form-textarea min-h-[88px]" placeholder="记录这次投递、面试反馈、跟进计划等">${escapeHtml(job.application_notes || '')}</textarea>
+                            </div>
+                            <div class="mt-3 flex gap-3 flex-wrap">
+                                <button class="btn btn-primary btn-sm" onclick="saveJobProgress(${job.id})">
+                                    <i class="fas fa-floppy-disk"></i> 保存进度
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="addTimelineEvent(${job.id})">
+                                    <i class="fas fa-timeline"></i> 添加时间线
+                                </button>
+                            </div>
+                            <div id="timeline-list" class="space-y-3 text-sm text-gray-600">正在加载时间线...</div>
+                        </div>
+                        <div class="border rounded-lg bg-white p-4 job-detail-section reveal-up motion-card">
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">面试问题自动生成</h3>
+                                    <p class="text-sm text-gray-500">围绕岗位职责、行业背景与行为问题生成面试题。</p>
+                                </div>
+                                <button class="btn btn-outline btn-sm" onclick="loadInterviewQuestions(${job.id})">
+                                    <i class="fas fa-user-tie"></i> 生成问题
+                                </button>
+                            </div>
+                            <div id="interview-questions" class="bg-gray-50 rounded-xl border border-gray-200 p-4 text-sm text-gray-600">点击“生成问题”后显示。</div>
+                        </div>
+                        <div class="border rounded-lg bg-gray-50 p-4 job-detail-section reveal-up motion-card">
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">AI 推荐分析</h3>
+                                    <p class="text-sm text-gray-500">基于岗位职责、要求、薪资与行业信息生成推荐，并支持继续追问。</p>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="requestJobAIAnalysis()">
+                                    <i class="fas fa-sparkles"></i> 生成分析
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <button class="btn btn-outline btn-sm" onclick="askPresetQuestion('这个岗位适合什么样的候选人？')">适合人群</button>
+                                <button class="btn btn-outline btn-sm" onclick="askPresetQuestion('这个岗位的核心竞争力和风险点是什么？')">机会与风险</button>
+                                <button class="btn btn-outline btn-sm" onclick="askPresetQuestion('如果我要投递，简历应该突出什么？')">投递建议</button>
+                            </div>
+                            <div id="ai-chat-history" class="bg-white rounded-xl border border-slate-200 p-4 text-sm text-slate-600 min-h-[120px] max-h-[260px] overflow-y-auto space-y-3">
+                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">点击“生成分析”后，这里会保留本岗位最近的 AI 分析和追问记录。</div>
+                            </div>
+                            <div id="ai-analysis-result" class="bg-white rounded-xl border border-slate-200 p-4 text-sm text-slate-600 whitespace-pre-line min-h-[140px] max-h-[320px] overflow-y-auto mt-4">点击“生成分析”后，这里会输出岗位推荐结论。</div>
+                            <div class="mt-4 flex gap-3">
+                                <textarea id="ai-question-input" class="form-textarea flex-1 min-h-[92px]" placeholder="继续追问这个岗位，比如：这个岗位对金融硕士是否匹配？"></textarea>
+                                <button class="btn btn-primary self-end" onclick="submitAIQuestion()">
+                                    <i class="fas fa-paper-plane"></i> 提问
+                                </button>
+                            </div>
+                        </div>
+                        <div class="border rounded-lg bg-white p-4 job-detail-section reveal-up motion-card">
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">相似岗位推荐</h3>
+                                    <p class="text-sm text-gray-500">基于地点、方向与行业快速找到可替代机会。</p>
+                                </div>
+                                <button class="btn btn-outline btn-sm" onclick="loadSimilarJobs(${job.id})">
+                                    <i class="fas fa-clone"></i> 刷新相似岗位
+                                </button>
+                            </div>
+                            <div id="similar-jobs-list" class="space-y-3 text-sm text-gray-600">点击“刷新相似岗位”后加载。</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('job-modal').classList.remove('hidden');
+                renderJobModalActions(job);
+                loadJobAiHistory(job.id);
+                loadSimilarJobs(job.id);
+                loadTimeline(job.id);
+                if (typeof animateCountUpIn === 'function') {
+                    animateCountUpIn(document.getElementById('job-modal-content'));
+                }
+            } catch (error) {
+                console.error('加载岗位详情失败:', error);
+                const errorMsg = error.message || '未知错误';
+                showToast(`加载失败: ${errorMsg}`, 'error');
+            }
+        }
+
+        function renderJobModalActions(job) {
+            const container = document.getElementById('job-modal-actions');
+            if (!container) return;
+
+            const actions = [];
+            if (job.source_url) {
+                actions.push(`
+                    <button onclick="window.open('${escapeHtml(job.source_url)}', '_blank')" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-center hover:bg-gray-200">
+                        <i class="fas fa-globe mr-2"></i>查看原网页
+                    </button>
+                `);
+            }
+            if (job.apply_url) {
+                actions.push(`
+                    <button onclick="window.open('${escapeHtml(job.apply_url)}', '_blank')" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700">
+                        <i class="fas fa-external-link-alt mr-2"></i>申请岗位
+                    </button>
+                `);
+            }
+
+            if (!actions.length) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.innerHTML = actions.join('');
+            container.classList.remove('hidden');
+        }
+
+        /**
+         * 关闭岗位详情弹窗
+         */
+        function closeJobModal() {
+            document.getElementById('job-modal').classList.add('hidden');
+            const actions = document.getElementById('job-modal-actions');
+            if (actions) {
+                actions.innerHTML = '';
+                actions.classList.add('hidden');
+            }
+        }
+
+        /**
+         * 在弹窗中切换收藏
+         */
+        async function toggleFavoriteFromModal(jobId) {
+            try {
+                const result = await API.toggleFavorite(jobId);
+                showToast(result.message, result.success ? 'success' : 'error');
+                // 刷新当前视图
+                if (result.success) {
+                    viewJobDetail(jobId);
+                }
+            } catch (error) {
+                console.error('切换收藏失败:', error);
+                showToast('操作失败', 'error');
+            }
+        }
+
+        async function saveJobProgress(jobId) {
+            try {
+                const status = document.getElementById('job-progress-status')?.value || '未投递';
+                const notes = document.getElementById('job-progress-notes')?.value || '';
+                const result = await API.updateJobProgress(jobId, { status, notes });
+                showToast(result.message || '求职进度已更新', 'success');
+                viewJobDetail(jobId);
+            } catch (error) {
+                console.error('保存进度失败:', error);
+                showToast(error.message || '保存进度失败', 'error');
+            }
+        }
+
+        async function loadSimilarJobs(jobId) {
+            const container = document.getElementById('similar-jobs-list');
+            if (!container) return;
+            container.innerHTML = '<div class=\"text-gray-400\">正在加载相似岗位...</div>';
+            try {
+                const jobs = await API.getSimilarJobs(jobId, 6);
+                if (!jobs || jobs.length === 0) {
+                    container.innerHTML = '<div class=\"text-gray-400\">暂未找到相似岗位</div>';
+                    return;
+                }
+
+                container.innerHTML = jobs.map(job => `
+                    <button type="button" class="w-full text-left rounded-xl border border-gray-200 bg-gray-50 p-3 hover:bg-white" onclick="viewJobDetail(${job.id})">
+                        <div class="font-semibold text-gray-900">${escapeHtml(job.title || '未命名岗位')}</div>
+                        <div class="text-gray-500 mt-1">${escapeHtml(job.company || '未知公司')} · ${escapeHtml(job.location || '地点待定')}</div>
+                    </button>
+                `).join('');
+            } catch (error) {
+                console.error('加载相似岗位失败:', error);
+                container.innerHTML = `<div class="text-red-500">${escapeHtml(error.message || '相似岗位加载失败')}</div>`;
+            }
+        }
+
+        async function loadTimeline(jobId) {
+            const container = document.getElementById('timeline-list');
+            if (!container) return;
+            container.innerHTML = '<div class="text-gray-400">正在加载时间线...</div>';
+            try {
+                const events = await API.getJobTimeline(jobId);
+                if (!events || events.length === 0) {
+                    container.innerHTML = '<div class="text-gray-400">暂无时间线记录</div>';
+                    return;
+                }
+                container.innerHTML = events.map(event => `
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="font-medium text-gray-900">${escapeHtml(event.title)}</div>
+                            <div class="text-xs text-gray-500">${escapeHtml(event.created_at || '')}</div>
+                        </div>
+                        ${event.notes ? `<div class="text-sm text-gray-600 mt-2">${escapeHtml(event.notes)}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.innerHTML = `<div class="text-red-500">${escapeHtml(error.message || '时间线加载失败')}</div>`;
+            }
+        }
+
+        async function addTimelineEvent(jobId) {
+            const title = prompt('请输入时间线标题，例如：投递简历 / 完成一面 / HR沟通');
+            if (!title || !title.trim()) return;
+            const notes = prompt('可选：补充记录备注', '') || '';
+            try {
+                const result = await API.addJobTimeline(jobId, {
+                    event_type: 'manual',
+                    title: title.trim(),
+                    notes: notes.trim(),
+                });
+                showToast(result.message || '时间线已添加', 'success');
+                loadTimeline(jobId);
+            } catch (error) {
+                showToast(error.message || '添加时间线失败', 'error');
+            }
+        }
+
+        async function loadInterviewQuestions(jobId) {
+            const container = document.getElementById('interview-questions');
+            if (!container) return;
+            container.innerHTML = '正在生成面试问题...';
+            try {
+                const result = await API.generateInterviewQuestions(jobId);
+                renderMarkdownOutput(container, result.data?.questions || '暂无问题');
+            } catch (error) {
+                container.innerHTML = `<div class="text-red-500">${escapeHtml(error.message || '面试问题生成失败')}</div>`;
+            }
+        }
+
+        /**
+         * HTML转义
+         */
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        /**
+         * 切换收藏状态
+         */
+        async function toggleFavorite(jobId, btn) {
+            try {
+                const result = await API.toggleFavorite(jobId);
+                
+                // 更新按钮状态
+                const icon = btn.querySelector('i');
+                if (result.is_favorite) {
+                    btn.classList.add('text-yellow-500');
+                    btn.classList.remove('text-gray-400');
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    btn.title = '取消收藏';
+                } else {
+                    btn.classList.remove('text-yellow-500');
+                    btn.classList.add('text-gray-400');
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    btn.title = '添加收藏';
+                }
+
+                // 显示提示
+                showToast(result.message, result.success ? 'success' : 'error');
+            } catch (error) {
+                console.error('切换收藏失败:', error);
+                showToast('操作失败，请稍后重试', 'error');
+            }
+        }
+
+        /**
+         * 显示 Toast 提示
+         */
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type} fade-in`;
+            
+            const iconMap = {
+                success: 'fa-check-circle',
+                error: 'fa-times-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.innerHTML = `
+                <i class="fas ${iconMap[type] || iconMap.info}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+    <!-- 岗位详情弹窗 -->
+    <div id="job-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+                <h3 class="text-lg font-semibold">岗位详情</h3>
+                <button onclick="closeJobModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="job-modal-content" class="p-6 overflow-y-auto flex-1">
+                <!-- 动态内容 -->
+            </div>
+            <div id="job-modal-actions" class="hidden border-t bg-white px-6 py-4 flex gap-3"></div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinIntern Hub - 智能推荐，根据个人信息推荐更匹配的岗位">
+    <meta name="keywords" content="智能推荐, 金融实习, 岗位匹配, AI推荐">
+    <meta name="author" content="FinIntern Hub">
+    <meta name="theme-color" content="#0f766e">
+    <title>智能推荐 - FinIntern Hub</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+    <link rel="stylesheet" href="./css/common.css">
+    <style>
+        .studio-panel-sticky {
+            position: static;
+        }
+
+        @media (min-width: 1280px) {
+            .studio-panel-sticky {
+                position: sticky;
+                top: 96px;
+                align-self: start;
+                max-height: none;
+                overflow: visible;
+            }
+        }
+
+        .recommendation-carousel-shell {
+            position: relative;
+        }
+
+        .recommendation-carousel {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scroll-snap-type: x proximity;
+            scroll-behavior: smooth;
+            padding-bottom: 0.5rem;
+            scrollbar-width: thin;
+        }
+
+        .recommendation-carousel::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .recommendation-carousel::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.55);
+            border-radius: 999px;
+        }
+
+        .recommendation-slide {
+            min-width: min(100%, 760px);
+            width: min(100%, 760px);
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+        }
+
+        .recommendation-summary-pane {
+            min-height: 300px;
+        }
+
+        .recommendation-summary-pane .recommendation-markdown {
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .recommendation-summary-pane .recommendation-markdown::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .recommendation-summary-pane .recommendation-markdown::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.25);
+            border-radius: 999px;
+        }
+
+        .recommendation-nav-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #334155;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+            transition: all 180ms ease;
+        }
+
+        .recommendation-nav-btn:hover:not(:disabled) {
+            border-color: #14b8a6;
+            color: #0f766e;
+            transform: translateY(-1px);
+        }
+
+        .recommendation-nav-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .recommendation-slide article {
+            height: 100%;
+        }
+
+        .assistant-chat-window {
+            max-height: 360px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .assistant-bubble {
+            border-radius: 20px;
+            padding: 14px 16px;
+        }
+
+        .analysis-surface,
+        .ai-module-card,
+        .recommendation-card-surface,
+        .recommendation-insight-surface {
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
+        }
+
+        .analysis-surface--teal {
+            border-color: #d1fae5;
+            background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%);
+        }
+
+        .analysis-surface--sky {
+            border-color: #dbeafe;
+            background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+        }
+
+        .analysis-surface--violet {
+            border-color: #ede9fe;
+            background: linear-gradient(180deg, #faf5ff 0%, #ffffff 100%);
+        }
+
+        .analysis-surface--amber {
+            border-color: #fde68a;
+            background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+        }
+
+        .ai-output-panel {
+            margin-top: 1rem;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+            scroll-behavior: smooth;
+        }
+
+        .ai-output-panel::-webkit-scrollbar,
+        .assistant-chat-window::-webkit-scrollbar,
+        .analysis-history-list::-webkit-scrollbar,
+        .history-panel-body::-webkit-scrollbar,
+        .cache-panel-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .ai-output-panel::-webkit-scrollbar-thumb,
+        .assistant-chat-window::-webkit-scrollbar-thumb,
+        .analysis-history-list::-webkit-scrollbar-thumb,
+        .history-panel-body::-webkit-scrollbar-thumb,
+        .cache-panel-body::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.45);
+            border-radius: 999px;
+        }
+
+        .assistant-bubble.user {
+            background: #0f766e;
+            color: white;
+            margin-left: auto;
+        }
+
+        .assistant-bubble.assistant {
+            background: #f8fafc;
+            color: #1f2937;
+            border: 1px solid #e2e8f0;
+        }
+
+        .analysis-history-list {
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .recommendation-workspace {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .recommendation-right-rail {
+            display: grid;
+            gap: 1.5rem;
+            align-content: start;
+        }
+
+        .workspace-section {
+            overflow: hidden;
+        }
+
+        .workspace-section .section-kicker {
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .recommendation-card-surface {
+            padding: 1rem;
+        }
+
+        .recommendation-card-surface .surface-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.65rem;
+        }
+
+        .recommendation-card-surface .surface-copy {
+            color: #4b5563;
+        }
+
+        .recommendation-insight-surface {
+            padding: 1rem;
+        }
+
+        .history-panel-body,
+        .cache-panel-body {
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 767px) {
+            .recommendation-slide {
+                min-width: 100%;
+                width: 100%;
+            }
+
+            .recommendation-carousel {
+                gap: 0.75rem;
+                padding-bottom: 0.25rem;
+            }
+
+            .recommendation-nav-btn {
+                width: 38px;
+                height: 38px;
+                box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            }
+
+            .assistant-chat-window,
+            .analysis-history-list,
+            .recommendation-summary-pane .recommendation-markdown,
+            #analysis-summary,
+            #resume-advice-output,
+            #delivery-assistant-output {
+                max-height: 240px;
+            }
+
+            .studio-panel-sticky,
+            .recommendation-slide article,
+            .rounded-\[28px\] {
+                transition: none;
+            }
+
+            .history-panel-body,
+            .cache-panel-body {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 app-shell">
+    <div id="app" class="min-h-screen flex">
+        <div id="navbar-container">
+            <aside id="sidebar" class="w-64 bg-slate-900 text-white flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full md:translate-x-0">
+                <div class="p-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-briefcase text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-lg">FinIntern</h1>
+                            <p class="text-xs text-gray-400">金融实习招聘平台</p>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="flex-1 px-4 space-y-1">
+                    <a href="./index.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="平台概览和统计数据">
+                        <i class="fas fa-home w-5 text-center"></i>
+                        <span>首页</span>
+                    </a>
+                    <a href="./jobs.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="浏览所有实习岗位">
+                        <i class="fas fa-list w-5 text-center"></i>
+                        <span>岗位列表</span>
+                    </a>
+                    <a href="./favorites.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="查看收藏的岗位">
+                        <i class="fas fa-star w-5 text-center"></i>
+                        <span>我的收藏</span>
+                    </a>
+                    <a href="./crawler.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="管理和执行爬虫任务">
+                        <i class="fas fa-spider w-5 text-center"></i>
+                        <span>数据采集</span>
+                    </a>
+                    <a href="./system.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="查看配置中心与系统状态">
+                        <i class="fas fa-gauge-high w-5 text-center"></i>
+                        <span>系统状态</span>
+                    </a>
+                    <a href="./recommendations.html" class="sidebar-item active bg-white/10 flex items-center gap-3 px-4 py-3 rounded-lg" title="根据个人信息生成智能推荐">
+                        <i class="fas fa-wand-magic-sparkles w-5 text-center"></i>
+                        <span>智能推荐</span>
+                    </a>
+                </nav>
+
+                <div class="p-4 border-t border-gray-800">
+                    <div class="rounded-xl bg-white/5 border border-white/10 px-3 py-3">
+                        <div class="flex items-center gap-2 text-sm text-gray-300">
+                            <i class="fas fa-info-circle"></i>
+                        <span>v3.9.0</span>
+                        </div>
+                        <div class="mt-2 text-[11px] leading-5 text-gray-500">
+                            <div>网站声明：仅为个人学习开发作用</div>
+                            <div>灵感来源：我们伟大的宝宝</div>
+                            <div>网站作者：JoakimStarr / 文人病</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="closeMobileMenu()"></div>
+            <button id="mobile-menu-btn" class="fixed top-4 left-4 z-[60] md:hidden bg-slate-900 text-white p-3 rounded-lg shadow-lg" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <main class="flex-1 ml-0 md:ml-64 pt-20 md:pt-0">
+            <header class="bg-white/90 backdrop-blur border-b px-8 py-5 sticky top-0 z-40">
+                <div class="flex items-center justify-between gap-4 flex-wrap">
+                    <div>
+                        <h2 id="page-title" class="text-2xl font-bold text-gray-900">智能推荐</h2>
+                        <p class="text-sm text-gray-500 mt-1">输入你的背景、偏好和目标，系统会做岗位匹配与推荐分析。</p>
+                    </div>
+                    <button id="quick-fill-btn" class="btn btn-outline">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                        一键填充示例
+                    </button>
+                </div>
+            </header>
+
+            <div id="content" class="p-8">
+                <section class="grid grid-cols-1 xl:grid-cols-[420px_minmax(0,1fr)] gap-6">
+                    <div class="studio-panel-sticky rounded-[28px] border border-teal-100 bg-gradient-to-br from-teal-900 via-teal-700 to-emerald-500 text-white shadow-xl overflow-hidden">
+                        <div class="p-7 border-b border-white/10">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs tracking-[0.2em] uppercase">
+                                <i class="fas fa-brain"></i>
+                                Recommendation Studio
+                            </div>
+                            <h3 class="text-2xl font-semibold mt-4">建立你的求职画像</h3>
+                            <p class="text-sm text-white/80 mt-3 leading-6">
+                                这里可以填写你的意向地点、岗位方向、行业偏好、学历背景和个人优势。我们会结合数据库中的岗位信息进行智能匹配。
+                            </p>
+                        </div>
+
+                        <div class="px-7 pt-6">
+                            <div class="rounded-3xl border border-white/15 bg-white/10 p-4">
+                                <div class="flex items-start justify-between gap-4 flex-wrap">
+                                    <div>
+                                        <div class="text-sm font-semibold">上传简历自动解析</div>
+                                        <p class="text-xs text-white/70 mt-1">支持 `.txt`、`.md`、`.pdf`、`.docx`，解析后会自动回填，并可选择是否同步保存服务器记录。</p>
+                                    </div>
+                                    <label class="inline-flex items-center gap-2 rounded-2xl bg-white text-teal-800 px-4 py-2 text-sm font-semibold cursor-pointer">
+                                        <i class="fas fa-upload"></i>
+                                        选择文件
+                                        <input id="resume-upload-input" type="file" accept=".txt,.md,.pdf,.docx" class="hidden">
+                                    </label>
+                                </div>
+                                <label class="inline-flex items-center gap-2 text-xs text-white/85 mt-3">
+                                    <input id="save-to-server-history" type="checkbox" checked class="rounded border-white/30 bg-white/10">
+                                    同步保存到服务器记录
+                                </label>
+                                <div id="resume-upload-status" class="text-xs text-white/75 mt-3">尚未上传简历</div>
+                            </div>
+                        </div>
+
+                        <form id="recommendation-form" class="p-7 space-y-4">
+                            <div>
+                                <label class="block text-sm text-white/80 mb-2">关键词</label>
+                                <input id="profile-keywords" type="text" placeholder="如：量化、投研、行研、固收" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-white/80 mb-2">意向地点</label>
+                                <input id="profile-locations" type="text" placeholder="如：上海、北京、深圳" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-white/80 mb-2">岗位类型</label>
+                                    <input id="profile-job-types" type="text" placeholder="如：实习、校招" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-white/80 mb-2">学历背景</label>
+                                    <select id="profile-education" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-white/30">
+                                        <option value="" class="text-gray-900">未填写</option>
+                                        <option value="本科" class="text-gray-900">本科</option>
+                                        <option value="硕士" class="text-gray-900">硕士</option>
+                                        <option value="博士" class="text-gray-900">博士</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-white/80 mb-2">意向行业</label>
+                                    <input id="profile-industries" type="text" placeholder="如：基金、证券、投行" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-white/80 mb-2">经验阶段</label>
+                                    <input id="profile-experience" type="text" placeholder="如：0-1段实习、应届生" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-white/80 mb-2">目标公司</label>
+                                <input id="profile-companies" type="text" placeholder="如：中金、华泰、易方达" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-white/80 mb-2">院校背景</label>
+                                    <input id="profile-schools" type="text" placeholder="如：上海财经大学、复旦大学" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-white/80 mb-2">专业方向</label>
+                                    <input id="profile-majors" type="text" placeholder="如：金融工程、会计、统计" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-white/80 mb-2">技能 / 证书</label>
+                                <input id="profile-skills" type="text" placeholder="如：Python、SQL、CFA一级、Wind" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-white/80 mb-2">个人优势</label>
+                                <textarea id="profile-strengths" rows="4" placeholder="如：Python、财务建模、行业研究、沟通表达" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-white/80 mb-2">附加说明</label>
+                                <textarea id="profile-additional-notes" rows="4" placeholder="补充你希望 AI 重点考虑的内容，如：可尽快到岗、偏好买方研究、接受异地实习、擅长行业深度报告等" class="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/45 focus:outline-none focus:ring-2 focus:ring-white/30"></textarea>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-4 flex-wrap pt-2">
+                                <label class="inline-flex items-center gap-2 text-sm text-white/85">
+                                    <input id="use-ai-summary" type="checkbox" checked class="rounded border-white/30 bg-white/10">
+                                    启用 AI 推荐分析
+                                </label>
+                                <button id="submit-btn" type="submit" class="inline-flex items-center gap-2 rounded-2xl bg-white text-teal-800 px-5 py-3 font-semibold shadow hover:bg-teal-50 transition">
+                                    <i class="fas fa-bolt"></i>
+                                    生成推荐
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="recommendation-workspace">
+                        <section class="workspace-section rounded-[28px] border border-gray-200 bg-white shadow-sm overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+                                <div>
+                                    <p class="section-kicker text-teal-600">Profile Summary</p>
+                                    <h3 class="text-xl font-semibold text-gray-900 mt-2">推荐分析面板</h3>
+                                </div>
+                                <div id="summary-meta" class="text-sm text-gray-500">等待生成</div>
+                            </div>
+                            <div class="p-6 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6">
+                                <div class="analysis-surface p-5">
+                                    <p class="text-sm text-gray-500 mb-2">个人画像摘要</p>
+                                    <div id="profile-summary" class="text-gray-700 leading-7">填写左侧信息后，这里会显示你的画像摘要。</div>
+                                </div>
+                                <div class="analysis-surface analysis-surface--teal p-5">
+                                    <p class="text-sm text-gray-500 mb-2">AI / 规则分析</p>
+                                    <div id="analysis-summary" class="prose prose-sm max-w-none text-gray-700 max-h-[420px] overflow-y-auto pr-2 scroll-smooth">
+                                        <p>推荐分析生成后会显示在这里。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 pb-6">
+                                <div class="analysis-surface analysis-surface--sky p-5">
+                                    <div class="flex items-center justify-between gap-4 flex-wrap">
+                                        <div>
+                                            <p class="text-sm text-gray-500 mb-2">AI 简历诊断</p>
+                                            <div id="resume-diagnostic" class="prose prose-sm max-w-none text-gray-700">
+                                                <p>上传简历或生成推荐后，这里会显示简历诊断、缺口和优化建议。</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <button id="export-markdown-btn" class="btn btn-outline text-sm">导出 Markdown</button>
+                                            <button id="export-json-btn" class="btn btn-outline text-sm">导出 JSON</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="workspace-section rounded-[28px] border border-gray-200 bg-white shadow-sm overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+                                <div>
+                                    <p class="section-kicker text-rose-500">Top Matches</p>
+                                    <h3 class="text-xl font-semibold text-gray-900 mt-2">推荐岗位</h3>
+                                </div>
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <div id="results-count" class="text-sm text-gray-500">尚未生成推荐</div>
+                                    <div class="flex items-center gap-2">
+                                        <button id="recommendation-prev-btn" type="button" class="recommendation-nav-btn" title="查看上一条推荐">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <button id="recommendation-next-btn" type="button" class="recommendation-nav-btn" title="查看下一条推荐">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recommendation-carousel-shell p-6">
+                                <div id="recommendation-results" class="recommendation-carousel">
+                                <div class="rounded-3xl border border-dashed border-gray-200 bg-gray-50 p-10 text-center text-gray-500">
+                                    <i class="fas fa-sparkles text-2xl mb-3 text-teal-500"></i>
+                                    <p>填写你的求职信息后，系统会给出更适合你的岗位排序与分析。</p>
+                                </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="grid grid-cols-1 2xl:grid-cols-[1.08fr_0.92fr] gap-6 items-start">
+                        <section class="workspace-section rounded-[28px] border border-gray-200 bg-white shadow-sm overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+                                <div>
+                                    <p class="section-kicker text-emerald-500">AI Toolkit</p>
+                                    <h3 class="text-xl font-semibold text-gray-900 mt-2">AI 改简历 / 投递助手 / 追问推荐</h3>
+                                </div>
+                                <div id="assistant-meta" class="text-sm text-gray-500">等待操作</div>
+                            </div>
+                            <div class="p-6 grid grid-cols-1 xl:grid-cols-[0.92fr_1.08fr] gap-6">
+                                <div class="space-y-4">
+                                    <div class="ai-module-card analysis-surface analysis-surface--teal p-5">
+                                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">AI 改简历建议</div>
+                                                <p class="text-xs text-gray-500 mt-1">结合当前画像和推荐岗位，生成针对性的简历改写建议。</p>
+                                            </div>
+                                            <button id="resume-advice-btn" class="btn btn-outline text-sm">生成建议</button>
+                                        </div>
+                                        <div id="resume-advice-output" class="ai-output-panel prose prose-sm max-w-none text-gray-700">点击按钮后显示。</div>
+                                    </div>
+                                    <div class="ai-module-card analysis-surface analysis-surface--amber p-5">
+                                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">AI 投递助手</div>
+                                                <p class="text-xs text-gray-500 mt-1">生成自我介绍、邮件正文、简历突出点和投递建议。</p>
+                                            </div>
+                                            <button id="delivery-assistant-btn" class="btn btn-outline text-sm">生成投递助手</button>
+                                        </div>
+                                        <div id="delivery-assistant-output" class="ai-output-panel prose prose-sm max-w-none text-gray-700">点击按钮后显示。</div>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="ai-module-card analysis-surface analysis-surface--violet p-5">
+                                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">AI 追问式推荐</div>
+                                                <p class="text-xs text-gray-500 mt-1">围绕当前画像和推荐岗位继续追问，支持保留最近对话历史。</p>
+                                            </div>
+                                            <button id="clear-chat-history-btn" class="btn btn-outline text-sm">清空对话</button>
+                                        </div>
+                                        <div id="recommendation-chat-window" class="assistant-chat-window space-y-3 mt-4">
+                                            <div class="assistant-bubble assistant">
+                                                推荐生成后，你可以继续追问，例如：哪些岗位更适合买方研究、简历该重点改哪里、先投哪几个。
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex gap-3">
+                                            <textarea id="recommendation-chat-input" rows="3" class="form-textarea flex-1" placeholder="继续提问，例如：如果我主投量化研究，应该优先看哪些岗位？"></textarea>
+                                            <button id="recommendation-chat-send-btn" class="btn btn-primary self-end">
+                                                <i class="fas fa-paper-plane"></i>
+                                                发送
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="ai-module-card analysis-surface p-5">
+                                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">最近分析与聊天记录</div>
+                                                <p class="text-xs text-gray-500 mt-1">仅保留最近分析和对话摘要，方便继续跟进。</p>
+                                            </div>
+                                        </div>
+                                        <div id="analysis-history-list" class="analysis-history-list space-y-3 mt-4">
+                                            <div class="rounded-2xl border border-dashed border-gray-200 bg-white/80 p-4 text-sm text-gray-500">还没有分析历史。</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <div class="recommendation-right-rail">
+                            <section class="workspace-section rounded-[28px] border border-gray-200 bg-white shadow-sm overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+                                    <div>
+                                        <p class="section-kicker text-violet-500">Recent Cache</p>
+                                        <h3 class="text-xl font-semibold text-gray-900 mt-2">最近缓存</h3>
+                                    </div>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <button id="clear-cache-btn" class="btn btn-outline text-sm">清除缓存</button>
+                                    </div>
+                                </div>
+                                <div id="cache-list" class="cache-panel-body p-6 space-y-3">
+                                    <div class="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-sm text-gray-500">
+                                        还没有推荐缓存，生成推荐后会保留最近几次的记录。
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="workspace-section rounded-[28px] border border-gray-200 bg-white shadow-sm overflow-hidden">
+                                <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+                                    <div>
+                                        <p class="section-kicker text-sky-500">Local History</p>
+                                        <h3 class="text-xl font-semibold text-gray-900 mt-2">本地记录</h3>
+                                    </div>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <button id="clear-history-btn" class="btn btn-outline text-sm">清空记录</button>
+                                    </div>
+                                </div>
+                                <div id="history-list" class="history-panel-body p-6 space-y-3">
+                                    <div class="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-sm text-gray-500">
+                                        正在读取本地记录...
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- 元数据（优先加载） -->
+    <script src="./data/jobs.meta.js"></script>
+    <!-- 优先加载前20条数据（约100KB，快速渲染） -->
+    <script src="./data/jobs.chunk.0.js"></script>
+    <script src="./js/api.js?v=20260405-v391"></script>
+    <script src="./js/auth.js?v=20260405-v391"></script>
+    <script src="./js/navbar.js?v=20260405-v391"></script>
+    <script src="./js/ui-components.js?v=20260405-v391"></script>
+    <script>
+        const state = {
+            loading: false,
+            result: null,
+            profilePayload: null,
+            cachedSnapshots: [],
+            serverHistory: [],
+            resumeDiagnostic: null,
+            recommendationChatHistory: [],
+            analysisHistory: [],
+        };
+        const CACHE_KEY = 'finintern-recommendation-cache-v3';
+        const MAX_CACHE_ITEMS = 5;
+        const CHAT_HISTORY_KEY = 'finintern-recommendation-chat-v1';
+        const ANALYSIS_HISTORY_KEY = 'finintern-analysis-history-v1';
+
+        const elements = {};
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await AppAuth.loadCurrentUser(true);
+            if (!user) {
+                AppAuth.redirectToLogin();
+                return;
+            }
+            initElements();
+            initStandaloneNavbar();
+            bindEvents();
+        });
+
+        function initStandaloneNavbar() {
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    closeMobileMenu();
+                }
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function initElements() {
+            elements.form = document.getElementById('recommendation-form');
+            elements.quickFillBtn = document.getElementById('quick-fill-btn');
+            elements.submitBtn = document.getElementById('submit-btn');
+            elements.resumeUploadInput = document.getElementById('resume-upload-input');
+            elements.resumeUploadStatus = document.getElementById('resume-upload-status');
+            elements.profileSummary = document.getElementById('profile-summary');
+            elements.analysisSummary = document.getElementById('analysis-summary');
+            elements.resumeDiagnostic = document.getElementById('resume-diagnostic');
+            elements.results = document.getElementById('recommendation-results');
+            elements.resultsCount = document.getElementById('results-count');
+            elements.resultsPrevBtn = document.getElementById('recommendation-prev-btn');
+            elements.resultsNextBtn = document.getElementById('recommendation-next-btn');
+            elements.summaryMeta = document.getElementById('summary-meta');
+            elements.historyList = document.getElementById('history-list');
+            elements.cacheList = document.getElementById('cache-list');
+            elements.clearCacheBtn = document.getElementById('clear-cache-btn');
+            elements.clearHistoryBtn = document.getElementById('clear-history-btn');
+            elements.saveToServerHistory = document.getElementById('save-to-server-history');
+            elements.exportMarkdownBtn = document.getElementById('export-markdown-btn');
+            elements.exportJsonBtn = document.getElementById('export-json-btn');
+            elements.resumeAdviceBtn = document.getElementById('resume-advice-btn');
+            elements.resumeAdviceOutput = document.getElementById('resume-advice-output');
+            elements.deliveryAssistantBtn = document.getElementById('delivery-assistant-btn');
+            elements.deliveryAssistantOutput = document.getElementById('delivery-assistant-output');
+            elements.recommendationChatWindow = document.getElementById('recommendation-chat-window');
+            elements.recommendationChatInput = document.getElementById('recommendation-chat-input');
+            elements.recommendationChatSendBtn = document.getElementById('recommendation-chat-send-btn');
+            elements.clearChatHistoryBtn = document.getElementById('clear-chat-history-btn');
+            elements.analysisHistoryList = document.getElementById('analysis-history-list');
+            elements.assistantMeta = document.getElementById('assistant-meta');
+        }
+
+        function bindEvents() {
+            elements.form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                await submitRecommendation();
+            });
+
+            elements.resumeUploadInput.addEventListener('change', async (event) => {
+                const file = event.target.files && event.target.files[0];
+                if (file) {
+                    await uploadResume(file);
+                }
+                event.target.value = '';
+            });
+
+            elements.quickFillBtn.addEventListener('click', () => {
+                document.getElementById('profile-keywords').value = '量化, 投研, 行研';
+                document.getElementById('profile-locations').value = '上海, 北京';
+                document.getElementById('profile-job-types').value = '实习';
+                document.getElementById('profile-education').value = '硕士';
+                document.getElementById('profile-industries').value = '基金, 证券';
+                document.getElementById('profile-experience').value = '1段实习';
+                document.getElementById('profile-companies').value = '中金, 华泰, 易方达';
+                document.getElementById('profile-schools').value = '上海财经大学';
+                document.getElementById('profile-majors').value = '金融工程, 统计';
+                document.getElementById('profile-skills').value = 'Python, SQL, Wind';
+                document.getElementById('profile-strengths').value = 'Python, 财务建模, 数据分析, 行业研究';
+                document.getElementById('profile-additional-notes').value = '希望优先推荐买方研究、量化研究和数据驱动岗位，可接受短期高强度实习。';
+            });
+
+            elements.clearCacheBtn.addEventListener('click', clearLocalCache);
+            elements.clearHistoryBtn.addEventListener('click', clearServerHistory);
+            elements.exportMarkdownBtn.addEventListener('click', () => exportCurrentResult('markdown'));
+            elements.exportJsonBtn.addEventListener('click', () => exportCurrentResult('json'));
+            elements.resultsPrevBtn.addEventListener('click', () => scrollRecommendationResults(-1));
+            elements.resultsNextBtn.addEventListener('click', () => scrollRecommendationResults(1));
+            elements.results.addEventListener('scroll', debounce(syncRecommendationNavState, 60));
+            elements.resumeAdviceBtn.addEventListener('click', requestResumeAdvice);
+            elements.deliveryAssistantBtn.addEventListener('click', requestDeliveryAssistant);
+            elements.recommendationChatSendBtn.addEventListener('click', sendRecommendationChat);
+            elements.clearChatHistoryBtn.addEventListener('click', clearRecommendationChatHistory);
+            elements.recommendationChatInput.addEventListener('keydown', (event) => {
+                if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+                    sendRecommendationChat();
+                }
+            });
+
+            loadCachedSnapshots();
+            loadHistory();
+            loadAssistantLocalState();
+            syncRecommendationNavState();
+        }
+
+        async function submitRecommendation() {
+            if (state.loading) return;
+            state.loading = true;
+            setLoading(true);
+
+            try {
+                const payload = collectFormPayload();
+                state.profilePayload = payload;
+                const result = await API.getRecommendations(payload);
+                state.result = result;
+                persistSnapshot({
+                    type: 'recommendation',
+                    label: buildSnapshotLabel(payload, result),
+                    profile: payload,
+                    result,
+                    resumeDiagnostic: result.resume_diagnostic || null,
+                    resumeDiagnosticMarkdown: result.resume_diagnostic_markdown || '',
+                });
+                renderResult(result);
+                appendAnalysisHistory('recommendation', `已生成 ${result.returned || 0} 个推荐岗位`, result.analysis_summary || '');
+                elements.resumeUploadStatus.textContent = payload.save_to_server_history
+                    ? '推荐已生成，并同步保存到服务器记录与浏览器缓存'
+                    : '推荐已生成，仅保存在当前浏览器缓存中';
+            } catch (error) {
+                renderError(error.message || '推荐生成失败，请稍后重试');
+            } finally {
+                state.loading = false;
+                setLoading(false);
+            }
+        }
+
+        function collectFormPayload() {
+            const skillEntries = splitValues(document.getElementById('profile-skills').value);
+            const certificationKeywords = ['CFA', 'FRM', 'CPA', 'ACCA', '证券从业', '基金从业', '英语六级', '英语四级'];
+            return {
+                keywords: splitValues(document.getElementById('profile-keywords').value),
+                preferred_locations: splitValues(document.getElementById('profile-locations').value),
+                preferred_job_types: splitValues(document.getElementById('profile-job-types').value),
+                preferred_industries: splitValues(document.getElementById('profile-industries').value),
+                education: document.getElementById('profile-education').value || null,
+                experience: document.getElementById('profile-experience').value.trim() || null,
+                target_companies: splitValues(document.getElementById('profile-companies').value),
+                schools: splitValues(document.getElementById('profile-schools').value),
+                majors: splitValues(document.getElementById('profile-majors').value),
+                skills: skillEntries.filter(item => !certificationKeywords.some(keyword => item.toUpperCase().includes(keyword.toUpperCase()))),
+                certifications: skillEntries.filter(item => certificationKeywords.some(keyword => item.toUpperCase().includes(keyword.toUpperCase()))),
+                strengths: splitValues(document.getElementById('profile-strengths').value),
+                additional_notes: document.getElementById('profile-additional-notes').value.trim() || null,
+                save_to_server_history: elements.saveToServerHistory.checked,
+                max_results: 12,
+                use_ai_summary: document.getElementById('use-ai-summary').checked,
+            };
+        }
+
+        async function uploadResume(file) {
+            elements.resumeUploadStatus.textContent = `正在解析：${file.name}`;
+            try {
+                const result = await API.uploadResume(file, {
+                    saveToServerHistory: elements.saveToServerHistory.checked,
+                });
+                fillFormFromProfile(result.profile || {});
+                state.profilePayload = result.profile || null;
+                state.resumeDiagnostic = result.resume_diagnostic || null;
+                const methodText = result.extraction_method === 'pdf-ocr'
+                    ? ' · 已使用 OCR 识别'
+                    : result.extraction_method === 'image-ocr'
+                        ? ' · 已识别图片文字'
+                        : '';
+                const storageText = result.saved_to_server_history
+                    ? `已解析并保存：${result.filename}${methodText}`
+                    : `已解析：${result.filename}${methodText}（仅保存在浏览器缓存）`;
+                elements.resumeUploadStatus.textContent = result.extraction_notice
+                    ? `${storageText}；${result.extraction_notice}`
+                    : storageText;
+                elements.profileSummary.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="text-gray-800 font-medium">已根据上传简历自动回填画像信息，你可以继续微调后生成推荐。</div>
+                        ${result.extraction_notice ? `
+                            <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                                ${escapeHtml(result.extraction_notice)}
+                            </div>
+                        ` : ''}
+                        <div class="rounded-2xl border border-teal-100 bg-teal-50 p-4 text-sm text-gray-700">
+                            <div class="font-semibold text-teal-800 mb-2">解析预览</div>
+                            <div class="leading-6">${escapeHtml((result.preview_text || '').slice(0, 260) || '暂无预览')}</div>
+                        </div>
+                    </div>
+                `;
+                renderResumeDiagnostic(result.resume_diagnostic_markdown || '');
+                persistSnapshot({
+                    type: 'resume_upload',
+                    label: `简历解析 · ${result.filename || '未命名文件'}`,
+                    profile: result.profile || {},
+                    filename: result.filename,
+                    previewText: result.preview_text || '',
+                    savedPath: result.saved_path || '',
+                    extractionNotice: result.extraction_notice || '',
+                    resumeDiagnosticMarkdown: result.resume_diagnostic_markdown || '',
+                });
+                appendAnalysisHistory('resume', `已解析简历 ${result.filename || ''}`, result.resume_diagnostic_markdown || '');
+                loadCachedSnapshots();
+                if (result.saved_to_server_history) {
+                    loadHistory();
+                }
+            } catch (error) {
+                elements.resumeUploadStatus.textContent = `上传失败：${error.message || '请稍后重试'}`;
+                renderResumeDiagnostic('### 简历诊断\n- 暂未生成诊断，请检查文件内容后重试。');
+            }
+        }
+
+        function fillFormFromProfile(profile) {
+            document.getElementById('profile-keywords').value = (profile.keywords || []).join(', ');
+            document.getElementById('profile-locations').value = (profile.preferred_locations || []).join(', ');
+            document.getElementById('profile-job-types').value = (profile.preferred_job_types || []).join(', ');
+            document.getElementById('profile-education').value = profile.education || '';
+            document.getElementById('profile-industries').value = (profile.preferred_industries || []).join(', ');
+            document.getElementById('profile-experience').value = profile.experience || '';
+            document.getElementById('profile-companies').value = (profile.target_companies || []).join(', ');
+            document.getElementById('profile-schools').value = (profile.schools || []).join(', ');
+            document.getElementById('profile-majors').value = (profile.majors || []).join(', ');
+            document.getElementById('profile-skills').value = _combineSkills(profile).join(', ');
+            document.getElementById('profile-strengths').value = (profile.strengths || []).join(', ');
+            document.getElementById('profile-additional-notes').value = profile.additional_notes || '';
+        }
+
+        function splitValues(text) {
+            return String(text || '')
+                .split(/[,\n，、]/)
+                .map(item => item.trim())
+                .filter(Boolean);
+        }
+
+        function renderResult(result) {
+            elements.profileSummary.textContent = result.profile_summary || '暂无画像摘要';
+            elements.summaryMeta.textContent = result.model
+                ? `已结合 ${result.model} 输出分析`
+                : '已使用本地规则生成分析';
+            elements.assistantMeta.textContent = result.model ? `当前主分析：${result.model}` : '当前使用规则摘要 / AI混合';
+            renderMarkdown(elements.analysisSummary, result.analysis_summary || '暂无分析结果');
+            renderResumeDiagnostic(result.resume_diagnostic_markdown || '');
+            state.resumeDiagnostic = result.resume_diagnostic || null;
+            elements.resultsCount.textContent = `共考虑 ${result.total_considered} 个岗位，返回 ${result.returned} 个更匹配结果`;
+
+            if (!result.recommendations || result.recommendations.length === 0) {
+                elements.results.innerHTML = `
+                    <div class="recommendation-slide rounded-3xl border border-dashed border-amber-200 bg-amber-50 p-8 text-center text-amber-700">
+                        当前没有找到足够匹配的岗位，建议放宽关键词、地点或行业条件后重试。
+                    </div>
+                `;
+                syncRecommendationNavState();
+                return;
+            }
+
+            elements.results.innerHTML = result.recommendations.map(renderRecommendationCard).join('');
+            bindDynamicMarkdown();
+            syncRecommendationNavState();
+            loadCachedSnapshots();
+            loadHistory();
+        }
+
+        async function loadHistory() {
+            try {
+                const records = await API.getRecommendationHistory(12);
+                if (!records || records.length === 0) {
+                    elements.historyList.innerHTML = `
+                        <div class="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-sm text-gray-500">
+                            还没有本地记录，上传简历或生成推荐后会自动出现在这里。
+                        </div>
+                    `;
+                    return;
+                }
+                elements.historyList.innerHTML = records.map(record => `
+                    <article class="rounded-2xl border border-gray-200 bg-stone-50 p-4">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div class="text-sm font-semibold text-gray-900">${escapeHtml(record.type === 'resume_upload' ? '简历解析记录' : '推荐结果记录')}</div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <div class="text-xs text-gray-500">${escapeHtml(record.created_at || '')}</div>
+                                <button type="button" class="btn btn-outline text-xs px-3 py-1" onclick="restoreServerRecord('${escapeHtml(record.id || '')}')">恢复</button>
+                                <button type="button" class="btn btn-outline text-xs px-3 py-1" onclick="deleteServerRecord('${escapeHtml(record.id || '')}')">删除</button>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 mt-2">${escapeHtml(record.profile_summary || '未解析出摘要')}</div>
+                        ${record.filename ? `<div class="text-xs text-gray-500 mt-2">文件：${escapeHtml(record.filename)}</div>` : ''}
+                    </article>
+                `).join('');
+                state.serverHistory = records;
+            } catch (error) {
+                elements.historyList.innerHTML = `
+                    <div class="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-600">
+                        本地记录读取失败：${escapeHtml(error.message || '请稍后重试')}
+                    </div>
+                `;
+            }
+        }
+
+        function renderResumeDiagnostic(markdown) {
+            renderMarkdown(
+                elements.resumeDiagnostic,
+                markdown || '### 简历诊断\n- 上传简历或生成推荐后，这里会显示诊断、风险和优化建议。'
+            );
+        }
+
+        async function requestResumeAdvice() {
+            if (!state.profilePayload) {
+                renderMarkdown(elements.resumeAdviceOutput, '### 提示\n- 请先生成推荐或上传简历。');
+                return;
+            }
+            elements.assistantMeta.textContent = '正在生成 AI 改简历建议...';
+            renderMarkdown(elements.resumeAdviceOutput, '### AI 改简历建议\n- 正在生成，请稍候...');
+            try {
+                const result = await API.getResumeAdvice({
+                    profile: state.profilePayload,
+                    target_jobs: (state.result?.recommendations || []).slice(0, 3).map(item => item.job || {}),
+                });
+                await streamMarkdownToElement(elements.resumeAdviceOutput, result.answer || '暂无建议');
+                appendAnalysisHistory('resume_advice', '已生成 AI 改简历建议', result.answer || '');
+                elements.assistantMeta.textContent = result.model ? `简历建议：${result.model}` : '简历建议已生成';
+            } catch (error) {
+                renderMarkdown(elements.resumeAdviceOutput, `### 生成失败\n- ${error.message || '请稍后重试'}`);
+            }
+        }
+
+        async function requestDeliveryAssistant() {
+            if (!state.profilePayload) {
+                renderMarkdown(elements.deliveryAssistantOutput, '### 提示\n- 请先生成推荐或上传简历。');
+                return;
+            }
+            const selectedJob = state.result?.recommendations?.[0]?.job || null;
+            elements.assistantMeta.textContent = '正在生成 AI 投递助手...';
+            renderMarkdown(elements.deliveryAssistantOutput, '### AI 投递助手\n- 正在生成，请稍候...');
+            try {
+                const result = await API.getDeliveryAssistant({
+                    profile: state.profilePayload,
+                    job: selectedJob,
+                });
+                await streamMarkdownToElement(elements.deliveryAssistantOutput, result.answer || '暂无内容');
+                appendAnalysisHistory('delivery', `已生成投递助手${selectedJob?.title ? ` · ${selectedJob.title}` : ''}`, result.answer || '');
+                elements.assistantMeta.textContent = result.model ? `投递助手：${result.model}` : '投递助手已生成';
+            } catch (error) {
+                renderMarkdown(elements.deliveryAssistantOutput, `### 生成失败\n- ${error.message || '请稍后重试'}`);
+            }
+        }
+
+        async function sendRecommendationChat() {
+            const question = (elements.recommendationChatInput?.value || '').trim();
+            if (!question) return;
+            if (!state.profilePayload) {
+                appendRecommendationChat('assistant', '请先上传简历或生成推荐，再继续追问。');
+                return;
+            }
+            appendRecommendationChat('user', question);
+            elements.recommendationChatInput.value = '';
+            elements.assistantMeta.textContent = '正在生成追问回答...';
+            const placeholder = appendRecommendationChat('assistant', '正在思考中...');
+            try {
+                const result = await API.getRecommendationChat({
+                    profile: state.profilePayload,
+                    question,
+                    recommendations: (state.result?.recommendations || []).slice(0, 5).map(item => item.job || {}),
+                    history: state.recommendationChatHistory,
+                });
+                await streamMarkdownToElement(placeholder, result.answer || '暂无回答');
+                state.recommendationChatHistory.push({ role: 'user', content: question });
+                state.recommendationChatHistory.push({ role: 'assistant', content: result.answer || '' });
+                persistRecommendationChatHistory();
+                appendAnalysisHistory('chat', `追问：${question.slice(0, 26)}`, result.answer || '');
+                elements.assistantMeta.textContent = result.model ? `追问模型：${result.model}` : '追问回答已生成';
+            } catch (error) {
+                renderMarkdown(placeholder, `### 追问失败\n- ${error.message || '请稍后重试'}`);
+            }
+        }
+
+        function appendRecommendationChat(role, markdownText) {
+            const node = document.createElement('div');
+            node.className = `assistant-bubble ${role === 'user' ? 'user' : 'assistant'}`;
+            if (role === 'user') {
+                node.textContent = markdownText;
+            } else {
+                renderMarkdown(node, markdownText);
+            }
+            elements.recommendationChatWindow.appendChild(node);
+            elements.recommendationChatWindow.scrollTop = elements.recommendationChatWindow.scrollHeight;
+            return node;
+        }
+
+        function clearRecommendationChatHistory() {
+            state.recommendationChatHistory = [];
+            localStorage.removeItem(CHAT_HISTORY_KEY);
+            elements.recommendationChatWindow.innerHTML = `
+                <div class="assistant-bubble assistant">
+                    推荐生成后，你可以继续追问，例如：哪些岗位更适合买方研究、简历该重点改哪里、先投哪几个。
+                </div>
+            `;
+        }
+
+        function loadAssistantLocalState() {
+            try {
+                state.recommendationChatHistory = JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY) || '[]');
+            } catch (error) {
+                state.recommendationChatHistory = [];
+            }
+            try {
+                state.analysisHistory = JSON.parse(localStorage.getItem(ANALYSIS_HISTORY_KEY) || '[]');
+            } catch (error) {
+                state.analysisHistory = [];
+            }
+            renderRecommendationChatHistory();
+            renderAnalysisHistory();
+        }
+
+        function persistRecommendationChatHistory() {
+            localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify((state.recommendationChatHistory || []).slice(-20)));
+            renderRecommendationChatHistory();
+        }
+
+        function renderRecommendationChatHistory() {
+            if (!elements.recommendationChatWindow) return;
+            elements.recommendationChatWindow.innerHTML = '';
+            if (!state.recommendationChatHistory.length) {
+                clearRecommendationChatHistory();
+                return;
+            }
+            state.recommendationChatHistory.forEach(item => appendRecommendationChat(item.role, item.content || ''));
+        }
+
+        function appendAnalysisHistory(type, title, markdown) {
+            const next = [{
+                id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                type,
+                title,
+                markdown: String(markdown || '').slice(0, 2400),
+                createdAt: new Date().toLocaleString('zh-CN'),
+            }, ...(state.analysisHistory || [])].slice(0, 16);
+            state.analysisHistory = next;
+            localStorage.setItem(ANALYSIS_HISTORY_KEY, JSON.stringify(next));
+            renderAnalysisHistory();
+        }
+
+        function renderAnalysisHistory() {
+            if (!elements.analysisHistoryList) return;
+            if (!state.analysisHistory.length) {
+                elements.analysisHistoryList.innerHTML = '<div class="rounded-2xl border border-dashed border-gray-200 bg-white/80 p-4 text-sm text-gray-500">还没有分析历史。</div>';
+                return;
+            }
+            elements.analysisHistoryList.innerHTML = state.analysisHistory.map(item => `
+                <article class="rounded-2xl border border-gray-200 bg-white p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="text-sm font-semibold text-gray-900">${escapeHtml(item.title || '未命名记录')}</div>
+                        <div class="text-xs text-gray-500">${escapeHtml(item.createdAt || '')}</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">${escapeHtml(item.type || '')}</div>
+                    <div class="text-sm text-gray-600 mt-3 leading-6">${escapeHtml(cleanTextFromMarkdown(item.markdown || '').slice(0, 180) || '暂无摘要')}</div>
+                </article>
+            `).join('');
+        }
+
+        function renderRecommendationCard(item, index) {
+            const job = item.job || {};
+            const reasons = (item.reasons || []).map(reason => `<li>${escapeHtml(reason)}</li>`).join('');
+            const tags = buildTagList(job);
+            const breakdownItems = Object.entries(item.score_breakdown || {}).map(([label, value]) => `
+                <span class="inline-flex items-center rounded-full bg-white text-slate-700 border border-slate-200 px-3 py-1 text-xs font-semibold">
+                    ${escapeHtml(label)} +${escapeHtml(String(value))}
+                </span>
+            `).join('');
+            return `
+                <div class="recommendation-slide">
+                <article class="rounded-[26px] border border-gray-200 bg-white shadow-sm hover:shadow-lg transition overflow-hidden">
+                    <div class="p-6 flex h-full flex-col">
+                        <div class="flex items-start justify-between gap-4 flex-wrap">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 flex-wrap mb-3">
+                                    <span class="inline-flex items-center rounded-full bg-rose-50 text-rose-600 px-3 py-1 text-xs font-semibold">TOP ${index + 1}</span>
+                                    <span class="inline-flex items-center rounded-full bg-teal-50 text-teal-700 px-3 py-1 text-xs font-semibold">匹配分 ${item.score}</span>
+                                    ${job.source ? `<span class="inline-flex items-center rounded-full bg-gray-100 text-gray-600 px-3 py-1 text-xs">${escapeHtml(job.source)}</span>` : ''}
+                                </div>
+                                <h4 class="text-xl font-semibold text-gray-900">${escapeHtml(job.title || '未命名岗位')}</h4>
+                                <p class="text-gray-600 mt-2">${escapeHtml(job.company || '未知公司')}</p>
+                            </div>
+                            <div class="text-sm text-gray-500 text-right">
+                                <div>${escapeHtml(job.location || '地点待定')}</div>
+                                <div class="mt-1">${escapeHtml(job.salary || '薪资面议')}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            ${tags}
+                        </div>
+
+                        <div class="mt-5 grid grid-cols-1 lg:grid-cols-[0.72fr_1.28fr] gap-4">
+                            <div class="recommendation-card-surface">
+                                <div class="surface-title">推荐理由</div>
+                                <ul class="surface-copy text-sm space-y-2">
+                                    ${reasons || '<li>暂无详细推荐理由</li>'}
+                                </ul>
+                            </div>
+                            <div class="recommendation-summary-pane recommendation-card-surface">
+                                <div class="surface-title">岗位摘要</div>
+                                <div class="recommendation-markdown prose prose-sm max-w-none text-gray-700 leading-6" data-markdown="${escapeHtml(item.summary_markdown || cleanText(job.requirements || job.description || '暂无岗位描述'))}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 recommendation-insight-surface">
+                            <div class="flex items-center justify-between gap-3 flex-wrap">
+                                <div class="text-sm font-semibold text-gray-800">可解释推荐</div>
+                                <div class="text-xs text-slate-600">数据质量 ${escapeHtml(String(job.quality_score || 0))} · ${escapeHtml(job.quality_level || '一般')}</div>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                ${breakdownItems || '<span class="text-xs text-gray-500">当前以基础相关度排序</span>'}
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3">${escapeHtml(job.quality_summary || '岗位基础字段已完成结构化清洗')}</p>
+                        </div>
+
+                        <div class="flex items-center gap-3 flex-wrap mt-5">
+                            <a href="./jobs.html?keyword=${encodeURIComponent(job.title || '')}" class="btn btn-outline">去岗位库查看</a>
+                            <button class="btn btn-outline" onclick="requestMatchReport(${job.id})">匹配报告</button>
+                            ${job.apply_url ? `<a href="${escapeHtml(job.apply_url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">投递链接</a>` : ''}
+                        </div>
+                        <div id="match-report-${job.id}" class="hidden mt-4 rounded-2xl border border-sky-100 bg-sky-50 p-4 text-sm text-gray-700"></div>
+                    </div>
+                </article>
+                </div>
+            `;
+        }
+
+        function scrollRecommendationResults(direction = 1) {
+            if (!elements.results) return;
+            const firstSlide = elements.results.querySelector('.recommendation-slide');
+            const step = firstSlide ? firstSlide.getBoundingClientRect().width + 16 : 420;
+            elements.results.scrollBy({
+                left: step * direction,
+                behavior: 'smooth',
+            });
+            window.setTimeout(syncRecommendationNavState, 220);
+        }
+
+        function syncRecommendationNavState() {
+            if (!elements.resultsPrevBtn || !elements.resultsNextBtn || !elements.results) return;
+            const maxScrollLeft = Math.max(0, elements.results.scrollWidth - elements.results.clientWidth);
+            const hasScrollableContent = maxScrollLeft > 24;
+            elements.resultsPrevBtn.disabled = !hasScrollableContent || elements.results.scrollLeft <= 8;
+            elements.resultsNextBtn.disabled = !hasScrollableContent || elements.results.scrollLeft >= maxScrollLeft - 8;
+        }
+
+        async function requestMatchReport(jobId) {
+            if (!state.profilePayload) {
+                renderError('请先生成推荐，再查看岗位匹配报告。');
+                return;
+            }
+            const box = document.getElementById(`match-report-${jobId}`);
+            if (!box) return;
+
+            box.classList.remove('hidden');
+            box.innerHTML = '正在生成匹配报告...';
+
+            try {
+                const result = await API.getJobMatchReport(jobId, state.profilePayload);
+                const modelText = result.model ? `<p class="text-xs text-gray-500 mb-2">模型：${escapeHtml(result.model)}</p>` : '';
+                box.innerHTML = `${modelText}<div class="prose prose-sm max-w-none">${DOMPurify.sanitize(marked.parse(result.report || '暂无报告'))}</div>`;
+            } catch (error) {
+                box.innerHTML = `<p class="text-red-600">${escapeHtml(error.message || '匹配报告生成失败')}</p>`;
+            }
+        }
+
+        function buildTagList(job) {
+            const values = [job.job_type, job.industry, job.category, job.education].filter(Boolean);
+            return values.map(tag => `<span class="inline-flex items-center rounded-full bg-gray-100 text-gray-700 px-3 py-1 text-xs">${escapeHtml(tag)}</span>`).join('');
+        }
+
+        function bindDynamicMarkdown() {
+            document.querySelectorAll('.recommendation-markdown').forEach(node => {
+                renderMarkdown(node, node.dataset.markdown || '');
+            });
+        }
+
+        function renderError(message) {
+            elements.summaryMeta.textContent = '推荐生成失败';
+            elements.analysisSummary.innerHTML = `<p class="text-red-600">${escapeHtml(message)}</p>`;
+            elements.results.innerHTML = `
+                <div class="recommendation-slide rounded-3xl border border-red-200 bg-red-50 p-8 text-center text-red-600">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+            syncRecommendationNavState();
+        }
+
+        function setLoading(loading) {
+            if (loading) {
+                elements.submitBtn.disabled = true;
+                elements.submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 生成中...';
+                elements.resultsCount.textContent = '正在分析你的求职画像...';
+            } else {
+                elements.submitBtn.disabled = false;
+                elements.submitBtn.innerHTML = '<i class="fas fa-bolt"></i> 生成推荐';
+            }
+        }
+
+        function renderMarkdown(target, markdownText) {
+            const rawHtml = marked.parse(markdownText || '');
+            target.innerHTML = DOMPurify.sanitize(rawHtml);
+        }
+
+        function loadCachedSnapshots() {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                state.cachedSnapshots = (parsed || []).filter(isRealSnapshot);
+            } catch (error) {
+                state.cachedSnapshots = [];
+            }
+            renderCachedSnapshots();
+        }
+
+        function persistSnapshot(snapshot) {
+            const entry = {
+                id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                createdAt: new Date().toLocaleString('zh-CN'),
+                ...snapshot,
+            };
+            if (!isRealSnapshot(entry)) {
+                return;
+            }
+            const next = [entry, ...(state.cachedSnapshots || [])].filter(isRealSnapshot).slice(0, MAX_CACHE_ITEMS);
+            state.cachedSnapshots = next;
+            localStorage.setItem(CACHE_KEY, JSON.stringify(next));
+            renderCachedSnapshots();
+        }
+
+        function renderCachedSnapshots() {
+            if (!state.cachedSnapshots || state.cachedSnapshots.length === 0) {
+                elements.cacheList.innerHTML = `
+                    <div class="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-sm text-gray-500">
+                        还没有推荐缓存，生成推荐后会保留最近几次的记录。
+                    </div>
+                `;
+                return;
+            }
+
+            elements.cacheList.innerHTML = state.cachedSnapshots.map(item => `
+                <article class="rounded-2xl border border-violet-100 bg-violet-50/50 p-4">
+                    <div class="flex items-center justify-between gap-3 flex-wrap">
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900">${escapeHtml(item.label || '未命名缓存')}</div>
+                            <div class="text-xs text-gray-500 mt-1">${escapeHtml(item.createdAt || '')}</div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button type="button" class="btn btn-outline text-xs px-3 py-1" onclick="restoreCachedSnapshot('${escapeHtml(item.id)}')">恢复</button>
+                            <button type="button" class="btn btn-outline text-xs px-3 py-1" onclick="removeCachedSnapshot('${escapeHtml(item.id)}')">移除</button>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-3">${escapeHtml(buildCachedSummary(item))}</div>
+                </article>
+            `).join('');
+        }
+
+        function buildCachedSummary(item) {
+            const profile = item.profile || {};
+            const keywords = (profile.keywords || []).slice(0, 3).join('、');
+            const locations = (profile.preferred_locations || []).slice(0, 2).join('、');
+            const note = item.result?.returned
+                ? `已生成 ${item.result.returned} 个推荐岗位`
+                : item.filename
+                    ? `来自 ${item.filename}`
+                    : '可恢复上次填写内容';
+            return [keywords && `关键词：${keywords}`, locations && `地点：${locations}`, note].filter(Boolean).join(' | ');
+        }
+
+        function restoreCachedSnapshot(id) {
+            const item = (state.cachedSnapshots || []).find(entry => entry.id === id);
+            if (!item) return;
+            fillFormFromProfile(item.profile || {});
+            state.profilePayload = item.profile || null;
+            state.resumeDiagnostic = item.resumeDiagnostic || null;
+            if (item.result) {
+                state.result = item.result;
+                renderResult(item.result);
+            } else {
+                renderRestoredResumeState({
+                    profileSummary: buildProfileSummaryFromProfile(item.profile || {}),
+                    previewText: item.previewText || '',
+                    filename: item.filename || '',
+                    savedFile: item.savedPath || '',
+                    sourceLabel: '最近缓存',
+                    extractionNotice: item.extractionNotice || '',
+                    diagnosticMarkdown: item.resumeDiagnosticMarkdown || '',
+                });
+            }
+            elements.resumeUploadStatus.textContent = '已从最近缓存恢复内容';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function removeCachedSnapshot(id) {
+            state.cachedSnapshots = (state.cachedSnapshots || []).filter(item => item.id !== id);
+            localStorage.setItem(CACHE_KEY, JSON.stringify(state.cachedSnapshots));
+            renderCachedSnapshots();
+        }
+
+        function clearLocalCache() {
+            state.cachedSnapshots = [];
+            localStorage.removeItem(CACHE_KEY);
+            renderCachedSnapshots();
+        }
+
+        function isRealSnapshot(item) {
+            if (!item) return false;
+            const profile = item.profile || {};
+            const hasProfile = [
+                profile.keywords,
+                profile.preferred_locations,
+                profile.preferred_industries,
+                profile.preferred_job_types,
+                profile.education,
+                profile.experience,
+                profile.schools,
+                profile.majors,
+                profile.skills,
+                profile.strengths,
+                profile.additional_notes,
+            ].some(value => Array.isArray(value) ? value.length > 0 : Boolean(String(value || '').trim()));
+            const hasResult = Boolean(item.result?.returned) || Boolean((item.result?.recommendations || []).length);
+            const hasResume = Boolean(item.filename || item.previewText);
+            return hasProfile || hasResult || hasResume;
+        }
+
+        async function clearServerHistory() {
+            try {
+                await API.clearRecommendationHistory();
+                elements.resumeUploadStatus.textContent = '本地记录已清空';
+                loadHistory();
+            } catch (error) {
+                alert(error.message || '清空记录失败');
+            }
+        }
+
+        async function deleteServerRecord(id) {
+            if (!id) return;
+            try {
+                await API.deleteRecommendationHistory(id);
+                elements.resumeUploadStatus.textContent = '记录已删除';
+                loadHistory();
+            } catch (error) {
+                alert(error.message || '删除记录失败');
+            }
+        }
+
+        function restoreServerRecord(id) {
+            const record = (state.serverHistory || []).find(item => item.id === id);
+            if (!record) return;
+            fillFormFromProfile(record.profile || {});
+            state.profilePayload = record.profile || null;
+            if (record.recommendation?.analysis_summary || (record.recommendation?.recommendations || []).length > 0) {
+                const restoredResult = {
+                    total_considered: record.recommendation.total_considered || 0,
+                    returned: record.recommendation.returned || 0,
+                    profile_summary: record.recommendation.profile_summary || record.profile_summary || '已恢复历史记录',
+                    analysis_summary: record.recommendation.analysis_summary || '暂无分析结果',
+                    model: record.recommendation.model || null,
+                    resume_diagnostic_markdown: record.recommendation.resume_diagnostic_markdown || '',
+                    resume_diagnostic: record.recommendation.resume_diagnostic || null,
+                    recommendations: record.recommendation.recommendations || [],
+                };
+                state.result = restoredResult;
+                renderResult(restoredResult);
+            } else {
+                renderRestoredResumeState({
+                    profileSummary: record.profile_summary || buildProfileSummaryFromProfile(record.profile || {}),
+                    previewText: record.parsed_text_preview || '',
+                    filename: record.filename || '',
+                    savedFile: record.saved_file || '',
+                    sourceLabel: '本地记录',
+                    extractionNotice: record.extraction_notice || '',
+                    diagnosticMarkdown: record.recommendation?.resume_diagnostic_markdown || '',
+                });
+            }
+            elements.resumeUploadStatus.textContent = '已从本地记录恢复内容';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderRestoredResumeState({ profileSummary, previewText, filename, savedFile, sourceLabel, extractionNotice, diagnosticMarkdown }) {
+            elements.summaryMeta.textContent = `已恢复${sourceLabel}中的简历画像`;
+            elements.profileSummary.innerHTML = `
+                <div class="space-y-3">
+                    <div class="text-gray-800 font-medium">${escapeHtml(profileSummary || '已恢复简历相关画像信息')}</div>
+                    ${extractionNotice ? `
+                        <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                            ${escapeHtml(extractionNotice)}
+                        </div>
+                    ` : ''}
+                    <div class="rounded-2xl border border-teal-100 bg-teal-50 p-4 text-sm text-gray-700">
+                        <div class="font-semibold text-teal-800 mb-2">简历解析预览</div>
+                        <div class="leading-6">${escapeHtml((previewText || '').slice(0, 320) || '当前记录未保存简历预览，但画像字段已恢复。')}</div>
+                        ${filename ? `<div class="text-xs text-gray-500 mt-3">文件：${escapeHtml(filename)}</div>` : ''}
+                        ${savedFile ? `<div class="text-xs text-gray-500 mt-1">路径：${escapeHtml(savedFile)}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            renderResumeDiagnostic(diagnosticMarkdown || '### 简历诊断\n- 已恢复简历画像，可重新生成推荐后获取完整诊断。');
+            renderMarkdown(elements.analysisSummary, `### 当前状态\n- 已恢复简历解析记录，可在此基础上继续补充附加说明后重新生成推荐。\n- 如需新的 AI 分析，请点击“生成推荐”。`);
+            elements.resultsCount.textContent = '已恢复简历记录，尚未重新生成推荐结果';
+            elements.results.innerHTML = `
+                <div class="recommendation-slide rounded-3xl border border-dashed border-sky-200 bg-sky-50 p-8 text-center text-sky-700">
+                    已恢复简历与画像信息。你可以直接修改字段，或重新生成推荐和 AI 分析。
+                </div>
+            `;
+            syncRecommendationNavState();
+        }
+
+        function buildProfileSummaryFromProfile(profile) {
+            const parts = [];
+            if ((profile.keywords || []).length) parts.push(`重点关键词：${profile.keywords.slice(0, 4).join('、')}`);
+            if ((profile.preferred_locations || []).length) parts.push(`意向地点：${profile.preferred_locations.slice(0, 3).join('、')}`);
+            if ((profile.preferred_job_types || []).length) parts.push(`岗位类型：${profile.preferred_job_types.slice(0, 3).join('、')}`);
+            if ((profile.preferred_industries || []).length) parts.push(`行业方向：${profile.preferred_industries.slice(0, 3).join('、')}`);
+            if (profile.education) parts.push(`学历：${profile.education}`);
+            if (profile.experience) parts.push(`经验：${profile.experience}`);
+            if ((profile.majors || []).length) parts.push(`专业：${profile.majors.slice(0, 2).join('、')}`);
+            if ((profile.skills || []).length) parts.push(`技能：${profile.skills.slice(0, 4).join('、')}`);
+            if ((profile.strengths || []).length) parts.push(`优势：${profile.strengths.slice(0, 4).join('、')}`);
+            return parts.join(' | ') || '已恢复最近一次缓存内容，你可以继续修改后重新生成推荐。';
+        }
+
+        function _combineSkills(profile) {
+            return [
+                ...(profile.skills || []),
+                ...(profile.certifications || []),
+            ].filter(Boolean);
+        }
+
+        function buildSnapshotLabel(profile, result) {
+            const keyword = (profile.keywords || [])[0] || '智能推荐';
+            const location = (profile.preferred_locations || [])[0] || '不限地点';
+            const count = result?.returned ?? 0;
+            return `${keyword} · ${location} · ${count} 个结果`;
+        }
+
+        function cleanText(text) {
+            return String(text || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+        }
+
+        function exportCurrentResult(format) {
+            const profile = state.profilePayload || collectFormPayload();
+            const payload = {
+                exportedAt: new Date().toLocaleString('zh-CN'),
+                profile,
+                result: state.result,
+                resumeDiagnostic: state.resumeDiagnostic,
+            };
+
+            if (!payload.result && !payload.resumeDiagnostic) {
+                renderError('当前还没有可导出的推荐结果或简历诊断。');
+                return;
+            }
+
+            if (format === 'json') {
+                downloadFile(
+                    `recommendation_${Date.now()}.json`,
+                    JSON.stringify(payload, null, 2),
+                    'application/json;charset=utf-8'
+                );
+                return;
+            }
+
+            const markdown = [
+                '# 智能推荐导出',
+                `- 导出时间：${payload.exportedAt}`,
+                `- 画像摘要：${state.result?.profile_summary || buildProfileSummaryFromProfile(profile)}`,
+                '',
+                '## AI / 规则分析',
+                state.result?.analysis_summary || '暂无分析',
+                '',
+                '## 简历诊断',
+                state.result?.resume_diagnostic_markdown || '暂无简历诊断',
+                '',
+                '## 推荐岗位',
+                ...(state.result?.recommendations || []).map((item, index) => (
+                    `### ${index + 1}. ${item.job?.title || '未命名岗位'}\n`
+                    + `- 公司：${item.job?.company || '未知'}\n`
+                    + `- 地点：${item.job?.location || '未知'}\n`
+                    + `- 匹配分：${item.score || 0}\n`
+                    + `- 推荐层级：${item.recommendation_tier || '匹配岗'}\n`
+                    + `- 推荐理由：${(item.reasons || []).join('；') || '暂无'}`
+                )),
+            ].join('\n');
+            downloadFile(`recommendation_${Date.now()}.md`, markdown, 'text/markdown;charset=utf-8');
+        }
+
+        function downloadFile(filename, content, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        async function streamMarkdownToElement(target, markdownText, speed = 18) {
+            const text = String(markdownText || '');
+            if (!text) {
+                renderMarkdown(target, '');
+                return;
+            }
+            let cursor = Math.min(28, text.length);
+            renderMarkdown(target, text.slice(0, cursor));
+            while (cursor < text.length) {
+                cursor = Math.min(text.length, cursor + Math.max(10, Math.floor(text.length / 18)));
+                renderMarkdown(target, text.slice(0, cursor));
+                target.scrollTop = target.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, speed));
+            }
+        }
+
+        function cleanTextFromMarkdown(text) {
+            return String(text || '')
+                .replace(/[`*_>#-]/g, ' ')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '$1')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function debounce(fn, wait = 80) {
+            let timer = null;
+            return (...args) => {
+                window.clearTimeout(timer);
+                timer = window.setTimeout(() => fn(...args), wait);
+            };
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>
+
+
+
