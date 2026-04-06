@@ -55,7 +55,7 @@
                     </div>
                     <div>
                         <label class="form-label">密码</label>
-                        <input id="" type="password" class="form-input" placeholder="请输入密码" required>
+                        <input id="password" type="password" class="form-input" placeholder="请输入密码" required>
                     </div>
                     <div id="login-message" class="hidden rounded-2xl px-4 py-3 text-sm"></div>
                     <button type="submit" id="login-submit" class="btn btn-primary w-full justify-center py-3 text-base">
@@ -86,7 +86,25 @@
         const form = document.getElementById('login-form');
         const messageBox = document.getElementById('login-message');
         const submitBtn = document.getElementById('login-submit');
-        const redirectTarget = new URLSearchParams(window.location.search).get('redirect') || './index.html';
+    const redirectTarget = getSafeRedirectTarget();
+
+        const loadingScripts = new Map();
+    const LOGIN_AUTH_TOKEN_KEY = 'finintern_auth_token';
+    const LOGIN_AUTH_USER_KEY = 'finintern_auth_user';
+        const USERS_KEY = 'jobweb_users_v1';
+    const LEGACY_STATIC_SALT = 'FinInternHub2024@SecureSalt#';
+
+        const ROLE_PERMISSIONS = {
+            admin: ['view_jobs', 'view_stats', 'use_recommendations', 'manage_crawler', 'view_system', 'manage_users'],
+            operator: ['view_jobs', 'view_stats', 'use_recommendations', 'manage_crawler', 'view_system'],
+            viewer: ['view_jobs', 'view_stats', 'use_recommendations']
+        };
+
+    const LOGIN_DEFAULT_USERS = [
+            { id: 1, username: 'admin', password: 'Admin@123456', display_name: '系统管理员', role: 'admin', is_active: true, last_login_at: '' },
+            { id: 2, username: 'operator', password: 'Operator@123', display_name: '采集运营', role: 'operator', is_active: true, last_login_at: '' },
+            { id: 3, username: 'viewer', password: 'Viewer@123', display_name: '普通访客', role: 'viewer', is_active: true, last_login_at: '' }
+        ];
 
         function showMessage(message, type = 'info') {
             messageBox.className = `rounded-2xl px-4 py-3 text-sm ${type === 'error' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
@@ -94,10 +112,208 @@
             messageBox.classList.remove('hidden');
         }
 
+        function getSafeRedirectTarget() {
+            const raw = new URLSearchParams(window.location.search).get('redirect');
+            if (!raw) return './index.html';
+
+            try {
+                const decoded = decodeURIComponent(raw);
+                const url = new URL(decoded, window.location.href);
+                const path = (url.pathname || '').toLowerCase();
+
+                if (!/^https?:$/i.test(url.protocol)) return './index.html';
+                if (path.endsWith('/login.html') || path.endsWith('login.html')) return './index.html';
+                if (url.origin !== window.location.origin) return './index.html';
+
+                return `${url.pathname}${url.search}${url.hash}` || './index.html';
+            } catch (_) {
+                return './index.html';
+            }
+        }
+
+        function navigateAfterLogin() {
+            const target = redirectTarget || './index.html';
+            try {
+                if (window.location.protocol === 'file:') {
+                    window.location.href = './index.html';
+                    return;
+                }
+                window.location.assign(target);
+            } catch (_) {
+                window.location.href = './index.html';
+            }
+        }
+
+        function deepClone(value) {
+            return JSON.parse(JSON.stringify(value));
+        }
+
+        function readStore(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return deepClone(fallback);
+                return JSON.parse(raw);
+            } catch (_) {
+                return deepClone(fallback);
+            }
+        }
+
+        function writeStore(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function ensureLocalUsers() {
+            const users = readStore(USERS_KEY, []);
+            if (Array.isArray(users) && users.length > 0) return users;
+            writeStore(USERS_KEY, LOGIN_DEFAULT_USERS);
+            return deepClone(LOGIN_DEFAULT_USERS);
+        }
+
+        function buildPublicUser(user) {
+            const role = user.role || 'viewer';
+            return {
+                id: user.id,
+                username: user.username,
+                display_name: user.display_name || user.username,
+                role,
+                permissions: (ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.viewer).slice(),
+                is_active: user.is_active !== false,
+                last_login_at: user.last_login_at || ''
+            };
+        }
+
+        function readCachedUser() {
+            try {
+                return JSON.parse(localStorage.getItem(LOGIN_AUTH_USER_KEY) || 'null');
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function setSession(token, user) {
+            if (window.AppAuth && typeof window.AppAuth.setSession === 'function') {
+                window.AppAuth.setSession(token, user);
+                return;
+            }
+            localStorage.setItem(LOGIN_AUTH_TOKEN_KEY, token || '');
+            localStorage.setItem(LOGIN_AUTH_USER_KEY, JSON.stringify(user || {}));
+        }
+
+        async function sha256Hex(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function randomSalt(length = 16) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let salt = '';
+            for (let i = 0; i < length; i += 1) {
+                salt += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return salt;
+        }
+
+        async function encryptPassword(password) {
+            const salt = randomSalt();
+            const hash = await sha256Hex(`${String(password || '')}${salt}`);
+            return `${salt}:${hash}`;
+        }
+
+        async function verifyPassword(input, stored) {
+            const rawInput = String(input || '');
+            const rawStored = String(stored || '');
+            if (!rawStored) return false;
+            if (!rawStored.includes(':')) {
+                if (/^[a-f0-9]{64}$/i.test(rawStored)) {
+                    const legacyHash = await sha256Hex(`${rawInput}${LEGACY_STATIC_SALT}`);
+                    const plainHash = await sha256Hex(rawInput);
+                    return rawStored === legacyHash || rawStored === plainHash;
+                }
+                return rawInput === rawStored;
+            }
+            const [salt, hash] = rawStored.split(':');
+            if (!salt || !hash) return false;
+            const computed = await sha256Hex(`${rawInput}${salt}`);
+            return computed === hash;
+        }
+
+        async function localLogin(credentials) {
+            const users = ensureLocalUsers();
+            const username = String(credentials.username || '').trim();
+            const password = String(credentials.password || '');
+            const user = users.find(item => item.username === username);
+            if (!user) throw new Error('用户名或密码错误');
+            if (user.is_active === false) throw new Error('账号已停用，请联系管理员');
+            const valid = await verifyPassword(password, user.password);
+            if (!valid) throw new Error('用户名或密码错误');
+
+            if (!String(user.password || '').includes(':')) {
+                user.password = await encryptPassword(password);
+            }
+
+            user.last_login_at = new Date().toLocaleString('zh-CN', { hour12: false });
+            writeStore(USERS_KEY, users);
+
+            return {
+                access_token: `jobweb-local-${user.id}-${Date.now()}`,
+                user: buildPublicUser(user)
+            };
+        }
+
+        function loadScriptOnce(src) {
+            if (loadingScripts.has(src)) {
+                return loadingScripts.get(src);
+            }
+
+            const task = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.onload = () => resolve(true);
+                script.onerror = () => reject(new Error(`脚本加载失败: ${src}`));
+                document.head.appendChild(script);
+            });
+
+            loadingScripts.set(src, task);
+            return task;
+        }
+
+        async function ensureScriptGlobal(globalName, src) {
+            if (typeof window[globalName] !== 'undefined') {
+                return true;
+            }
+
+            const retrySrc = `${src}${src.includes('?') ? '&' : '?'}retry=${Date.now()}`;
+            await loadScriptOnce(retrySrc);
+
+            if (typeof window[globalName] === 'undefined') {
+                throw new Error(`${globalName} 加载后仍未定义`);
+            }
+
+            return true;
+        }
+
+        async function ensureRuntimeReady() {
+            try {
+                await ensureScriptGlobal('API', './js/api.js');
+            } catch (_) {}
+            try {
+                await ensureScriptGlobal('AppAuth', './js/auth.js');
+            } catch (_) {}
+        }
+
         (async () => {
-            const user = await AppAuth.loadCurrentUser(true);
-            if (user) {
-                window.location.href = redirectTarget;
+            try {
+                await ensureRuntimeReady();
+                const token = localStorage.getItem(LOGIN_AUTH_TOKEN_KEY) || '';
+                const user = (window.AppAuth && typeof window.AppAuth.getCachedUser === 'function') ? window.AppAuth.getCachedUser() : readCachedUser();
+                if (token && user && user.id) {
+                    navigateAfterLogin();
+                }
+            } catch (error) {
+                console.warn('登录环境初始化异常，已降级为本地登录模式', error);
             }
         })();
 
@@ -106,17 +322,40 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在登录...';
             try {
-                const payload = await API.login({
+                await ensureRuntimeReady();
+
+                const credentials = {
                     username: document.getElementById('username').value.trim(),
                     password: document.getElementById('password').value,
-                });
-                AppAuth.setSession(payload.access_token, payload.user);
+                };
+
+                let payload = null;
+                if (window.API && typeof window.API.login === 'function') {
+                    try {
+                        payload = await window.API.login(credentials);
+                    } catch (error) {
+                        const message = String(error?.message || '');
+                        const canFallback = error?.status === 501
+                            || error?.status === 401
+                            || /API|脚本|加载|未定义|unsupported|request|用户名或密码错误/i.test(message);
+                        if (!canFallback) throw error;
+                        payload = await localLogin(credentials);
+                    }
+                } else {
+                    payload = await localLogin(credentials);
+                }
+
+                setSession(payload.access_token, payload.user);
                 showMessage('登录成功，正在跳转...', 'success');
                 setTimeout(() => {
-                    window.location.href = redirectTarget;
+                    navigateAfterLogin();
                 }, 400);
             } catch (error) {
-                showMessage(error.message || '登录失败，请检查用户名和密码', 'error');
+                const message = String(error?.message || '').trim();
+                const friendlyMessage = /用户名|密码|停用/.test(message)
+                    ? message
+                    : '登录失败，请检查用户名和密码后重试';
+                showMessage(friendlyMessage, 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-right-to-bracket"></i> 登录并进入平台';

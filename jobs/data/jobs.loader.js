@@ -1,18 +1,16 @@
-// 岗位数据加载器 - 实现渐进式加载
+// 岗位数据加载器 - 自动生成
 (function() {
   'use strict';
 
   window.JOBWEB_DATA_LOADER = {
-    // 配置
     config: {
-      totalChunks: 8,
+      totalChunks: 9,
       priorityChunkIndex: 0,
       loadedChunks: new Set(),
       isLoading: false,
       loadStartTime: Date.now()
     },
 
-    // 状态
     state: {
       priorityLoaded: false,
       allLoaded: false,
@@ -20,9 +18,7 @@
       callbacks: []
     },
 
-    // 初始化
     init: function() {
-      // 检查第一块是否已加载
       if (window.JOBWEB_PRIORITY_LOADED) {
         this.state.priorityLoaded = true;
         this.config.loadedChunks.add(0);
@@ -30,7 +26,6 @@
       }
     },
 
-    // 加载剩余数据块
     loadRemaining: async function(onProgress) {
       if (this.config.isLoading || this.state.allLoaded) return;
       this.config.isLoading = true;
@@ -45,7 +40,6 @@
       const total = remainingChunks.length;
       let loaded = 0;
 
-      // 串行加载，避免阻塞
       for (const chunkIndex of remainingChunks) {
         try {
           await this._loadChunk(chunkIndex);
@@ -61,7 +55,6 @@
             });
           }
 
-          // 每加载一个块后暂停一下，让出主线程
           if (chunkIndex < remainingChunks[remainingChunks.length - 1]) {
             await new Promise(resolve => setTimeout(resolve, 10));
           }
@@ -75,30 +68,24 @@
       this._notifyAllLoaded();
     },
 
-    // 预加载（后台静默加载）
     preload: function() {
-      // 使用 requestIdleCallback 在浏览器空闲时加载
       if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
           this.loadRemaining();
         }, { timeout: 2000 });
       } else {
-        // 降级方案：使用 setTimeout
         setTimeout(() => this.loadRemaining(), 100);
       }
     },
 
-    // 获取当前可用的数据
     getJobs: function() {
       return (window.JOBWEB_SNAPSHOT && window.JOBWEB_SNAPSHOT.jobs) || [];
     },
 
-    // 获取元数据
     getMeta: function() {
       return (window.JOBWEB_META) || {};
     },
 
-    // 检查是否已加载
     isPriorityLoaded: function() {
       return this.state.priorityLoaded;
     },
@@ -107,7 +94,6 @@
       return this.state.allLoaded;
     },
 
-    // 等待优先数据加载完成
     waitForPriority: function() {
       return new Promise((resolve) => {
         if (this.state.priorityLoaded) {
@@ -118,7 +104,6 @@
       });
     },
 
-    // 等待所有数据加载完成
     waitForAll: function() {
       return new Promise((resolve) => {
         if (this.state.allLoaded) {
@@ -129,7 +114,6 @@
       });
     },
 
-    // 内部方法：加载单个数据块
     _loadChunk: function(index) {
       return new Promise((resolve, reject) => {
         if (this.config.loadedChunks.has(index)) {
@@ -154,7 +138,6 @@
       });
     },
 
-    // 通知回调
     _notifyPriorityLoaded: function() {
       this.state.callbacks
         .filter(cb => cb.type === 'priority')
@@ -168,6 +151,5 @@
     }
   };
 
-  // 自动初始化
   window.JOBWEB_DATA_LOADER.init();
 })();

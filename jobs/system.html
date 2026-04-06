@@ -50,6 +50,18 @@
                                     <input id="cfg-crawler-retry-attempts" class="form-input" type="number" min="0">
                                 </label>
                                 <label class="form-group mb-0">
+                                    <span class="form-label">SiliconFlow API Key</span>
+                                    <input id="cfg-siliconflow-api-key" class="form-input" type="password" placeholder="sk-..." autocomplete="off">
+                                </label>
+                                <label class="form-group mb-0">
+                                    <span class="form-label">主模型（primary_model）</span>
+                                    <input id="cfg-siliconflow-primary-model" class="form-input" type="text" placeholder="deepseek-ai/DeepSeek-R1-0528-Qwen3-8B">
+                                </label>
+                                <label class="form-group mb-0 md:col-span-2">
+                                    <span class="form-label">备选模型（fallback_models）</span>
+                                    <textarea id="cfg-siliconflow-fallback-models" class="form-textarea" rows="2" placeholder="每行一个或逗号分隔，例如：&#10;deepseek-ai/DeepSeek-R1-Distill-Qwen-7B&#10;Qwen/Qwen3-8B&#10;Qwen/Qwen3.5-4B"></textarea>
+                                </label>
+                                <label class="form-group mb-0">
                                     <span class="form-label">AI 超时（秒）</span>
                                     <input id="cfg-siliconflow-timeout" class="form-input" type="number" min="10">
                                 </label>
@@ -173,7 +185,7 @@
                 ? status.task_center.map(renderTaskItem).join('')
                 : renderPanelState({ title: '暂无任务', body: '当前没有可展示的运行任务。', tone: 'slate', icon: 'fa-list-check' });
 
-            document.getElementById('config-output').textContent = JSON.stringify(config, null, 2);
+            document.getElementById('config-output').textContent = JSON.stringify(maskSensitiveConfig(config), null, 2);
             fillConfigForm(config);
             renderRecentErrors(status.recent_errors || []);
             renderCrawlerDiagnostics(status.crawler_diagnostics || {});
@@ -200,6 +212,33 @@
                 animateCountUpIn(document.getElementById('source-quality-panel'));
                 animateCountUpIn(document.getElementById('system-visual-summary'));
             }
+        }
+
+        function maskKeyValue(value) {
+            const raw = String(value ?? '').trim();
+            if (!raw) return '';
+            if (raw.length <= 8) return '****';
+            return `${raw.slice(0, 4)}****${raw.slice(-4)}`;
+        }
+
+        function maskSensitiveConfig(config) {
+            const safe = JSON.parse(JSON.stringify(config || {}));
+
+            if (safe.ai) {
+                if ('api_key' in safe.ai) safe.ai.api_key = maskKeyValue(safe.ai.api_key);
+                if ('apiKey' in safe.ai) safe.ai.apiKey = maskKeyValue(safe.ai.apiKey);
+            }
+
+            if (safe.runtime_overrides && 'siliconflow_api_key' in safe.runtime_overrides) {
+                safe.runtime_overrides.siliconflow_api_key = maskKeyValue(safe.runtime_overrides.siliconflow_api_key);
+            }
+
+            if (safe.meta?.ai) {
+                if ('api_key' in safe.meta.ai) safe.meta.ai.api_key = maskKeyValue(safe.meta.ai.api_key);
+                if ('apiKey' in safe.meta.ai) safe.meta.ai.apiKey = maskKeyValue(safe.meta.ai.apiKey);
+            }
+
+            return safe;
         }
 
         function renderRecentErrors(errors) {
@@ -369,6 +408,9 @@
             document.getElementById('cfg-crawler-request-timeout').value = overrides.crawler_request_timeout ?? crawler.request_timeout ?? '';
             document.getElementById('cfg-crawler-retry-attempts').value = overrides.crawler_retry_attempts ?? crawler.retry_attempts ?? '';
             document.getElementById('cfg-crawler-headless').checked = Boolean(overrides.crawler_headless ?? crawler.headless);
+            document.getElementById('cfg-siliconflow-api-key').value = ai.api_key ?? '';
+            document.getElementById('cfg-siliconflow-primary-model').value = ai.primary_model ?? ai.model ?? '';
+            document.getElementById('cfg-siliconflow-fallback-models').value = Array.isArray(ai.fallback_models) ? ai.fallback_models.join('\n') : '';
             document.getElementById('cfg-siliconflow-timeout').value = overrides.siliconflow_timeout ?? ai.timeout ?? '';
             document.getElementById('cfg-siliconflow-max-output-tokens').value = overrides.siliconflow_max_output_tokens ?? ai.max_output_tokens ?? '';
             document.getElementById('cfg-siliconflow-daily-token-budget').value = overrides.siliconflow_daily_token_budget ?? ai.daily_token_budget ?? '';
@@ -381,6 +423,9 @@
                 crawler_request_timeout: Number(document.getElementById('cfg-crawler-request-timeout').value || 0),
                 crawler_retry_attempts: Number(document.getElementById('cfg-crawler-retry-attempts').value || 0),
                 crawler_headless: document.getElementById('cfg-crawler-headless').checked,
+                siliconflow_api_key: document.getElementById('cfg-siliconflow-api-key').value.trim(),
+                siliconflow_primary_model: document.getElementById('cfg-siliconflow-primary-model').value.trim(),
+                siliconflow_fallback_models: document.getElementById('cfg-siliconflow-fallback-models').value,
                 siliconflow_timeout: Number(document.getElementById('cfg-siliconflow-timeout').value || 0),
                 siliconflow_max_output_tokens: Number(document.getElementById('cfg-siliconflow-max-output-tokens').value || 0),
                 siliconflow_daily_token_budget: Number(document.getElementById('cfg-siliconflow-daily-token-budget').value || 0),

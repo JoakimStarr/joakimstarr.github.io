@@ -6,6 +6,7 @@
   const CRAWLER_LOGS_KEY = 'jobweb-crawler-logs';
   const AI_CONFIG_KEY = 'jobweb-ai-config';
   const AI_CHAT_KEY = 'jobweb-ai-chat-history';
+  const AI_RESULT_CACHE_KEY = 'jobweb-site-ai-result-cache-v1';
   const APPLICATIONS_KEY = 'jobweb-applications';
   const SUBSCRIPTIONS_KEY = 'jobweb-subscriptions';
 
@@ -98,13 +99,102 @@
     localStorage.setItem(AI_CHAT_KEY, JSON.stringify(all));
   }
 
+  function hashString(input) {
+    const text = String(input || '');
+    let value = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      value = ((value << 5) - value) + text.charCodeAt(i);
+      value |= 0;
+    }
+    return `h${Math.abs(value)}`;
+  }
+
+  function compactMessages(messages, maxChars) {
+    const items = Array.isArray(messages) ? messages : [];
+    const limit = Math.max(2400, Number(maxChars || 10000));
+    const result = [];
+    let total = 0;
+    for (let i = items.length - 1; i >= 0; i -= 1) {
+      const row = items[i] || {};
+      const role = row.role || 'user';
+      const cap = role === 'system' ? 3200 : 2200;
+      const content = String(row.content || '').slice(0, cap);
+      if (!content) continue;
+      if (total > 0 && (total + content.length) > limit) break;
+      result.unshift({ role, content });
+      total += content.length;
+    }
+    return result.length ? result : [{ role: 'user', content: String(items[items.length - 1]?.content || '').slice(0, limit) }];
+  }
+
+  function readAiResultCache() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(AI_RESULT_CACHE_KEY) || '{}');
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function pruneAiResultCache(cache, nowTs = Date.now()) {
+    const entries = Object.entries(cache || {})
+      .filter(([, item]) => {
+        if (!item || !item.answer) return false;
+        const createdAt = new Date(item.created_at || '').getTime();
+        const ttlMs = Number(item.ttl_ms || (18 * 60 * 1000));
+        return createdAt && (nowTs - createdAt) <= ttlMs;
+      })
+      .sort((a, b) => new Date(b[1].created_at).getTime() - new Date(a[1].created_at).getTime())
+      .slice(0, 120);
+    return Object.fromEntries(entries);
+  }
+
+  function saveAiResultCache(cache) {
+    localStorage.setItem(AI_RESULT_CACHE_KEY, JSON.stringify(pruneAiResultCache(cache)));
+  }
+
+  const aiInflightMap = new Map();
+  const aiPendingQueue = [];
+  let aiRunningCount = 0;
+
+  function withAiSlot(task) {
+    const MAX_AI_CONCURRENCY = 2;
+    return new Promise((resolve, reject) => {
+      const run = () => {
+        aiRunningCount += 1;
+        Promise.resolve()
+          .then(task)
+          .then(resolve)
+          .catch(reject)
+          .finally(() => {
+            aiRunningCount = Math.max(0, aiRunningCount - 1);
+            const next = aiPendingQueue.shift();
+            if (next) next();
+          });
+      };
+      if (aiRunningCount < MAX_AI_CONCURRENCY) run();
+      else aiPendingQueue.push(run);
+    });
+  }
+
+  function requireAiText(answer, scene) {
+    const value = String(answer || '').trim();
+    if (!value) {
+      throw new Error(`${scene || 'AI'} 未返回有效内容`);
+    }
+    return value;
+  }
+
   async function callAi(messages, options) {
     const config = readAiConfig();
     if (!config.apiKey) {
       throw new Error('请先在系统概览页配置 SiliconFlow API Key');
     }
+    const safeOptions = options || {};
+    const preparedMessages = compactMessages(messages, safeOptions.maxInputChars || 10000);
+    if (!preparedMessages.length) throw new Error('AI 输入为空，无法分析');
     const models = [];
-    const primaryModel = (options && options.model) || config.model;
+    const primaryModel = safeOptions.model || config.model;
     if (primaryModel) models.push(primaryModel);
     (config.fallbackModels || []).forEach(model => {
       if (model && !models.includes(model)) {
@@ -112,71 +202,104 @@
       }
     });
 
-    let lastError = null;
-    for (const model of models) {
-      const payload = {
-        model,
-        messages,
-        stream: !!config.useStream,
-        max_tokens: Number(config.maxOutputTokens) || 700,
-      };
+    const scope = String(safeOptions.scope || 'site-ai');
+    const ttlMs = Number(safeOptions.cacheTtlMs || (scope.includes('chat') ? 3 * 60 * 1000 : 18 * 60 * 1000));
+    const cacheKey = safeOptions.cacheKey
+      ? `${scope}:${hashString(JSON.stringify(safeOptions.cacheKey))}`
+      : `${scope}:${hashString(JSON.stringify(preparedMessages))}:${models[0] || 'default'}`;
 
-      try {
-        const response = await fetch(config.baseUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${config.apiKey}`,
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`模型 ${model} 请求失败：${response.status} ${text.slice(0, 160)}`);
-        }
-
-        if (!config.useStream) {
-          const data = await response.json();
-          return data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content || '' : '';
-        }
-
-        const reader = response.body && response.body.getReader ? response.body.getReader() : null;
-        if (!reader) {
-          const text = await response.text();
-          return text;
-        }
-
-        const decoder = new TextDecoder('utf-8');
-        let buffer = '';
-        let content = '';
-        while (true) {
-          const result = await reader.read();
-          if (result.done) break;
-          buffer += decoder.decode(result.value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || !trimmed.startsWith('data:')) continue;
-            const dataChunk = trimmed.replace(/^data:\s*/, '');
-            if (dataChunk === '[DONE]') continue;
-            try {
-              const json = JSON.parse(dataChunk);
-              const delta = json.choices && json.choices[0] ? json.choices[0].delta || {} : {};
-              if (delta.content) {
-                content += delta.content;
-                if (options && typeof options.onToken === 'function') options.onToken(content);
-              }
-            } catch (_) {}
-          }
-        }
-        return content;
-      } catch (error) {
-        lastError = error;
-      }
+    const currentCache = pruneAiResultCache(readAiResultCache());
+    const cached = currentCache[cacheKey];
+    if (cached && cached.answer) {
+      return cached.answer;
     }
-    throw lastError || new Error('AI 请求失败');
+
+    const inflightKey = `${cacheKey}:${safeOptions.useStream ? 'stream' : 'normal'}`;
+    if (aiInflightMap.has(inflightKey)) {
+      return aiInflightMap.get(inflightKey);
+    }
+
+    const runner = withAiSlot(async () => {
+      let lastError = null;
+      for (const model of models) {
+        const payload = {
+          model,
+          messages: preparedMessages,
+          stream: !!(safeOptions.useStream ?? config.useStream),
+          max_tokens: Number(safeOptions.maxOutputTokens || config.maxOutputTokens) || 700,
+        };
+
+        const controller = new AbortController();
+        const timeoutMs = Math.max(12000, Number(safeOptions.timeout || config.timeout || 60) * 1000);
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          const response = await fetch(config.baseUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${config.apiKey}`,
+            },
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+
+          if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`模型 ${model} 请求失败：${response.status} ${text.slice(0, 160)}`);
+          }
+
+          let content = '';
+          if (payload.stream) {
+            const reader = response.body && response.body.getReader ? response.body.getReader() : null;
+            if (reader) {
+              const decoder = new TextDecoder('utf-8');
+              let buffer = '';
+              while (true) {
+                const result = await reader.read();
+                if (result.done) break;
+                buffer += decoder.decode(result.value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+                for (const line of lines) {
+                  const trimmed = line.trim();
+                  if (!trimmed || !trimmed.startsWith('data:')) continue;
+                  const dataChunk = trimmed.replace(/^data:\s*/, '');
+                  if (dataChunk === '[DONE]') continue;
+                  try {
+                    const json = JSON.parse(dataChunk);
+                    const delta = json.choices && json.choices[0] ? json.choices[0].delta || {} : {};
+                    if (delta.content) {
+                      content += delta.content;
+                      if (typeof safeOptions.onToken === 'function') safeOptions.onToken(content);
+                    }
+                  } catch (_) {}
+                }
+              }
+            }
+          }
+          if (!content) {
+            const data = await response.json();
+            content = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content || '' : '';
+          }
+          const answer = requireAiText(content, 'AI');
+
+          const nextCache = pruneAiResultCache(readAiResultCache());
+          nextCache[cacheKey] = { answer, model, created_at: new Date().toISOString(), ttl_ms: ttlMs };
+          saveAiResultCache(nextCache);
+          return answer;
+        } catch (error) {
+          clearTimeout(timeoutId);
+          lastError = error && error.name === 'AbortError' ? new Error(`模型 ${model} 请求超时`) : error;
+        }
+      }
+      throw lastError || new Error('AI 请求失败');
+    });
+
+    aiInflightMap.set(inflightKey, runner);
+    return runner.finally(() => {
+      aiInflightMap.delete(inflightKey);
+    });
   }
 
   function readUsers() {
@@ -619,11 +742,15 @@
           { role: 'system', content: '你是金融求职顾问，请根据岗位信息给出结构化、可执行的分析。' },
           { role: 'user', content: `请分析这个岗位的匹配方向、亮点、风险和投递建议。\n\n岗位名称：${job.title}\n公司：${job.company}\n地点：${job.location}\n岗位类型：${job.job_type}\n学历：${job.education}\n薪资：${job.salary}\n岗位描述：${job.description}\n任职要求：${job.requirements}` }
         ], {
+          scope: 'job-detail-analysis',
+          cacheKey: { id: job.id, title: job.title, updated_at: job.updated_at || job.publish_date || '' },
+          timeout: 45,
+          maxInputChars: 9000,
           onToken(text) {
             panel.textContent = text || 'AI 正在生成内容...';
           }
         });
-        panel.textContent = answer || 'AI 没有返回内容。';
+        panel.textContent = requireAiText(answer, '岗位 AI 分析');
       } catch (error) {
         panel.textContent = error.message || 'AI 分析失败';
       }
@@ -641,14 +768,17 @@
         const answer = await callAi([
           { role: 'system', content: '你是岗位问答助手，请围绕当前岗位回答用户的追问，保持简洁、有行动建议。' },
           { role: 'user', content: `岗位信息：${job.title} / ${job.company} / ${job.location} / ${job.job_type} / ${job.education}\n岗位描述：${job.description}\n岗位要求：${job.requirements}\n\n用户问题：${question}` }
-        ]);
-        const finalHistory = nextHistory.concat([{ role: 'assistant', content: answer || 'AI 没有返回内容。' }]).slice(-12);
+        ], {
+          scope: 'job-detail-chat',
+          cacheKey: { id: job.id, question, history_len: nextHistory.length },
+          timeout: 45,
+          maxInputChars: 9000,
+        });
+        const finalHistory = nextHistory.concat([{ role: 'assistant', content: requireAiText(answer, '岗位追问') }]).slice(-12);
         writeAiChatHistory(chatScope, finalHistory);
         renderHistory(finalHistory);
       } catch (error) {
-        const finalHistory = nextHistory.concat([{ role: 'assistant', content: error.message || 'AI 追问失败' }]).slice(-12);
-        writeAiChatHistory(chatScope, finalHistory);
-        renderHistory(finalHistory);
+        renderHistory(nextHistory.concat([{ role: 'assistant', content: `系统提示：${error.message || 'AI 追问失败'}` }]));
       }
     });
   }
@@ -1064,8 +1194,14 @@
         const answer = await callAi([
           { role: 'system', content: '你是金融求职简历顾问，请输出结构化、可执行的简历优化建议。' },
           { role: 'user', content: `用户画像：关键词 ${profile.keywords.join('、')}；地点 ${profile.location}；行业 ${profile.industry}；岗位类型 ${profile.jobType}；学历 ${profile.education}；技能 ${profile.skills.join('、')}；附加说明 ${profile.notes}；简历正文 ${profile.resumeText}\n\n目标岗位：${topJobs.map(item => `${item.job.title} / ${item.job.company}`).join('；')}` }
-        ], { onToken(text) { panel.textContent = text || 'AI 正在生成简历建议...'; } });
-        panel.textContent = answer || 'AI 没有返回内容。';
+        ], {
+          scope: 'resume-advice',
+          cacheKey: { profile, targets: topJobs.map(item => item.job.id || item.job.title) },
+          timeout: 45,
+          maxInputChars: 10000,
+          onToken(text) { panel.textContent = text || 'AI 正在生成简历建议...'; }
+        });
+        panel.textContent = requireAiText(answer, 'AI 简历建议');
       } catch (error) {
         panel.textContent = error.message || 'AI 简历建议失败';
       }
@@ -1079,8 +1215,14 @@
         const answer = await callAi([
           { role: 'system', content: '你是岗位投递助手，请输出自我介绍、投递建议和邮件正文草稿。' },
           { role: 'user', content: `用户画像：关键词 ${profile.keywords.join('、')}；地点 ${profile.location}；行业 ${profile.industry}；岗位类型 ${profile.jobType}；学历 ${profile.education}；技能 ${profile.skills.join('、')}；附加说明 ${profile.notes}；简历正文 ${profile.resumeText}\n\n目标岗位：${topJob ? `${topJob.job.title} / ${topJob.job.company} / ${topJob.job.location}` : '暂无匹配岗位'}` }
-        ], { onToken(text) { panel.textContent = text || 'AI 正在生成投递助手内容...'; } });
-        panel.textContent = answer || 'AI 没有返回内容。';
+        ], {
+          scope: 'delivery-assistant',
+          cacheKey: { profile, target: topJob?.job?.id || topJob?.job?.title || '' },
+          timeout: 45,
+          maxInputChars: 10000,
+          onToken(text) { panel.textContent = text || 'AI 正在生成投递助手内容...'; }
+        });
+        panel.textContent = requireAiText(answer, 'AI 投递助手');
       } catch (error) {
         panel.textContent = error.message || 'AI 投递助手失败';
       }
@@ -1099,12 +1241,17 @@
         const answer = await callAi([
           { role: 'system', content: '你是求职推荐助手，请根据用户画像和已推荐岗位回答追问。' },
           { role: 'user', content: `用户画像：关键词 ${profile.keywords.join('、')}；地点 ${profile.location}；行业 ${profile.industry}；岗位类型 ${profile.jobType}；学历 ${profile.education}；技能 ${profile.skills.join('、')}；附加说明 ${profile.notes}；简历正文 ${profile.resumeText}\n\n当前推荐岗位：${topJobs.map(item => `${item.job.title}/${item.job.company}/${item.job.location}`).join('；')}\n\n用户问题：${question}` }
-        ]);
-        writeAiChatHistory('recommendation-chat', nextHistory.concat([{ role: 'assistant', content: answer || 'AI 没有返回内容。' }]).slice(-12));
+        ], {
+          scope: 'recommendation-chat',
+          cacheKey: { profile, question, jobs: topJobs.map(item => item.job.id || item.job.title) },
+          timeout: 45,
+          maxInputChars: 10000,
+        });
+        writeAiChatHistory('recommendation-chat', nextHistory.concat([{ role: 'assistant', content: requireAiText(answer, '推荐追问') }]).slice(-12));
         renderRecommendChat();
       } catch (error) {
-        writeAiChatHistory('recommendation-chat', nextHistory.concat([{ role: 'assistant', content: error.message || 'AI 对话失败' }]).slice(-12));
         renderRecommendChat();
+        window.alert(error.message || 'AI 对话失败');
       }
     });
   }

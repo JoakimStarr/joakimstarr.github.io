@@ -276,73 +276,13 @@
 </head>
 <body class="bg-stone-50 app-shell">
     <div id="app" class="min-h-screen flex">
-        <div id="navbar-container">
-            <aside id="sidebar" class="w-64 bg-slate-900 text-white flex flex-col fixed h-full z-50 transition-transform duration-300 -translate-x-full md:translate-x-0">
-                <div class="p-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-briefcase text-white"></i>
-                        </div>
-                        <div>
-                            <h1 class="font-bold text-lg">FinIntern</h1>
-                            <p class="text-xs text-gray-400">金融实习招聘平台</p>
-                        </div>
-                    </div>
-                </div>
-
-                <nav class="flex-1 px-4 space-y-1">
-                    <a href="./index.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="平台概览和统计数据">
-                        <i class="fas fa-home w-5 text-center"></i>
-                        <span>首页</span>
-                    </a>
-                    <a href="./jobs.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="浏览所有实习岗位">
-                        <i class="fas fa-list w-5 text-center"></i>
-                        <span>岗位列表</span>
-                    </a>
-                    <a href="./favorites.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="查看收藏的岗位">
-                        <i class="fas fa-star w-5 text-center"></i>
-                        <span>我的收藏</span>
-                    </a>
-                    <a href="./crawler.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="管理和执行爬虫任务">
-                        <i class="fas fa-spider w-5 text-center"></i>
-                        <span>数据采集</span>
-                    </a>
-                    <a href="./system.html" class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg" title="查看配置中心与系统状态">
-                        <i class="fas fa-gauge-high w-5 text-center"></i>
-                        <span>系统状态</span>
-                    </a>
-                    <a href="./recommendations.html" class="sidebar-item active bg-white/10 flex items-center gap-3 px-4 py-3 rounded-lg" title="根据个人信息生成智能推荐">
-                        <i class="fas fa-wand-magic-sparkles w-5 text-center"></i>
-                        <span>智能推荐</span>
-                    </a>
-                </nav>
-
-                <div class="p-4 border-t border-gray-800">
-                    <div class="rounded-xl bg-white/5 border border-white/10 px-3 py-3">
-                        <div class="flex items-center gap-2 text-sm text-gray-300">
-                            <i class="fas fa-info-circle"></i>
-                        <span>v3.9.0</span>
-                        </div>
-                        <div class="mt-2 text-[11px] leading-5 text-gray-500">
-                            <div>网站声明：仅为个人学习开发作用</div>
-                            <div>灵感来源：我们伟大的宝宝</div>
-                            <div>网站作者：JoakimStarr / 文人病</div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="closeMobileMenu()"></div>
-            <button id="mobile-menu-btn" class="fixed top-4 left-4 z-[60] md:hidden bg-slate-900 text-white p-3 rounded-lg shadow-lg" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+        <div id="navbar-container"></div>
 
         <main class="flex-1 ml-0 md:ml-64 pt-20 md:pt-0">
-            <header class="bg-white/90 backdrop-blur border-b px-8 py-5 sticky top-0 z-40">
+            <header class="bg-white shadow-sm border-b px-8 py-4 sticky top-0 z-40">
                 <div class="flex items-center justify-between gap-4 flex-wrap">
                     <div>
-                        <h2 id="page-title" class="text-2xl font-bold text-gray-900">智能推荐</h2>
+                        <h2 id="page-title" class="text-2xl font-bold text-gray-800">智能推荐</h2>
                         <p class="text-sm text-gray-500 mt-1">输入你的背景、偏好和目标，系统会做岗位匹配与推荐分析。</p>
                     </div>
                     <button id="quick-fill-btn" class="btn btn-outline">
@@ -458,8 +398,8 @@
 
                             <div class="flex items-center justify-between gap-4 flex-wrap pt-2">
                                 <label class="inline-flex items-center gap-2 text-sm text-white/85">
-                                    <input id="use-ai-summary" type="checkbox" checked class="rounded border-white/30 bg-white/10">
-                                    启用 AI 推荐分析
+                                    <input id="use-ai-summary" type="checkbox" checked disabled class="rounded border-white/30 bg-white/10">
+                                    已强制启用 AI 推荐分析
                                 </label>
                                 <button id="submit-btn" type="submit" class="inline-flex items-center gap-2 rounded-2xl bg-white text-teal-800 px-5 py-3 font-semibold shadow hover:bg-teal-50 transition">
                                     <i class="fas fa-bolt"></i>
@@ -484,7 +424,7 @@
                                     <div id="profile-summary" class="text-gray-700 leading-7">填写左侧信息后，这里会显示你的画像摘要。</div>
                                 </div>
                                 <div class="analysis-surface analysis-surface--teal p-5">
-                                    <p class="text-sm text-gray-500 mb-2">AI / 规则分析</p>
+                                    <p class="text-sm text-gray-500 mb-2">AI 分析</p>
                                     <div id="analysis-summary" class="prose prose-sm max-w-none text-gray-700 max-h-[420px] overflow-y-auto pr-2 scroll-smooth">
                                         <p>推荐分析生成后会显示在这里。</p>
                                     </div>
@@ -496,10 +436,11 @@
                                         <div>
                                             <p class="text-sm text-gray-500 mb-2">AI 简历诊断</p>
                                             <div id="resume-diagnostic" class="prose prose-sm max-w-none text-gray-700">
-                                                <p>上传简历或生成推荐后，这里会显示简历诊断、缺口和优化建议。</p>
+                                                <p>上传简历原件后，点击“开始诊断”生成 AI 诊断结果。</p>
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-2 flex-wrap">
+                                            <button id="resume-diagnostic-btn" class="btn btn-outline text-sm">开始诊断</button>
                                             <button id="export-markdown-btn" class="btn btn-outline text-sm">导出 Markdown</button>
                                             <button id="export-json-btn" class="btn btn-outline text-sm">导出 JSON</button>
                                         </div>
@@ -650,15 +591,17 @@
     <script src="./data/jobs.meta.js"></script>
     <!-- 优先加载前20条数据（约100KB，快速渲染） -->
     <script src="./data/jobs.chunk.0.js"></script>
-    <script src="./js/api.js?v=20260405-v391"></script>
-    <script src="./js/auth.js?v=20260405-v391"></script>
-    <script src="./js/navbar.js?v=20260405-v391"></script>
-    <script src="./js/ui-components.js?v=20260405-v391"></script>
+    <script src="./js/api.js?v=20260406-v392"></script>
+    <script src="./js/auth.js?v=20260406-v392"></script>
+    <script src="./js/navbar.js?v=20260406-v392"></script>
+    <script src="./js/ui-components.js?v=20260406-v392"></script>
     <script>
         const state = {
             loading: false,
             result: null,
             profilePayload: null,
+            uploadedResumeFile: null,
+            resumeContextKey: 'default',
             cachedSnapshots: [],
             serverHistory: [],
             resumeDiagnostic: null,
@@ -667,8 +610,8 @@
         };
         const CACHE_KEY = 'finintern-recommendation-cache-v3';
         const MAX_CACHE_ITEMS = 5;
-        const CHAT_HISTORY_KEY = 'finintern-recommendation-chat-v1';
-        const ANALYSIS_HISTORY_KEY = 'finintern-analysis-history-v1';
+        const CHAT_HISTORY_KEY_PREFIX = 'finintern-recommendation-chat-v1';
+        const ANALYSIS_HISTORY_KEY_PREFIX = 'finintern-analysis-history-v1';
 
         const elements = {};
 
@@ -678,48 +621,12 @@
                 AppAuth.redirectToLogin();
                 return;
             }
+            if (typeof initNavbar === 'function') {
+                await initNavbar('#navbar-container', 'recommendations');
+            }
             initElements();
-            initStandaloneNavbar();
             bindEvents();
         });
-
-        function initStandaloneNavbar() {
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    closeMobileMenu();
-                }
-            });
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    closeMobileMenu();
-                }
-            });
-        }
-
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (!sidebar || !overlay) return;
-
-            const isOpen = !sidebar.classList.contains('-translate-x-full');
-            if (isOpen) {
-                closeMobileMenu();
-            } else {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (!sidebar || !overlay) return;
-
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
 
         function initElements() {
             elements.form = document.getElementById('recommendation-form');
@@ -742,6 +649,7 @@
             elements.saveToServerHistory = document.getElementById('save-to-server-history');
             elements.exportMarkdownBtn = document.getElementById('export-markdown-btn');
             elements.exportJsonBtn = document.getElementById('export-json-btn');
+            elements.resumeDiagnosticBtn = document.getElementById('resume-diagnostic-btn');
             elements.resumeAdviceBtn = document.getElementById('resume-advice-btn');
             elements.resumeAdviceOutput = document.getElementById('resume-advice-output');
             elements.deliveryAssistantBtn = document.getElementById('delivery-assistant-btn');
@@ -763,6 +671,7 @@
             elements.resumeUploadInput.addEventListener('change', async (event) => {
                 const file = event.target.files && event.target.files[0];
                 if (file) {
+                    state.uploadedResumeFile = file;
                     await uploadResume(file);
                 }
                 event.target.value = '';
@@ -787,6 +696,7 @@
             elements.clearHistoryBtn.addEventListener('click', clearServerHistory);
             elements.exportMarkdownBtn.addEventListener('click', () => exportCurrentResult('markdown'));
             elements.exportJsonBtn.addEventListener('click', () => exportCurrentResult('json'));
+            elements.resumeDiagnosticBtn.addEventListener('click', requestResumeDiagnostic);
             elements.resultsPrevBtn.addEventListener('click', () => scrollRecommendationResults(-1));
             elements.resultsNextBtn.addEventListener('click', () => scrollRecommendationResults(1));
             elements.results.addEventListener('scroll', debounce(syncRecommendationNavState, 60));
@@ -810,10 +720,14 @@
             if (state.loading) return;
             state.loading = true;
             setLoading(true);
+            elements.summaryMeta.textContent = 'AI 分析中...';
+            elements.assistantMeta.textContent = 'AI 分析中，请稍候';
+            renderMarkdown(elements.analysisSummary, '### AI分析中\n- 正在结合你的求职画像与岗位数据生成分析，请稍候...');
 
             try {
                 const payload = collectFormPayload();
                 state.profilePayload = payload;
+                switchResumeContext(resolveResumeContextKey({ file: state.uploadedResumeFile, profile: payload }));
                 const result = await API.getRecommendations(payload);
                 state.result = result;
                 persistSnapshot({
@@ -856,7 +770,7 @@
                 additional_notes: document.getElementById('profile-additional-notes').value.trim() || null,
                 save_to_server_history: elements.saveToServerHistory.checked,
                 max_results: 12,
-                use_ai_summary: document.getElementById('use-ai-summary').checked,
+                use_ai_summary: true,
             };
         }
 
@@ -869,6 +783,8 @@
                 fillFormFromProfile(result.profile || {});
                 state.profilePayload = result.profile || null;
                 state.resumeDiagnostic = result.resume_diagnostic || null;
+                state.uploadedResumeFile = file;
+                switchResumeContext(resolveResumeContextKey({ file, profile: result.profile || null }));
                 const methodText = result.extraction_method === 'pdf-ocr'
                     ? ' · 已使用 OCR 识别'
                     : result.extraction_method === 'image-ocr'
@@ -911,6 +827,8 @@
                     loadHistory();
                 }
             } catch (error) {
+                state.uploadedResumeFile = null;
+                switchResumeContext(resolveResumeContextKey({ file: null, profile: state.profilePayload }));
                 elements.resumeUploadStatus.textContent = `上传失败：${error.message || '请稍后重试'}`;
                 renderResumeDiagnostic('### 简历诊断\n- 暂未生成诊断，请检查文件内容后重试。');
             }
@@ -942,11 +860,13 @@
             elements.profileSummary.textContent = result.profile_summary || '暂无画像摘要';
             elements.summaryMeta.textContent = result.model
                 ? `已结合 ${result.model} 输出分析`
-                : '已使用本地规则生成分析';
-            elements.assistantMeta.textContent = result.model ? `当前主分析：${result.model}` : '当前使用规则摘要 / AI混合';
+                : 'AI 分析已完成（模型名称未返回）';
+            elements.assistantMeta.textContent = result.model
+                ? `当前主分析：${result.model}`
+                : '当前主分析：AI（模型名称未返回）';
             renderMarkdown(elements.analysisSummary, result.analysis_summary || '暂无分析结果');
-            renderResumeDiagnostic(result.resume_diagnostic_markdown || '');
-            state.resumeDiagnostic = result.resume_diagnostic || null;
+            renderResumeDiagnostic('### AI 简历诊断\n- 为提高生成速度，推荐生成阶段仅输出 AI 分析。\n- 请先上传简历原件，再点击“开始诊断”。');
+            state.resumeDiagnostic = null;
             elements.resultsCount.textContent = `共考虑 ${result.total_considered} 个岗位，返回 ${result.returned} 个更匹配结果`;
 
             if (!result.recommendations || result.recommendations.length === 0) {
@@ -964,6 +884,37 @@
             syncRecommendationNavState();
             loadCachedSnapshots();
             loadHistory();
+        }
+
+        async function requestResumeDiagnostic() {
+            if (!state.profilePayload) {
+                renderResumeDiagnostic('### 提示\n- 请先生成推荐，再执行 AI 简历诊断。');
+                return;
+            }
+            if (!state.uploadedResumeFile) {
+                renderResumeDiagnostic('### 需要上传原件\n- AI 简历诊断要求上传简历原件（PDF/DOCX/TXT/MD）后才能执行。');
+                elements.resumeUploadStatus.textContent = '请先上传简历原件，再点击“开始诊断”';
+                return;
+            }
+
+            elements.assistantMeta.textContent = '正在生成 AI 简历诊断...';
+            renderResumeDiagnostic('### AI 简历诊断\n- 正在分析上传原件，请稍候...');
+            try {
+                const result = await API.getResumeDiagnostic({
+                    profile: state.profilePayload,
+                    resume_file: state.uploadedResumeFile,
+                    target_jobs: (state.result?.recommendations || []).slice(0, 3).map(item => item.job || {}),
+                });
+                await streamMarkdownToElement(elements.resumeDiagnostic, result.answer || '暂无诊断结果');
+                state.resumeDiagnostic = {
+                    markdown: result.answer || '',
+                    model: result.model || null,
+                };
+                appendAnalysisHistory('resume_diagnostic_ai', '已生成 AI 简历诊断', result.answer || '');
+                elements.assistantMeta.textContent = result.model ? `简历诊断：${result.model}` : '简历诊断：AI（模型名称未返回）';
+            } catch (error) {
+                renderResumeDiagnostic(`### 生成失败\n- ${error.message || '请稍后重试'}`);
+            }
         }
 
         async function loadHistory() {
@@ -1022,7 +973,7 @@
                 });
                 await streamMarkdownToElement(elements.resumeAdviceOutput, result.answer || '暂无建议');
                 appendAnalysisHistory('resume_advice', '已生成 AI 改简历建议', result.answer || '');
-                elements.assistantMeta.textContent = result.model ? `简历建议：${result.model}` : '简历建议已生成';
+                elements.assistantMeta.textContent = result.model ? `简历建议：${result.model}` : '简历建议：AI（模型名称未返回）';
             } catch (error) {
                 renderMarkdown(elements.resumeAdviceOutput, `### 生成失败\n- ${error.message || '请稍后重试'}`);
             }
@@ -1043,7 +994,7 @@
                 });
                 await streamMarkdownToElement(elements.deliveryAssistantOutput, result.answer || '暂无内容');
                 appendAnalysisHistory('delivery', `已生成投递助手${selectedJob?.title ? ` · ${selectedJob.title}` : ''}`, result.answer || '');
-                elements.assistantMeta.textContent = result.model ? `投递助手：${result.model}` : '投递助手已生成';
+                elements.assistantMeta.textContent = result.model ? `投递助手：${result.model}` : '投递助手：AI（模型名称未返回）';
             } catch (error) {
                 renderMarkdown(elements.deliveryAssistantOutput, `### 生成失败\n- ${error.message || '请稍后重试'}`);
             }
@@ -1072,7 +1023,7 @@
                 state.recommendationChatHistory.push({ role: 'assistant', content: result.answer || '' });
                 persistRecommendationChatHistory();
                 appendAnalysisHistory('chat', `追问：${question.slice(0, 26)}`, result.answer || '');
-                elements.assistantMeta.textContent = result.model ? `追问模型：${result.model}` : '追问回答已生成';
+                elements.assistantMeta.textContent = result.model ? `追问模型：${result.model}` : '追问模型：AI（模型名称未返回）';
             } catch (error) {
                 renderMarkdown(placeholder, `### 追问失败\n- ${error.message || '请稍后重试'}`);
             }
@@ -1093,22 +1044,18 @@
 
         function clearRecommendationChatHistory() {
             state.recommendationChatHistory = [];
-            localStorage.removeItem(CHAT_HISTORY_KEY);
-            elements.recommendationChatWindow.innerHTML = `
-                <div class="assistant-bubble assistant">
-                    推荐生成后，你可以继续追问，例如：哪些岗位更适合买方研究、简历该重点改哪里、先投哪几个。
-                </div>
-            `;
+            localStorage.removeItem(getChatHistoryStorageKey());
+            renderEmptyRecommendationChatIntro();
         }
 
         function loadAssistantLocalState() {
             try {
-                state.recommendationChatHistory = JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY) || '[]');
+                state.recommendationChatHistory = JSON.parse(localStorage.getItem(getChatHistoryStorageKey()) || '[]');
             } catch (error) {
                 state.recommendationChatHistory = [];
             }
             try {
-                state.analysisHistory = JSON.parse(localStorage.getItem(ANALYSIS_HISTORY_KEY) || '[]');
+                state.analysisHistory = JSON.parse(localStorage.getItem(getAnalysisHistoryStorageKey()) || '[]');
             } catch (error) {
                 state.analysisHistory = [];
             }
@@ -1117,7 +1064,7 @@
         }
 
         function persistRecommendationChatHistory() {
-            localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify((state.recommendationChatHistory || []).slice(-20)));
+            localStorage.setItem(getChatHistoryStorageKey(), JSON.stringify((state.recommendationChatHistory || []).slice(-20)));
             renderRecommendationChatHistory();
         }
 
@@ -1125,7 +1072,7 @@
             if (!elements.recommendationChatWindow) return;
             elements.recommendationChatWindow.innerHTML = '';
             if (!state.recommendationChatHistory.length) {
-                clearRecommendationChatHistory();
+                renderEmptyRecommendationChatIntro();
                 return;
             }
             state.recommendationChatHistory.forEach(item => appendRecommendationChat(item.role, item.content || ''));
@@ -1140,8 +1087,48 @@
                 createdAt: new Date().toLocaleString('zh-CN'),
             }, ...(state.analysisHistory || [])].slice(0, 16);
             state.analysisHistory = next;
-            localStorage.setItem(ANALYSIS_HISTORY_KEY, JSON.stringify(next));
+            localStorage.setItem(getAnalysisHistoryStorageKey(), JSON.stringify(next));
             renderAnalysisHistory();
+        }
+
+        function renderEmptyRecommendationChatIntro() {
+            elements.recommendationChatWindow.innerHTML = `
+                <div class="assistant-bubble assistant">
+                    推荐生成后，你可以继续追问，例如：哪些岗位更适合买方研究、简历该重点改哪里、先投哪几个。
+                </div>
+            `;
+        }
+
+        function getChatHistoryStorageKey() {
+            return `${CHAT_HISTORY_KEY_PREFIX}:${state.resumeContextKey || 'default'}`;
+        }
+
+        function getAnalysisHistoryStorageKey() {
+            return `${ANALYSIS_HISTORY_KEY_PREFIX}:${state.resumeContextKey || 'default'}`;
+        }
+
+        function resolveResumeContextKey({ file, profile }) {
+            if (file && file.name) {
+                return `file:${[file.name, file.size || 0, file.lastModified || 0].join('|')}`;
+            }
+            const payload = profile || null;
+            if (payload && typeof payload === 'object') {
+                const serialized = JSON.stringify(payload);
+                let hash = 2166136261;
+                for (let i = 0; i < serialized.length; i++) {
+                    hash ^= serialized.charCodeAt(i);
+                    hash = (hash * 16777619) >>> 0;
+                }
+                return `profile:${hash.toString(16)}`;
+            }
+            return 'default';
+        }
+
+        function switchResumeContext(nextKey) {
+            const normalized = String(nextKey || 'default');
+            if (normalized === state.resumeContextKey) return;
+            state.resumeContextKey = normalized;
+            loadAssistantLocalState();
         }
 
         function renderAnalysisHistory() {
@@ -1179,7 +1166,7 @@
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center gap-2 flex-wrap mb-3">
                                     <span class="inline-flex items-center rounded-full bg-rose-50 text-rose-600 px-3 py-1 text-xs font-semibold">TOP ${index + 1}</span>
-                                    <span class="inline-flex items-center rounded-full bg-teal-50 text-teal-700 px-3 py-1 text-xs font-semibold">匹配分 ${item.score}</span>
+                                    <span class="inline-flex items-center rounded-full bg-teal-50 text-teal-700 px-3 py-1 text-xs font-semibold">AI评分 ${item.score}</span>
                                     ${job.source ? `<span class="inline-flex items-center rounded-full bg-gray-100 text-gray-600 px-3 py-1 text-xs">${escapeHtml(job.source)}</span>` : ''}
                                 </div>
                                 <h4 class="text-xl font-semibold text-gray-900">${escapeHtml(job.title || '未命名岗位')}</h4>
@@ -1197,14 +1184,14 @@
 
                         <div class="mt-5 grid grid-cols-1 lg:grid-cols-[0.72fr_1.28fr] gap-4">
                             <div class="recommendation-card-surface">
-                                <div class="surface-title">推荐理由</div>
+                                <div class="surface-title">匹配线索</div>
                                 <ul class="surface-copy text-sm space-y-2">
                                     ${reasons || '<li>暂无详细推荐理由</li>'}
                                 </ul>
                             </div>
                             <div class="recommendation-summary-pane recommendation-card-surface">
-                                <div class="surface-title">岗位摘要</div>
-                                <div class="recommendation-markdown prose prose-sm max-w-none text-gray-700 leading-6" data-markdown="${escapeHtml(item.summary_markdown || cleanText(job.requirements || job.description || '暂无岗位描述'))}"></div>
+                                <div class="surface-title">AI 岗位分析</div>
+                                <div class="recommendation-markdown prose prose-sm max-w-none text-gray-700 leading-6" data-markdown="${escapeHtml(item.summary_markdown || '### AI 岗位分析暂不可用\n- 当前未能生成该岗位的 AI 摘要，请稍后重试。')}"></div>
                             </div>
                         </div>
 
@@ -1378,6 +1365,8 @@
             if (!item) return;
             fillFormFromProfile(item.profile || {});
             state.profilePayload = item.profile || null;
+            state.uploadedResumeFile = null;
+            switchResumeContext(resolveResumeContextKey({ file: null, profile: item.profile || null }));
             state.resumeDiagnostic = item.resumeDiagnostic || null;
             if (item.result) {
                 state.result = item.result;
@@ -1456,6 +1445,8 @@
             if (!record) return;
             fillFormFromProfile(record.profile || {});
             state.profilePayload = record.profile || null;
+            state.uploadedResumeFile = null;
+            switchResumeContext(resolveResumeContextKey({ file: null, profile: record.profile || null }));
             if (record.recommendation?.analysis_summary || (record.recommendation?.recommendations || []).length > 0) {
                 const restoredResult = {
                     total_considered: record.recommendation.total_considered || 0,
@@ -1573,11 +1564,11 @@
                 `- 导出时间：${payload.exportedAt}`,
                 `- 画像摘要：${state.result?.profile_summary || buildProfileSummaryFromProfile(profile)}`,
                 '',
-                '## AI / 规则分析',
+                '## AI 分析',
                 state.result?.analysis_summary || '暂无分析',
                 '',
                 '## 简历诊断',
-                state.result?.resume_diagnostic_markdown || '暂无简历诊断',
+                state.resumeDiagnostic?.markdown || state.result?.resume_diagnostic_markdown || '暂无简历诊断',
                 '',
                 '## 推荐岗位',
                 ...(state.result?.recommendations || []).map((item, index) => (

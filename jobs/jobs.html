@@ -1659,10 +1659,11 @@
                 return;
             }
 
-            const output = document.getElementById('ai-analysis-result');
-            if (output) {
-                renderMarkdownOutput(output, 'AI 正在分析当前岗位，请稍候...');
+            if (question) {
+                state.aiHistory.push({ role: 'user', content: question });
+                appendJobAiHistoryBubble('user', question);
             }
+            const placeholder = appendJobAiHistoryBubble('assistant', 'AI 正在分析当前岗位，请稍候...');
 
             try {
                 const response = await API.analyzeJob(state.currentJobId, {
@@ -1670,44 +1671,41 @@
                     history: state.aiHistory
                 });
 
-                if (output) {
-                    await streamMarkdownOutput(output, response.answer || 'AI 暂未返回结果');
-                }
-
-                if (question) {
-                    state.aiHistory.push({ role: 'user', content: question });
-                    appendJobAiHistoryBubble('user', question);
+                if (placeholder) {
+                    await streamMarkdownOutput(placeholder, response.answer || 'AI 暂未返回结果');
                 }
                 state.aiHistory.push({ role: 'assistant', content: response.answer || '' });
-                appendJobAiHistoryBubble('assistant', response.answer || 'AI 暂未返回结果');
                 persistJobAiHistory();
             } catch (error) {
-                if (output) {
-                    renderMarkdownOutput(output, `AI 分析失败：${error.message}`);
+                if (placeholder) {
+                    renderMarkdownOutput(placeholder, `### AI 分析失败\n- ${error.message}`);
                 }
                 showToast(`AI 分析失败：${error.message}`, 'error');
             }
         }
 
         async function streamMarkdownOutput(element, markdownText, speed = 18) {
+            if (!element) return;
             const text = String(markdownText || '');
             let cursor = Math.min(24, text.length);
             renderMarkdownOutput(element, text.slice(0, cursor));
+            const historyContainer = document.getElementById('ai-chat-history');
+            if (historyContainer) historyContainer.scrollTop = historyContainer.scrollHeight;
             while (cursor < text.length) {
                 cursor = Math.min(text.length, cursor + Math.max(12, Math.floor(text.length / 20)));
                 renderMarkdownOutput(element, text.slice(0, cursor));
-                element.scrollTop = element.scrollHeight;
+                if (historyContainer) historyContainer.scrollTop = historyContainer.scrollHeight;
                 await new Promise(resolve => setTimeout(resolve, speed));
             }
         }
 
         function appendJobAiHistoryBubble(role, content) {
             const container = document.getElementById('ai-chat-history');
-            if (!container) return;
+            if (!container) return null;
             const div = document.createElement('div');
             div.className = role === 'user'
                 ? 'ml-auto max-w-[85%] rounded-2xl bg-teal-700 px-4 py-3 text-sm text-white'
-                : 'max-w-[92%] rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700';
+                : 'max-w-[92%] rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 prose prose-sm max-w-none';
             if (role === 'user') {
                 div.textContent = content;
             } else {
@@ -1715,6 +1713,7 @@
             }
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
+            return div;
         }
 
         function getJobAiHistoryStorageKey(jobId) {
@@ -1737,7 +1736,7 @@
             if (!container) return;
             container.innerHTML = '';
             if (!state.aiHistory.length) {
-                container.innerHTML = '<div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">点击“生成分析”后，这里会保留本岗位最近的 AI 分析和追问记录。</div>';
+                container.innerHTML = '<div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">点击“生成分析”后，这里会以 Markdown 形式保留本岗位最近的 AI 分析和追问记录。</div>';
                 return;
             }
             state.aiHistory.forEach(item => appendJobAiHistoryBubble(item.role, item.content || ''));
@@ -2082,9 +2081,8 @@
                                 <button class="btn btn-outline btn-sm" onclick="askPresetQuestion('如果我要投递，简历应该突出什么？')">投递建议</button>
                             </div>
                             <div id="ai-chat-history" class="bg-white rounded-xl border border-slate-200 p-4 text-sm text-slate-600 min-h-[120px] max-h-[260px] overflow-y-auto space-y-3">
-                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">点击“生成分析”后，这里会保留本岗位最近的 AI 分析和追问记录。</div>
+                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">点击“生成分析”后，这里会以 Markdown 形式保留本岗位最近的 AI 分析和追问记录。</div>
                             </div>
-                            <div id="ai-analysis-result" class="bg-white rounded-xl border border-slate-200 p-4 text-sm text-slate-600 whitespace-pre-line min-h-[140px] max-h-[320px] overflow-y-auto mt-4">点击“生成分析”后，这里会输出岗位推荐结论。</div>
                             <div class="mt-4 flex gap-3">
                                 <textarea id="ai-question-input" class="form-textarea flex-1 min-h-[92px]" placeholder="继续追问这个岗位，比如：这个岗位对金融硕士是否匹配？"></textarea>
                                 <button class="btn btn-primary self-end" onclick="submitAIQuestion()">

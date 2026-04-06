@@ -277,6 +277,13 @@ const JobCache = {
         this.restoreFromCache();
     },
 
+    _extractGeneratedAt: function(meta) {
+        if (!meta || typeof meta !== 'object') return '';
+        if (meta.generated_at) return String(meta.generated_at);
+        if (meta.meta && meta.meta.generated_at) return String(meta.meta.generated_at);
+        return '';
+    },
+
     // 保存数据到缓存
     saveToCache: function(jobs, meta) {
         try {
@@ -287,7 +294,8 @@ const JobCache = {
                 timestamp: Date.now(),
                 jobCount: jobs.length,
                 jobs: jobs,
-                meta: meta || {}
+                meta: meta || {},
+                generatedAt: this._extractGeneratedAt(meta || {})
             };
 
             // 由于数据量大，使用分段存储
@@ -310,7 +318,8 @@ const JobCache = {
             timestamp: cacheData.timestamp,
             jobCount: cacheData.jobCount,
             chunks: chunks,
-            meta: cacheData.meta
+            meta: cacheData.meta,
+            generatedAt: cacheData.generatedAt || this._extractGeneratedAt(cacheData.meta)
         };
         localStorage.setItem(this.config.META_KEY, JSON.stringify(metaInfo));
 
@@ -342,6 +351,15 @@ const JobCache = {
             // 检查缓存是否过期
             if (Date.now() - metaInfo.timestamp > this.config.MAX_CACHE_AGE) {
                 console.log('[JobCache] 缓存已过期，清空缓存');
+                this.clearCache();
+                return false;
+            }
+
+            // 检查生成时间是否一致（不一致代表静态快照已更新）
+            const currentGeneratedAt = this._extractGeneratedAt(window.JOBWEB_META || (window.JOBWEB_SNAPSHOT && window.JOBWEB_SNAPSHOT.meta) || {});
+            const cachedGeneratedAt = this._extractGeneratedAt(metaInfo);
+            if (currentGeneratedAt && cachedGeneratedAt && currentGeneratedAt !== cachedGeneratedAt) {
+                console.log(`[JobCache] 检测到快照生成时间变化（cache=${cachedGeneratedAt}, current=${currentGeneratedAt}），自动清空缓存`);
                 this.clearCache();
                 return false;
             }
@@ -398,6 +416,10 @@ const JobCache = {
             const metaInfo = JSON.parse(metaStr);
             if (metaInfo.version !== this.config.CACHE_VERSION) return false;
             if (Date.now() - metaInfo.timestamp > this.config.MAX_CACHE_AGE) return false;
+
+            const currentGeneratedAt = this._extractGeneratedAt(window.JOBWEB_META || (window.JOBWEB_SNAPSHOT && window.JOBWEB_SNAPSHOT.meta) || {});
+            const cachedGeneratedAt = this._extractGeneratedAt(metaInfo);
+            if (currentGeneratedAt && cachedGeneratedAt && currentGeneratedAt !== cachedGeneratedAt) return false;
 
             return true;
         } catch (err) {
@@ -587,10 +609,30 @@ function currentUser() {
     }
 }
 
+function recoverUserFromToken(token) {
+    const normalized = String(token || '').trim();
+    if (!normalized) return null;
+    const match = normalized.match(/^jobweb(?:-local)?-(\d+)-/i);
+    if (!match) return null;
+    const userId = Number(match[1]);
+    if (!Number.isFinite(userId)) return null;
+
+    const matched = ensureUsers().find(item => Number(item.id) === userId && item.is_active !== false);
+    if (!matched) return null;
+
+    const publicUser = buildPublicUser(matched);
+    localStorage.setItem(AUTH_USER_STORAGE_KEY, JSON.stringify(publicUser));
+    return publicUser;
+}
+
 function requireUser() {
-    const user = currentUser();
-    if (!user || !localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)) {
-        throw new APIError('请先登录', 401);
+    const token = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+    let user = currentUser();
+    if ((!user || !user.id) && token) {
+        user = recoverUserFromToken(token);
+    }
+    if (!user || !token) {
+        throw new APIError('未登录或登录已过期，请重新登录', 401);
     }
     return user;
 }
@@ -613,18 +655,46 @@ function timelineStore() {
 
 function configStore() {
     const metaAi = snapshot().meta?.ai || {};
-    return Object.assign({
+    const defaultPrimaryModel = metaAi.primary_model || metaAi.model || 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B';
+    const defaultFallbackModels = Array.isArray(metaAi.fallback_models)
+        ? metaAi.fallback_models.slice()
+        : Array.isArray(metaAi.fallbackModels)
+            ? metaAi.fallbackModels.slice()
+            : [
+                'deepseek-ai/DeepSeek-R1-Distill-Qwen-7B',
+                'Qwen/Qwen3-8B',
+                'Qwen/Qwen3.5-4B'
+            ];
+    const defaults = {
         app: { name: snapshot().meta?.app_name || 'FinIntern Hub', version: snapshot().meta?.version || '3.9.2', debug: false },
         crawler: { max_concurrent: 6, request_timeout: 20, retry_attempts: 2, headless: true },
         ai: {
+            api_key: String(metaAi.api_key || metaAi.apiKey || '').trim(),
             timeout: Number(metaAi.timeout || 60),
             max_output_tokens: Number(metaAi.maxOutputTokens || 700),
             daily_token_budget: 300000,
-            model: metaAi.model || 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B',
-            fallback_models: Array.isArray(metaAi.fallbackModels) ? metaAi.fallbackModels.slice() : [],
+            primary_model: defaultPrimaryModel,
+            model: defaultPrimaryModel,
+            fallback_models: defaultFallbackModels,
         },
         runtime_overrides: {},
-    }, readStore(STORAGE_KEYS.systemConfig, {}));
+    };
+    const stored = readStore(STORAGE_KEYS.systemConfig, {});
+    const merged = Object.assign({}, defaults, stored);
+    merged.app = Object.assign({}, defaults.app, stored.app || {});
+    merged.crawler = Object.assign({}, defaults.crawler, stored.crawler || {});
+    merged.ai = Object.assign({}, defaults.ai, stored.ai || {});
+    if (!merged.ai.primary_model) {
+        merged.ai.primary_model = merged.ai.model || defaults.ai.primary_model;
+    }
+    if (!merged.ai.model) {
+        merged.ai.model = merged.ai.primary_model;
+    }
+    if (!Array.isArray(merged.ai.fallback_models)) {
+        merged.ai.fallback_models = defaultFallbackModels.slice();
+    }
+    merged.ai.api_key = String(merged.ai.api_key || '').trim();
+    return merged;
 }
 
 function saveConfig(config) {
@@ -659,11 +729,21 @@ function aiDefaults() {
     const metaAi = snapshot().meta?.ai || {};
     const system = configStore();
     const baseUrl = String(metaAi.baseUrl || 'https://api.siliconflow.cn/v1').replace(/\/+$/, '');
+    const primaryModel = system.ai?.primary_model || system.ai?.model || metaAi.primary_model || metaAi.model || 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B';
+    const fallbackModels = Array.isArray(system.ai?.fallback_models)
+        ? system.ai.fallback_models.slice()
+        : Array.isArray(system.ai?.fallbackModels)
+            ? system.ai.fallbackModels.slice()
+            : Array.isArray(metaAi.fallback_models)
+                ? metaAi.fallback_models.slice()
+                : Array.isArray(metaAi.fallbackModels)
+                    ? metaAi.fallbackModels.slice()
+                    : [];
     return {
-        apiKey: String(metaAi.apiKey || '').trim(),
+        apiKey: String(system.ai?.api_key || metaAi.api_key || metaAi.apiKey || '').trim(),
         baseUrl: baseUrl.endsWith('/chat/completions') ? baseUrl : `${baseUrl}/chat/completions`,
-        model: system.ai?.model || metaAi.model || 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B',
-        fallbackModels: Array.isArray(system.ai?.fallback_models) ? system.ai.fallback_models.slice() : [],
+        model: primaryModel,
+        fallbackModels,
         timeout: Number(system.ai?.timeout || metaAi.timeout || 60),
         maxTokens: Number(system.ai?.max_output_tokens || metaAi.maxOutputTokens || 700),
     };
@@ -677,6 +757,14 @@ function saveAiCache(cache) {
     writeStore(STORAGE_KEYS.aiCache, cache);
 }
 
+const AI_CACHE_TTL_MS = 25 * 60 * 1000;
+const AI_CACHE_LIMIT = 140;
+const AI_MAX_CONCURRENT_REQUESTS = 3;
+const AI_MAX_INPUT_CHARS = 12000;
+const AI_INFLIGHT_REQUESTS = new Map();
+let aiActiveRequests = 0;
+const aiQueue = [];
+
 function hash(input) {
     let value = 0;
     const content = String(input || '');
@@ -685,6 +773,73 @@ function hash(input) {
         value |= 0;
     }
     return `h${Math.abs(value)}`;
+}
+
+function getAiCacheTtlMs(scope, options = {}) {
+    if (Number(options.cacheTtlMs) > 0) return Number(options.cacheTtlMs);
+    const scene = String(scope || '').toLowerCase();
+    if (scene.includes('chat')) return 4 * 60 * 1000;
+    if (scene.includes('interview') || scene.includes('analysis')) return 20 * 60 * 1000;
+    return AI_CACHE_TTL_MS;
+}
+
+function pruneAiCache(cache, nowTs = Date.now()) {
+    const entries = Object.entries(cache || {});
+    const valid = entries
+        .filter(([, item]) => {
+            const createdAt = new Date(item?.created_at || '').getTime();
+            const ttl = Number(item?.ttl_ms || AI_CACHE_TTL_MS);
+            return item?.answer && createdAt && (nowTs - createdAt) <= ttl;
+        })
+        .sort((a, b) => new Date(b[1].created_at).getTime() - new Date(a[1].created_at).getTime())
+        .slice(0, AI_CACHE_LIMIT);
+    return Object.fromEntries(valid);
+}
+
+function compactMessagesForAi(messages, limitChars = AI_MAX_INPUT_CHARS) {
+    const items = Array.isArray(messages) ? messages : [];
+    if (!items.length) return [];
+    const safeLimit = Math.max(2500, Number(limitChars || AI_MAX_INPUT_CHARS));
+    const compacted = [];
+    let total = 0;
+    for (let i = items.length - 1; i >= 0; i -= 1) {
+        const msg = items[i] || {};
+        const role = msg.role || 'user';
+        const cap = role === 'system' ? 3600 : 2600;
+        const content = String(msg.content || '').slice(0, cap);
+        if (!content) continue;
+        if (total > 0 && total + content.length > safeLimit) break;
+        compacted.unshift({ role, content });
+        total += content.length;
+    }
+    if (!compacted.length && items[0]?.content) {
+        compacted.push({ role: items[0].role || 'user', content: String(items[0].content).slice(0, safeLimit) });
+    }
+    return compacted;
+}
+
+function buildAiInflightKey(scope, model, messages, cacheKey) {
+    if (cacheKey) return `cache:${cacheKey}`;
+    return `run:${scope || 'ai'}:${model || 'default'}:${hash(JSON.stringify(messages || []))}`;
+}
+
+function withAiConcurrency(task) {
+    return new Promise((resolve, reject) => {
+        const run = () => {
+            aiActiveRequests += 1;
+            Promise.resolve()
+                .then(task)
+                .then(resolve)
+                .catch(reject)
+                .finally(() => {
+                    aiActiveRequests = Math.max(0, aiActiveRequests - 1);
+                    const next = aiQueue.shift();
+                    if (next) next();
+                });
+        };
+        if (aiActiveRequests < AI_MAX_CONCURRENT_REQUESTS) run();
+        else aiQueue.push(run);
+    });
 }
 
 function estimateTokens(messages, answer) {
@@ -722,96 +877,316 @@ function recordAiCacheHit() {
 }
 
 async function callAi(messages, options = {}) {
+    if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+        throw new Error('当前页面通过 file:// 打开，浏览器会限制网络与跨源行为；请使用本地 HTTP 服务访问（如 hexo server）。');
+    }
     const config = aiDefaults();
     if (!config.apiKey) throw new Error('当前未配置可用的 SiliconFlow API Key');
     const models = unique([options.model || config.model, ...(config.fallbackModels || [])]);
+    const preparedMessages = compactMessagesForAi(messages, options.maxInputChars || AI_MAX_INPUT_CHARS);
+    if (!preparedMessages.length) throw new Error('AI 输入为空，无法发起请求');
     const cacheKey = options.cacheKey ? `${options.scope || 'ai'}:${hash(JSON.stringify(options.cacheKey))}` : '';
+    const ttlMs = getAiCacheTtlMs(options.scope, options);
     if (cacheKey) {
-        const cache = aiCache();
-        if (cache[cacheKey]?.answer) {
+        const cache = pruneAiCache(aiCache());
+        const cached = cache[cacheKey];
+        if (Object.keys(cache).length !== Object.keys(aiCache()).length) saveAiCache(cache);
+        if (cached?.answer) {
             recordAiCacheHit();
-            return { answer: cache[cacheKey].answer, model: cache[cacheKey].model || models[0], cached: true };
+            return { answer: cached.answer, model: cached.model || models[0], cached: true };
         }
     }
 
-    let lastError = null;
-    for (let index = 0; index < models.length; index += 1) {
-        const model = models[index];
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), Math.max(15000, Number(options.timeout || config.timeout || 60) * 1000));
-        try {
-            const response = await fetch(config.baseUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${config.apiKey}`,
-                },
-                body: JSON.stringify({
-                    model,
-                    messages,
-                    stream: true,
-                    max_tokens: Number(options.maxTokens || config.maxTokens || 700),
-                }),
-                signal: controller.signal,
-            });
-            clearTimeout(timeoutId);
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`模型 ${model} 请求失败：${response.status} ${errorText.slice(0, 160)}`);
-            }
-            
-            // 流式响应处理
-            const reader = response.body?.getReader?.();
-            let answer = '';
-            if (reader) {
-                const decoder = new TextDecoder('utf-8');
-                let buffer = '';
-                while (true) {
-                    const chunk = await reader.read();
-                    if (chunk.done) break;
-                    buffer += decoder.decode(chunk.value, { stream: true });
-                    const lines = buffer.split('\n');
-                    buffer = lines.pop() || '';
-                    lines.forEach(line => {
-                        const trimmed = line.trim();
-                        if (!trimmed || !trimmed.startsWith('data:')) return;
-                        const data = trimmed.replace(/^data:\s*/, '');
-                        if (data === '[DONE]') return;
-                        try {
-                            const json = JSON.parse(data);
-                            const delta = json?.choices?.[0]?.delta || {};
-                            if (delta.content) answer += delta.content;
-                        } catch (e) {
-                            // 忽略解析错误
-                        }
-                    });
+    const inflightKey = buildAiInflightKey(options.scope, models[0], preparedMessages, cacheKey);
+    if (AI_INFLIGHT_REQUESTS.has(inflightKey)) {
+        return AI_INFLIGHT_REQUESTS.get(inflightKey);
+    }
+
+    const invokePromise = withAiConcurrency(async () => {
+        let lastError = null;
+        for (let index = 0; index < models.length; index += 1) {
+            const model = models[index];
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), Math.max(12000, Number(options.timeout || config.timeout || 60) * 1000));
+            try {
+                const response = await fetch(config.baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        model,
+                        messages: preparedMessages,
+                        stream: Boolean(options.stream),
+                        max_tokens: Number(options.maxTokens || config.maxTokens || 700),
+                    }),
+                    signal: controller.signal,
+                });
+                clearTimeout(timeoutId);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`模型 ${model} 请求失败：${response.status} ${errorText.slice(0, 160)}`);
                 }
-            } else {
-                // 降级：非流式响应
-                const json = await response.json();
-                answer = json?.choices?.[0]?.message?.content || '';
+
+                let answer = '';
+                if (options.stream) {
+                    const reader = response.body?.getReader?.();
+                    if (reader) {
+                        const decoder = new TextDecoder('utf-8');
+                        let buffer = '';
+                        while (true) {
+                            const chunk = await reader.read();
+                            if (chunk.done) break;
+                            buffer += decoder.decode(chunk.value, { stream: true });
+                            const lines = buffer.split('\n');
+                            buffer = lines.pop() || '';
+                            lines.forEach(line => {
+                                const trimmed = line.trim();
+                                if (!trimmed || !trimmed.startsWith('data:')) return;
+                                const data = trimmed.replace(/^data:\s*/, '');
+                                if (data === '[DONE]') return;
+                                try {
+                                    const json = JSON.parse(data);
+                                    const delta = json?.choices?.[0]?.delta || {};
+                                    if (delta.content) answer += delta.content;
+                                } catch (e) {
+                                    // 忽略解析错误
+                                }
+                            });
+                        }
+                    }
+                }
+                if (!answer) {
+                    const json = await response.json();
+                    answer = json?.choices?.[0]?.message?.content || '';
+                }
+
+                if (!answer) {
+                    throw new Error(`模型 ${model} 返回空内容`);
+                }
+
+                recordAiSuccess(model, preparedMessages, answer, index > 0);
+                if (cacheKey) {
+                    const cache = pruneAiCache(aiCache());
+                    cache[cacheKey] = { answer, model, created_at: nowIso(), ttl_ms: ttlMs };
+                    saveAiCache(pruneAiCache(cache));
+                }
+                return { answer, model, cached: false };
+            } catch (error) {
+                clearTimeout(timeoutId);
+                const normalized = error.name === 'AbortError' ? new Error(`模型 ${model} 请求超时`) : error;
+                lastError = normalized;
+                recordAiFailure(model, normalized);
+                console.warn(`AI 模型 ${model} 调用失败:`, normalized.message);
             }
-            
-            if (!answer) {
-                throw new Error(`模型 ${model} 返回空内容`);
-            }
-            
-            recordAiSuccess(model, messages, answer, index > 0);
-            if (cacheKey) {
-                const cache = aiCache();
-                cache[cacheKey] = { answer, model, created_at: nowIso() };
-                saveAiCache(cache);
-            }
-            return { answer, model, cached: false };
+        }
+        throw lastError || new Error('AI 请求失败，所有模型均不可用');
+    });
+
+    AI_INFLIGHT_REQUESTS.set(inflightKey, invokePromise);
+    return invokePromise.finally(() => {
+        AI_INFLIGHT_REQUESTS.delete(inflightKey);
+    });
+}
+
+function requireAiAnswer(result, scene) {
+    const answer = String(result?.answer || '').trim();
+    if (!answer) {
+        throw new Error(`${scene} 未返回有效内容`);
+    }
+    return answer;
+}
+
+function parseAiJsonObject(answer, scene) {
+    const raw = String(answer || '').trim();
+    if (!raw) {
+        throw new Error(`${scene} 返回为空`);
+    }
+
+    const tryParse = (textValue) => {
+        try {
+            return JSON.parse(textValue);
         } catch (error) {
-            clearTimeout(timeoutId);
-            const normalized = error.name === 'AbortError' ? new Error(`模型 ${model} 请求超时`) : error;
-            lastError = normalized;
-            recordAiFailure(model, normalized);
-            console.warn(`AI 模型 ${model} 调用失败:`, normalized.message);
+            return null;
+        }
+    };
+
+    const parseObjectLike = (textValue) => {
+        const parsed = tryParse(textValue);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+    };
+
+    const extractFirstJsonCandidate = (textValue) => {
+        const text = String(textValue || '');
+        const start = text.search(/[\[{]/);
+        if (start < 0) return null;
+
+        let inString = false;
+        let escape = false;
+        const stack = [];
+
+        for (let index = start; index < text.length; index += 1) {
+            const char = text[index];
+
+            if (inString) {
+                if (escape) {
+                    escape = false;
+                    continue;
+                }
+                if (char === '\\') {
+                    escape = true;
+                    continue;
+                }
+                if (char === '"') {
+                    inString = false;
+                }
+                continue;
+            }
+
+            if (char === '"') {
+                inString = true;
+                continue;
+            }
+
+            if (char === '{' || char === '[') {
+                stack.push(char);
+                continue;
+            }
+
+            if (char === '}' || char === ']') {
+                const opening = stack.pop();
+                if (!opening) return null;
+                if ((opening === '{' && char !== '}') || (opening === '[' && char !== ']')) {
+                    return null;
+                }
+                if (!stack.length) {
+                    return text.slice(start, index + 1);
+                }
+            }
+        }
+
+        return null;
+    };
+
+    const candidates = [raw];
+
+    const fencedBlocks = raw.matchAll(/```(?:json)?\s*([\s\S]*?)\s*```/gi);
+    for (const block of fencedBlocks) {
+        if (block?.[1]) {
+            candidates.push(String(block[1]).trim());
         }
     }
-    throw lastError || new Error('AI 请求失败，所有模型均不可用');
+
+    const unfinishedFence = raw.match(/```(?:json)?\s*([\s\S]*)$/i);
+    if (unfinishedFence?.[1]) {
+        candidates.push(String(unfinishedFence[1]).trim());
+    }
+
+    const extractedFromRaw = extractFirstJsonCandidate(raw);
+    if (extractedFromRaw) {
+        candidates.push(extractedFromRaw);
+    }
+
+    for (const candidate of candidates) {
+        const parsed = parseObjectLike(candidate);
+        if (parsed) return parsed;
+
+        const extracted = extractFirstJsonCandidate(candidate);
+        if (!extracted || extracted === candidate) continue;
+        const extractedParsed = parseObjectLike(extracted);
+        if (extractedParsed) return extractedParsed;
+    }
+
+    throw new Error(`${scene} 返回格式无效，请检查模型输出是否为 JSON`);
+}
+
+async function repairAiJsonObject(answer, scene, schemaHint = '{}') {
+    const raw = String(answer || '').trim();
+    if (!raw) return raw;
+
+    const messages = normalizeMessages(
+        '你是 JSON 修复助手。你只能输出严格 JSON，不要输出 Markdown 代码块，不要输出解释文本。',
+        `任务：把下面内容修复为严格 JSON。\n\n场景：${scene}\n目标结构示例：${schemaHint}\n\n原始内容：\n${raw}`,
+        []
+    );
+
+    const repaired = await callAi(messages, {
+        scope: `${scene}-json-repair`,
+        cacheKey: { scene, raw_hash: hash(raw), mode: 'json-repair' },
+        timeout: 30,
+        maxTokens: 420,
+        stream: false,
+        maxInputChars: 12000,
+    });
+
+    return requireAiAnswer(repaired, `${scene} JSON修复`);
+}
+
+function createAiApiError(error) {
+    return new APIError('AI 分析失败：' + (error?.message || '请检查 API Key 配置'), 500);
+}
+
+function evictAiCacheByScopeKey(scope, cacheKeyObj) {
+    if (!cacheKeyObj) return;
+    const key = `${scope || 'ai'}:${hash(JSON.stringify(cacheKeyObj))}`;
+    const cache = pruneAiCache(aiCache());
+    if (!cache[key]) return;
+    delete cache[key];
+    saveAiCache(cache);
+}
+
+async function runAiTextScene(scene, options = {}) {
+    const {
+        systemPrompt = '',
+        userPrompt = '',
+        history = [],
+        callOptions = {},
+        logLabel = `AI ${scene}失败`,
+    } = options;
+
+    try {
+        const messages = normalizeMessages(systemPrompt, userPrompt, history);
+        const result = await callAi(messages, callOptions);
+        return {
+            answer: requireAiAnswer(result, scene),
+            model: result.model || null,
+            raw: result,
+        };
+    } catch (error) {
+        console.warn(logLabel + ':', error);
+        throw createAiApiError(error);
+    }
+}
+
+async function runAiJsonScene(scene, options = {}) {
+    const {
+        schemaHint = '{}',
+        logLabel = `AI ${scene}失败`,
+        ...textSceneOptions
+    } = options;
+
+    try {
+        const { answer, model, raw } = await runAiTextScene(scene, {
+            ...textSceneOptions,
+            logLabel,
+        });
+
+        let parsed;
+        try {
+            parsed = parseAiJsonObject(answer, scene);
+        } catch (parseError) {
+            evictAiCacheByScopeKey(textSceneOptions?.callOptions?.scope, textSceneOptions?.callOptions?.cacheKey);
+            const repairedAnswer = await repairAiJsonObject(answer, scene, schemaHint);
+            parsed = parseAiJsonObject(repairedAnswer, scene);
+        }
+
+        return { parsed, model, answer, raw };
+    } catch (error) {
+        if (error instanceof APIError) throw error;
+        console.warn(logLabel + ':', error);
+        throw createAiApiError(error);
+    }
 }
 
 function normalizeMessages(systemPrompt, userPrompt, history) {
@@ -975,6 +1350,24 @@ function buildProfileSummary(profile) {
     return parts.join(' | ') || '已恢复最近一次缓存内容，你可以继续修改后重新生成推荐。';
 }
 
+function compactProfileForAi(profile = {}) {
+    return {
+        keywords: unique((profile.keywords || []).slice(0, 6)),
+        preferred_locations: unique((profile.preferred_locations || []).slice(0, 4)),
+        preferred_job_types: unique((profile.preferred_job_types || []).slice(0, 3)),
+        preferred_industries: unique((profile.preferred_industries || []).slice(0, 4)),
+        education: text(profile.education),
+        experience: text(profile.experience),
+        target_companies: unique((profile.target_companies || []).slice(0, 3)),
+        schools: unique((profile.schools || []).slice(0, 2)),
+        majors: unique((profile.majors || []).slice(0, 4)),
+        skills: unique((profile.skills || []).slice(0, 8)),
+        certifications: unique((profile.certifications || []).slice(0, 4)),
+        strengths: unique((profile.strengths || []).slice(0, 5)),
+        additional_notes: text(profile.additional_notes).slice(0, 240),
+    };
+}
+
 function scoreJob(job, profile) {
     const corpus = compareText(job);
     const reasons = [];
@@ -1028,6 +1421,33 @@ function recommendationSummary(item) {
         '#### 岗位摘要',
         summarizeJob(job),
     ].join('\n');
+}
+
+async function buildAiRecommendationSummary(profile, item) {
+    const job = item?.job || {};
+    const result = await runAiTextScene('推荐岗位分析', {
+        logLabel: 'AI 推荐岗位分析失败',
+        systemPrompt: '你是一名金融求职顾问。请只输出结构化 Markdown，包含：岗位匹配结论、优势亮点、潜在风险、投递建议（最多4条），不要输出 JSON。',
+        userPrompt: `候选人画像：${JSON.stringify(profile || {}, null, 2)}\n\n岗位信息：${JSON.stringify(job, null, 2)}\n\n匹配信息：${JSON.stringify({ score: item?.score || 0, recommendation_tier: item?.recommendation_tier || '', reasons: item?.reasons || [] }, null, 2)}`,
+        history: [],
+        callOptions: {
+            scope: 'recommendation-job-summary',
+            cacheKey: {
+                profile,
+                job_id: job.id || null,
+                job_title: job.title || '',
+                score: item?.score || 0,
+                reasons: item?.reasons || [],
+            },
+            timeout: 45,
+            stream: false,
+            maxInputChars: 9000,
+        },
+    });
+    return {
+        markdown: result.answer,
+        model: result.model,
+    };
 }
 
 function sanitizePrivacy(textValue) {
@@ -1478,44 +1898,41 @@ const API = {
     async analyzeJob(id, data = {}) {
         requireUser();
         const job = await this.getJob(id);
-        const fallback = [`### ${job.title || '岗位分析'}`, `- 公司：${job.company || '未知公司'}`, `- 地点：${job.location || '地点待定'}`, `- 薪资：${job.salary || '薪资面议'}`, `- 数据质量：${job.quality_score || 0} 分 / ${job.quality_level || '一般'}`, '', '#### 核心观察', `- 岗位方向：${job.category || '待分类'}，行业：${job.industry || '待识别'}。`, `- 学历要求：${job.education || '学历不限'}；经验要求：${job.experience || '经验不限'}。`, `- 正文摘要：${summarizeJob(job)}`, '', '#### 投递建议', '- 建议结合岗位职责、技能要求和发布时间综合判断投递优先级。'].join('\n');
-        try {
-            const messages = normalizeMessages('你是一名金融岗位分析助手。请输出结构化 Markdown，说明岗位适合什么人、亮点、风险和投递建议。', `岗位信息：${JSON.stringify(job, null, 2)}\n\n用户追问：${data.question || '请给出这份岗位的整体推荐分析。'}`, data.history || []);
-            const result = await callAi(messages, { scope: 'job-analysis', cacheKey: { id, question: data.question || '', history: data.history || [] }, timeout: 45 });
-            return { answer: result.answer || fallback, model: result.model || null };
-        } catch (error) {
-            console.warn('AI 岗位分析失败:', error);
-            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
-        }
+        const result = await runAiTextScene('岗位分析', {
+            logLabel: 'AI 岗位分析失败',
+            systemPrompt: '你是一名金融岗位分析助手。请输出结构化 Markdown，说明岗位适合什么人、亮点、风险和投递建议。',
+            userPrompt: `岗位信息：${JSON.stringify(job, null, 2)}\n\n用户追问：${data.question || '请给出这份岗位的整体推荐分析。'}`,
+            history: data.history || [],
+            callOptions: { scope: 'job-analysis', cacheKey: { id, question: data.question || '', history: data.history || [] }, timeout: 45, stream: false, maxInputChars: 10000 },
+        });
+        return { answer: result.answer, model: result.model };
     },
 
     async getJobMatchReport(id, profile = {}) {
         requireUser();
         const job = await this.getJob(id);
         const scored = scoreJob(job, profile || {});
-        const fallback = [`### ${job.title || '岗位匹配报告'}`, `- 匹配分：**${scored.score}**`, `- 推荐层级：**${scored.recommendation_tier}**`, '', '#### 命中亮点', ...((scored.reasons || []).length ? scored.reasons.map(item => `- ${item}`) : ['- 当前主要依据基础字段排序']), '', '#### 建议投递顺序', scored.score >= 68 ? '- 可优先投递，建议尽快根据岗位职责调整简历重点。' : scored.score >= 46 ? '- 可作为主投备选，先补充一版更贴近岗位的简历。' : '- 更适合作为保底机会，建议同时关注更高匹配度岗位。'].join('\n');
-        try {
-            const messages = normalizeMessages('你是金融求职顾问。请围绕岗位与候选人画像，输出结构化匹配报告，包含匹配亮点、风险点、建议投递顺序。', `候选人画像：${JSON.stringify(profile, null, 2)}\n\n岗位信息：${JSON.stringify(job, null, 2)}\n\n请输出 Markdown 报告。`, []);
-            const result = await callAi(messages, { scope: 'match-report', cacheKey: { id, profile }, timeout: 45 });
-            return { report: result.answer || fallback, model: result.model || null };
-        } catch (error) {
-            console.warn('AI 岗位匹配报告失败:', error);
-            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
-        }
+        const result = await runAiTextScene('岗位匹配报告', {
+            logLabel: 'AI 岗位匹配报告失败',
+            systemPrompt: '你是金融求职顾问。请围绕岗位与候选人画像，输出结构化匹配报告，包含匹配亮点、风险点、建议投递顺序。',
+            userPrompt: `候选人画像：${JSON.stringify(profile, null, 2)}\n\n岗位信息：${JSON.stringify(job, null, 2)}\n\n请输出 Markdown 报告。`,
+            history: [],
+            callOptions: { scope: 'match-report', cacheKey: { id, profile }, timeout: 45, stream: false, maxInputChars: 10000 },
+        });
+        return { report: result.answer, model: result.model };
     },
 
     async generateInterviewQuestions(id) {
         requireUser();
         const job = await this.getJob(id);
-        const fallback = [`### ${job.title || '该岗位'} / ${job.company || '目标公司'} 面试题建议`, '- 请介绍一下你过去最相关的一段经历，以及它如何支持你胜任这个岗位。', '- 如果让你在入职第一周快速熟悉这份工作，你会优先做哪三件事？', '- 这个岗位最看重的核心能力是什么？你如何证明自己具备它？', '- 如果遇到信息不完整、时间又很紧的任务，你会如何拆解并推进？', '- 请结合你的经历，举例说明你如何和业务、团队或导师高效协作。'].join('\n');
-        try {
-            const messages = normalizeMessages('你是一名面试教练。请基于岗位信息生成面试题与回答思路，使用 Markdown。', `岗位信息：${JSON.stringify(job, null, 2)}\n\n请输出 6-8 个面试问题，并给出简短回答方向。`, []);
-            const result = await callAi(messages, { scope: 'interview-questions', cacheKey: { id, title: job.title }, timeout: 45 });
-            return { data: { questions: result.answer || fallback }, model: result.model || null };
-        } catch (error) {
-            console.warn('AI 面试题生成失败:', error);
-            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
-        }
+        const result = await runAiTextScene('面试问题生成', {
+            logLabel: 'AI 面试题生成失败',
+            systemPrompt: '你是一名面试教练。请基于岗位信息生成面试题与回答思路，使用 Markdown。',
+            userPrompt: `岗位信息：${JSON.stringify(job, null, 2)}\n\n请输出 6-8 个面试问题，并给出简短回答方向。`,
+            history: [],
+            callOptions: { scope: 'interview-questions', cacheKey: { id, title: job.title }, timeout: 45, stream: false, maxInputChars: 9000 },
+        });
+        return { data: { questions: result.answer }, model: result.model };
     },
 
     async getInterviewQuestions(id) {
@@ -1541,70 +1958,219 @@ const API = {
         };
         const maxResults = Math.max(1, Math.min(Number(data.max_results || 12), 20));
         const jobs = allJobs();
-        const recommendations = jobs.map(job => ({ ...scoreJob(job, profile), job })).filter(item => item.score > 0 || !(profile.keywords || []).length).sort((a, b) => b.score - a.score || jobTimestamp(b.job) - jobTimestamp(a.job)).slice(0, maxResults).map(item => ({ ...item, summary_markdown: recommendationSummary(item) }));
-        const fallbackSummary = recommendations[0] ? ['### 分析结论', `- 当前最优结果是 **${recommendations[0].job.title} / ${recommendations[0].job.company}**，匹配分为 **${recommendations[0].score}**。`, '', '### 推荐亮点', ...recommendations[0].reasons.map(reason => `- ${reason}`), '', '### 下一步建议', '- 先查看 TOP 3 岗位，优先处理发布时间更新、数据质量更高的岗位。', '- 再根据推荐结果生成 AI 改简历建议和投递助手。'].join('\n') : '### 分析结论\n- 当前没有找到足够匹配的岗位，建议放宽关键词、地点或行业限制。';
-        let analysis = fallbackSummary;
+        const recallLimit = Math.min(Math.max(maxResults + 4, 8), 14);
+        const recalled = jobs
+            .map(job => ({ ...scoreJob(job, profile), job }))
+            .filter(item => item.score > 0 || !(profile.keywords || []).length)
+            .sort((a, b) => b.score - a.score || jobTimestamp(b.job) - jobTimestamp(a.job))
+            .slice(0, recallLimit);
+
+        let analysis = '### AI 推荐分析\n- 暂无可分析的岗位结果。';
         let model = null;
-        let aiError = null;
-        if (data.use_ai_summary !== false) {
-            try {
-                const messages = normalizeMessages('你是一名金融求职顾问，请根据候选人画像和推荐岗位输出清晰、可执行的 Markdown 分析。', `候选人画像：${JSON.stringify(profile, null, 2)}\n\n候选岗位：${JSON.stringify(recommendations.slice(0, 5).map(item => ({ score: item.score, tier: item.recommendation_tier, reasons: item.reasons, job: item.job })), null, 2)}`, []);
-                const result = await callAi(messages, { scope: 'recommendations', cacheKey: { profile, topIds: recommendations.slice(0, 5).map(item => item.job.id) }, timeout: 50 });
-                analysis = result.answer || fallbackSummary;
-                model = result.model || null;
-            } catch (error) {
-                aiError = error;
-                console.warn('AI 推荐分析失败:', error);
-                // 如果 AI 失败，在分析中添加错误提示
-                analysis = fallbackSummary + '\n\n> ⚠️ **AI 分析未成功**：' + (error.message || '请检查 API Key 配置') + '\n> 当前显示的是规则-based 分析结果。';
+        const usedAiSummary = true;
+        try {
+            const aiProfile = compactProfileForAi(profile);
+            const candidates = recalled.map(item => ({
+                id: item.job.id,
+                title: item.job.title || '',
+                company: item.job.company || '',
+                location: item.job.location || '',
+                recall_score: Number(item.score || 0),
+                recall_tier: item.recommendation_tier || '',
+                education: item.job.education || '',
+                job_type: item.job.job_type || '',
+                industry: item.job.industry || '',
+                source: item.job.source || '',
+                requirements_excerpt: cleanText(item.job.requirements || item.job.description || '').slice(0, 84),
+            }));
+
+            const { parsed, model: recommendationModel } = await runAiJsonScene('推荐分析', {
+                logLabel: 'AI 推荐分析失败',
+                systemPrompt: '你是一名金融求职顾问。你必须只输出 JSON，不要输出 Markdown 代码块、不要输出解释文本。',
+                userPrompt: `任务：基于候选人画像对候选岗位排序并给出推荐。\n候选人画像：${JSON.stringify(aiProfile)}\n候选岗位：${JSON.stringify(candidates)}\n\n只返回JSON：{"analysis_markdown":"...","recommendations":[{"id":"岗位id","rank_score":0-100,"recommendation_tier":"冲刺岗/匹配岗/保底岗","reasons":["..."],"summary_markdown":"..."}]}\n\n约束：recommendations恰好${maxResults}条；id必须来自候选岗位；reasons每条2-3点；summary_markdown简洁。`,
+                history: [],
+                schemaHint: '{"analysis_markdown":"...","recommendations":[{"id":"岗位id","rank_score":0-100,"recommendation_tier":"冲刺岗/匹配岗/保底岗","reasons":["..."],"summary_markdown":"..."}]}',
+                callOptions: {
+                    scope: 'recommendations',
+                    cacheKey: {
+                        profile_summary: buildProfileSummary(aiProfile),
+                        recallIds: candidates.map(item => item.id),
+                        maxResults,
+                    },
+                    timeout: 50,
+                    maxTokens: 480,
+                    stream: false,
+                    maxInputChars: 9000,
+                },
+            });
+
+            const byId = new Map(recalled.map(item => [String(item.job.id), item]));
+            const ranked = Array.isArray(parsed.recommendations) ? parsed.recommendations : [];
+            const aiRecommendations = ranked
+                .map(entry => {
+                    const key = String(entry?.id ?? '');
+                    const base = byId.get(key);
+                    if (!base) return null;
+                    const aiReasons = Array.isArray(entry.reasons) ? unique(entry.reasons.map(reason => text(reason)).filter(Boolean)).slice(0, 6) : [];
+                    const summaryMarkdown = text(entry.summary_markdown);
+                    if (!summaryMarkdown) return null;
+                    return {
+                        ...base,
+                        score: Math.max(0, Math.min(100, Number(entry.rank_score ?? base.score ?? 0))),
+                        recommendation_tier: text(entry.recommendation_tier) || base.recommendation_tier,
+                        reasons: aiReasons.length ? aiReasons : base.reasons,
+                        summary_markdown: summaryMarkdown,
+                        summary_model: recommendationModel || null,
+                        score_breakdown: {},
+                    };
+                })
+                .filter(Boolean)
+                .slice(0, maxResults);
+
+            if (!aiRecommendations.length) {
+                throw new Error('AI 未返回有效推荐岗位');
             }
+
+            const analysisMarkdown = text(parsed.analysis_markdown);
+            if (!analysisMarkdown) {
+                throw new Error('AI 未返回分析摘要');
+            }
+
+            analysis = analysisMarkdown;
+            model = recommendationModel || null;
+            const payload = { total_considered: jobs.length, returned: aiRecommendations.length, profile_summary: buildProfileSummary(profile), analysis_summary: analysis, model, used_ai_summary: usedAiSummary, ai_error: null, resume_diagnostic: null, resume_diagnostic_markdown: '', recommendations: aiRecommendations };
+            if (data.save_to_server_history !== false) {
+                upsertHistory({ type: 'recommendation', profile_summary: payload.profile_summary, profile, recommendation: payload });
+            }
+            return payload;
+        } catch (error) {
+            const errorMessage = String(error?.message || '');
+            if (/返回格式无效|JSON|超时|timeout|file:\/\//i.test(errorMessage)) {
+                console.warn('AI 推荐分析JSON异常，已降级为规则推荐:', errorMessage);
+                const fallbackRecommendations = recalled
+                    .slice(0, maxResults)
+                    .map(item => ({
+                        ...item,
+                        summary_markdown: recommendationSummary(item),
+                        summary_model: null,
+                        score_breakdown: item.score_breakdown || {},
+                    }));
+                const fallbackAnalysis = [
+                    '### AI 推荐分析（降级）',
+                    '- 本次 AI 调用超时或返回格式异常，已自动切换为规则匹配推荐结果。',
+                    '- 若你是直接双击打开 HTML（file://），请改为本地 HTTP 方式访问后重试。',
+                ].join('\n');
+                const payload = {
+                    total_considered: jobs.length,
+                    returned: fallbackRecommendations.length,
+                    profile_summary: buildProfileSummary(profile),
+                    analysis_summary: fallbackAnalysis,
+                    model: null,
+                    used_ai_summary: false,
+                    ai_error: errorMessage,
+                    resume_diagnostic: null,
+                    resume_diagnostic_markdown: '',
+                    recommendations: fallbackRecommendations,
+                };
+                if (data.save_to_server_history !== false) {
+                    upsertHistory({ type: 'recommendation', profile_summary: payload.profile_summary, profile, recommendation: payload });
+                }
+                return payload;
+            }
+            if (error instanceof APIError) throw error;
+            console.warn('AI 推荐分析失败:', error);
+            throw createAiApiError(error);
         }
-        const diagnostic = resumeDiagnostic(profile, JSON.stringify(profile));
-        const payload = { total_considered: jobs.length, returned: recommendations.length, profile_summary: buildProfileSummary(profile), analysis_summary: analysis, model, ai_error: aiError ? aiError.message : null, resume_diagnostic: { score: diagnostic.score, highlights: diagnostic.highlights, risks: diagnostic.risks, suggestions: diagnostic.suggestions }, resume_diagnostic_markdown: diagnostic.markdown, recommendations };
-        if (data.save_to_server_history !== false) {
-            upsertHistory({ type: 'recommendation', profile_summary: payload.profile_summary, profile, recommendation: payload });
+    },
+
+    async getResumeDiagnostic(data = {}) {
+        requireUser();
+        const file = data.resume_file;
+        if (!file) {
+            throw new APIError('请先上传简历原件，再执行 AI 简历诊断。', 400);
         }
-        return payload;
+
+        const extraction = await extractResumeText(file);
+        const resumeText = normalizeResumeText(extraction?.text || '');
+        if (!resumeText) {
+            throw new APIError('未能从简历中提取到可用文本，请更换可读取的原件后重试。', 400);
+        }
+
+        const profile = (data.profile && Object.keys(data.profile).length)
+            ? data.profile
+            : buildResumeProfile(resumeText);
+        const targetJobs = data.target_jobs || [];
+        const clippedResume = resumeText.slice(0, 12000);
+        const extractionNotice = extraction?.notice
+            || (!isUsefulResumeText(resumeText) ? '已提取到部分文本，但内容较短，诊断可能不完整。' : '');
+
+        try {
+            const result = await runAiTextScene('AI 简历诊断', {
+                logLabel: 'AI 简历诊断失败',
+                systemPrompt: '你是一名中文简历诊断顾问。请输出结构化 Markdown，必须包含：总体评估、优势亮点（3-5条）、主要风险（3-5条）、优先修改清单（按优先级排序）、面向目标岗位的改写示例。内容要可直接执行。',
+                userPrompt: `候选人画像：${JSON.stringify(profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(targetJobs, null, 2)}\n\n简历原文（可能已做OCR提取）：\n${clippedResume}`,
+                history: [],
+                callOptions: {
+                    scope: 'resume-diagnostic-ai',
+                    cacheKey: {
+                        filename: file.name || 'resume',
+                        file_size: file.size || 0,
+                        file_last_modified: file.lastModified || 0,
+                        profile_summary: buildProfileSummary(profile),
+                        target_titles: targetJobs.map(job => job?.title || '').slice(0, 6),
+                    },
+                    timeout: 55,
+                    stream: false,
+                    maxInputChars: 11000,
+                },
+            });
+            return {
+                answer: result.answer,
+                model: result.model,
+                extraction_method: extraction?.method || 'text',
+                extraction_notice: extractionNotice,
+            };
+        } catch (error) {
+            if (error instanceof APIError) throw error;
+            console.warn('AI 简历诊断失败:', error);
+            throw createAiApiError(error);
+        }
     },
 
     async getRecommendationChat(data = {}) {
         requireUser();
-        const fallback = [`### 追问回答`, `- 你的问题：${data.question || ''}`, data.recommendations?.[0] ? `- 当前最建议先看 **${data.recommendations[0].title || data.recommendations[0].job?.title || '该岗位'}**，因为它的岗位方向、地点或技能命中更高。` : '- 当前暂无推荐结果，建议先放宽筛选再追问。'].join('\n');
-        try {
-            const messages = normalizeMessages('你是一名金融求职顾问，请延续上下文，用简洁、可执行的 Markdown 回答用户追问。', `用户画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n候选岗位：${JSON.stringify(data.recommendations || [], null, 2)}\n\n问题：${data.question || ''}`, data.history || []);
-            const result = await callAi(messages, { scope: 'recommendation-chat', cacheKey: { profile: data.profile, question: data.question, jobs: (data.recommendations || []).map(job => job.id || job.title) }, timeout: 45 });
-            return { answer: result.answer || fallback, model: result.model || null };
-        } catch (error) {
-            console.warn('AI 追问回答失败:', error);
-            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
-        }
+        const result = await runAiTextScene('追问回答', {
+            logLabel: 'AI 追问回答失败',
+            systemPrompt: '你是一名金融求职顾问，请延续上下文，用简洁、可执行的 Markdown 回答用户追问。',
+            userPrompt: `用户画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n候选岗位：${JSON.stringify(data.recommendations || [], null, 2)}\n\n问题：${data.question || ''}`,
+            history: data.history || [],
+            callOptions: { scope: 'recommendation-chat', cacheKey: { profile: data.profile, question: data.question, jobs: (data.recommendations || []).map(job => job.id || job.title) }, timeout: 45, stream: false, maxInputChars: 10000 },
+        });
+        return { answer: result.answer, model: result.model };
     },
 
     async getResumeAdvice(data = {}) {
         requireUser();
-        const fallback = ['### AI 改简历建议', `- 当前建议优先围绕 **${(data.target_jobs || []).map(job => job.title).filter(Boolean).slice(0, 3).join('、') || '当前推荐岗位'}** 这类岗位优化简历。`, '- 把最相关的实习/项目提前到第一页上半区，用结果和数字说明贡献。', '- 若有 Python、SQL、Wind、财务建模或研究报告经历，建议单独列成技能与代表成果。'].join('\n');
-        try {
-            const messages = normalizeMessages('你是一名简历优化顾问。请基于候选人画像和目标岗位输出具体可执行的简历改写建议，使用 Markdown。', `候选人画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(data.target_jobs || [], null, 2)}`, []);
-            const result = await callAi(messages, { scope: 'resume-advice', cacheKey: { profile: data.profile, targets: (data.target_jobs || []).map(job => job.id || job.title) }, timeout: 45 });
-            return { answer: result.answer || fallback, model: result.model || null };
-        } catch (error) {
-            console.warn('AI 改简历建议失败:', error);
-            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
-        }
+        const result = await runAiTextScene('简历建议', {
+            logLabel: 'AI 改简历建议失败',
+            systemPrompt: '你是一名简历优化顾问。请基于候选人画像和目标岗位输出具体可执行的简历改写建议，使用 Markdown。',
+            userPrompt: `候选人画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(data.target_jobs || [], null, 2)}`,
+            history: [],
+            callOptions: { scope: 'resume-advice', cacheKey: { profile: data.profile, targets: (data.target_jobs || []).map(job => job.id || job.title) }, timeout: 45, stream: false, maxInputChars: 10000 },
+        });
+        return { answer: result.answer, model: result.model };
     },
 
     async getDeliveryAssistant(data = {}) {
         requireUser();
-        const target = data.job ? `${data.job.title} - ${data.job.company}` : '当前目标岗位';
-        const fallback = ['### AI 投递助手', `- 目标岗位：**${target}**`, '', '#### 自我介绍开场', '- 你好，我目前重点关注与你们岗位方向相关的金融研究 / 数据分析工作，也已经在相关课程、项目或实习中积累了可直接迁移的能力。', '', '#### 投递备注', '- 建议突出与你的目标岗位最相关的 2-3 条经历，并明确可到岗时间。'].join('\n');
-        try {
-            const messages = normalizeMessages('你是一名投递助手。请生成适合中文求职场景的自我介绍、邮件正文建议和投递重点，使用 Markdown。', `候选人画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(data.job || {}, null, 2)}`, []);
-            const result = await callAi(messages, { scope: 'delivery-assistant', cacheKey: { profile: data.profile, jobId: data.job?.id }, timeout: 45 });
-            return { answer: result.answer || fallback, model: result.model || null };
-        } catch (error) {
-            console.warn('AI 投递助手失败:', error);
-            throw new APIError('AI 分析失败：' + (error.message || '请检查 API Key 配置'), 500);
-        }
+        const result = await runAiTextScene('投递助手', {
+            logLabel: 'AI 投递助手失败',
+            systemPrompt: '你是一名投递助手。请生成适合中文求职场景的自我介绍、邮件正文建议和投递重点，使用 Markdown。',
+            userPrompt: `候选人画像：${JSON.stringify(data.profile || {}, null, 2)}\n\n目标岗位：${JSON.stringify(data.job || {}, null, 2)}`,
+            history: [],
+            callOptions: { scope: 'delivery-assistant', cacheKey: { profile: data.profile, jobId: data.job?.id }, timeout: 45, stream: false, maxInputChars: 10000 },
+        });
+        return { answer: result.answer, model: result.model };
     },
 
     async uploadResume(file, options = {}) {
@@ -1713,11 +2279,22 @@ const API = {
     async updateSystemConfig(data = {}) {
         requireUser();
         const config = configStore();
+        const parseModelList = (value, fallback = []) => {
+            if (Array.isArray(value)) return value.map(item => String(item || '').trim()).filter(Boolean);
+            if (typeof value === 'string') {
+                return value.split(/[\n,，]/).map(item => item.trim()).filter(Boolean);
+            }
+            return Array.isArray(fallback) ? fallback.slice() : [];
+        };
         config.app.debug = Boolean(data.debug);
         config.crawler.max_concurrent = Number(data.crawler_max_concurrent || config.crawler.max_concurrent || 0);
         config.crawler.request_timeout = Number(data.crawler_request_timeout || config.crawler.request_timeout || 0);
         config.crawler.retry_attempts = Number(data.crawler_retry_attempts || config.crawler.retry_attempts || 0);
         config.crawler.headless = Boolean(data.crawler_headless);
+        config.ai.api_key = String(data.siliconflow_api_key ?? config.ai.api_key ?? '').trim();
+        config.ai.primary_model = String(data.siliconflow_primary_model || config.ai.primary_model || config.ai.model || '').trim();
+        config.ai.model = config.ai.primary_model;
+        config.ai.fallback_models = parseModelList(data.siliconflow_fallback_models, config.ai.fallback_models || []);
         config.ai.timeout = Number(data.siliconflow_timeout || config.ai.timeout || 0);
         config.ai.max_output_tokens = Number(data.siliconflow_max_output_tokens || config.ai.max_output_tokens || 0);
         config.ai.daily_token_budget = Number(data.siliconflow_daily_token_budget || config.ai.daily_token_budget || 0);
