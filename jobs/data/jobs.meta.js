@@ -2,9 +2,9 @@
 window.JOBWEB_META = {
   "meta": {
     "app_name": "FinIntern Hub",
-    "version": "3.9.2",
-    "generated_at": "2026-04-08T10:20:56",
-    "total_jobs": 3639,
+    "version": "3.11.1",
+    "generated_at": "2026-04-10T18:28:34",
+    "total_jobs": 3694,
     "ai": {
       "apiKey": "",
       "baseUrl": "https://api.siliconflow.cn/v1",
@@ -19,41 +19,41 @@ window.JOBWEB_META = {
     }
   },
   "stats": {
-    "total_jobs": 3639,
+    "total_jobs": 3694,
     "sources_count": 10,
-    "favorites_count": 3,
+    "favorites_count": 0,
     "top_sources": [
       {
         "label": "西南财经大学",
-        "count": 715
+        "count": 713
       },
       {
         "label": "东北大学",
-        "count": 701
+        "count": 709
       },
       {
         "label": "中央财经大学",
-        "count": 529
+        "count": 526
       },
       {
         "label": "中南财经政法大学",
-        "count": 452
+        "count": 464
       },
       {
         "label": "对外经济贸易大学",
-        "count": 375
+        "count": 391
       },
       {
         "label": "国家大学生就业服务平台",
-        "count": 365
+        "count": 361
       },
       {
         "label": "东北财经大学",
-        "count": 342
+        "count": 356
       },
       {
         "label": "上海财经大学",
-        "count": 135
+        "count": 149
       },
       {
         "label": "江西财经大学",
@@ -67,47 +67,47 @@ window.JOBWEB_META = {
     "top_locations": [
       {
         "label": "北京",
-        "count": 725
+        "count": 728
       },
       {
         "label": "大连",
-        "count": 341
+        "count": 356
       },
       {
         "label": "成都",
-        "count": 230
+        "count": 226
       },
       {
         "label": "上海",
-        "count": 141
+        "count": 144
       },
       {
         "label": "深圳",
-        "count": 127
+        "count": 131
       },
       {
         "label": "重庆",
-        "count": 97
+        "count": 96
       },
       {
         "label": "广州",
-        "count": 85
+        "count": 89
       },
       {
         "label": "武汉",
-        "count": 81
-      },
-      {
-        "label": "杭州",
-        "count": 59
+        "count": 85
       },
       {
         "label": "辽宁",
-        "count": 59
+        "count": 61
+      },
+      {
+        "label": "杭州",
+        "count": 60
       },
       {
         "label": "四川",
-        "count": 52
+        "count": 49
       },
       {
         "label": "沈阳",
@@ -117,45 +117,45 @@ window.JOBWEB_META = {
     "top_job_types": [
       {
         "label": "校招",
-        "count": 1225
+        "count": 1251
       },
       {
         "label": "实习",
-        "count": 1210
+        "count": 1228
       },
       {
         "label": "全职",
-        "count": 612
+        "count": 622
       },
       {
         "label": "兼职",
-        "count": 5
+        "count": 6
       }
     ],
     "top_industries": [
       {
         "label": "教育/科研",
-        "count": 1326
+        "count": 1342
       },
       {
         "label": "银行",
-        "count": 426
+        "count": 433
       },
       {
         "label": "基金/资管",
-        "count": 272
+        "count": 286
       },
       {
         "label": "保险",
-        "count": 267
+        "count": 269
       },
       {
         "label": "咨询",
-        "count": 240
+        "count": 243
       },
       {
         "label": "证券/投行",
-        "count": 203
+        "count": 211
       },
       {
         "label": "咨询/专业服务",
@@ -163,11 +163,11 @@ window.JOBWEB_META = {
       },
       {
         "label": "投资/PEVC",
-        "count": 135
+        "count": 138
       },
       {
         "label": "财务/审计",
-        "count": 133
+        "count": 135
       },
       {
         "label": "信托",
@@ -185,23 +185,23 @@ window.JOBWEB_META = {
     "top_categories": [
       {
         "label": "人力/行政",
-        "count": 1429
+        "count": 1443
       },
       {
         "label": "投资研究",
-        "count": 398
+        "count": 414
       },
       {
         "label": "财务/审计",
         "count": 391
       },
       {
-        "label": "财务/会计/审计",
-        "count": 218
+        "label": "量化/交易",
+        "count": 227
       },
       {
-        "label": "量化/交易",
-        "count": 215
+        "label": "财务/会计/审计",
+        "count": 218
       },
       {
         "label": "运营/综合",
@@ -209,7 +209,7 @@ window.JOBWEB_META = {
       },
       {
         "label": "风控/合规",
-        "count": 129
+        "count": 134
       },
       {
         "label": "风控/合规/法务",
@@ -229,7 +229,7 @@ window.JOBWEB_META = {
       },
       {
         "label": "行业研究",
-        "count": 15
+        "count": 17
       }
     ]
   }

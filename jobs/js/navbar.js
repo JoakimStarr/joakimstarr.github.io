@@ -77,7 +77,7 @@ function renderPreferenceDropdown(options, activeId, type, label) {
 function renderNavbar(currentPage = 'home', options = {}) {
     const {
         showVersion = true,
-        version = 'v3.9.2',
+        version = '',
         brandName = 'FinIntern',
         brandDescription = '金融实习招聘平台',
         brandIcon = 'fas fa-briefcase',
@@ -199,13 +199,19 @@ async function initNavbar(containerSelector = '#navbar-container', currentPage =
         return;
     }
 
-    const currentUser = await window.AppAuth?.loadCurrentUser(false);
+    const currentUser = await window.AppAuth?.loadCurrentUser(true);
     if (currentPage !== 'login' && !currentUser) {
         window.AppAuth?.redirectToLogin();
         return;
     }
-    container.innerHTML = renderNavbar(currentPage, {
+    const appMeta = await resolveAppMeta();
+    const resolvedNavbarOptions = {
         ...options.navbar,
+        version: options?.navbar?.version || appMeta.version,
+        brandName: options?.navbar?.brandName || appMeta.name || 'FinIntern',
+    };
+    container.innerHTML = renderNavbar(currentPage, {
+        ...resolvedNavbarOptions,
         currentUser,
     });
     initMobileMenuEvents();
@@ -214,6 +220,41 @@ async function initNavbar(containerSelector = '#navbar-container', currentPage =
     if (currentItem) {
         document.title = `${currentItem.label} - FinIntern Hub`;
     }
+}
+
+async function resolveAppMeta() {
+    try {
+        if (window.API && typeof window.API.getSystemConfig === 'function') {
+            const config = await window.API.getSystemConfig();
+            const app = config?.app || {};
+            return {
+                name: app.name || 'FinIntern Hub',
+                version: app.version ? `v${app.version}` : '',
+            };
+        }
+    } catch (error) {
+        console.warn('Failed to load app meta from system config, fallback to /health:', error);
+    }
+    try {
+        const response = await fetch(`${window.location.origin}/health`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+        });
+        if (response.ok) {
+            const payload = await response.json();
+            const version = String(payload?.version || '').trim();
+            return {
+                name: 'FinIntern Hub',
+                version: version ? `v${version}` : '',
+            };
+        }
+    } catch (error) {
+        console.warn('Failed to load app meta from /health:', error);
+    }
+    return {
+        name: 'FinIntern Hub',
+        version: '',
+    };
 }
 
 function initMobileMenuEvents() {

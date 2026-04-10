@@ -118,7 +118,7 @@ export function createLayout(pageId, title, subtitle) {
           `).join('')}
         </nav>
         <div class="sidebar-meta">
-          <div>版本：v3.9.0</div>
+          <div>版本：v3.11.1</div>
           <div>网站声明：仅为个人学习开发作用</div>
           <div>灵感来源：我们伟大的宝宝</div>
           <div>网站作者：JoakimStarr / 文人病</div>
@@ -255,3 +255,4 @@ export function bindJobCardInteractions(jobs, rerenderFavorites) {
     });
   });
 }
+

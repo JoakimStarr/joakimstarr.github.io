@@ -19,7 +19,7 @@
                         <p class="text-sm text-gray-500 mt-1">统一配置中心、数据库状态、AI 状态与求职进度概览。</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span id="system-version-badge" class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-sm font-semibold">v3.9.0</span>
+                            <span id="system-version-badge" class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-sm font-semibold">--</span>
                         <button id="refresh-btn" class="btn btn-outline"><i class="fas fa-sync-alt"></i> 刷新</button>
                     </div>
                 </div>
@@ -148,15 +148,13 @@
     <script src="./data/jobs.meta.js"></script>
     <!-- 优先加载前20条数据（约100KB，快速渲染） -->
     <script src="./data/jobs.chunk.0.js"></script>
-    <script src="./js/api.js?v=20260405-v391"></script>
-    <script src="./js/auth.js?v=20260405-v391"></script>
-    <script src="./js/navbar.js?v=20260405-v391"></script>
-    <script src="./js/ui-components.js?v=20260405-v391"></script>
+    <script src="./js/api.js?v=20260409-v395"></script>
+    <script src="./js/auth.js?v=20260409-v395"></script>
+    <script src="./js/navbar.js?v=20260409-v395"></script>
+    <script src="./js/ui-components.js?v=20260409-v395"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            initNavbar('#navbar-container', 'system', {
-            navbar: { version: 'v3.9.0' }
-            });
+            initNavbar('#navbar-container', 'system');
             document.getElementById('refresh-btn').addEventListener('click', loadSystemData);
             document.getElementById('save-config-btn').addEventListener('click', saveRuntimeConfig);
             document.getElementById('clean-history-btn').addEventListener('click', cleanHistoricalData);
@@ -171,7 +169,7 @@
                 API.getSubscriptions(),
             ]);
             window.__systemAiFailures = status.ai_runtime?.recent_failures || [];
-                document.getElementById('system-version-badge').textContent = `v${status.app?.version || '3.7.3'}`;
+                document.getElementById('system-version-badge').textContent = `v${status.app?.version || '--'}`;
 
             document.getElementById('status-cards').innerHTML = [
                 renderMetricCard({ label: '应用版本', value: status.app?.version || '-', icon: 'fa-code-branch', tone: 'blue', hint: '当前运行中的后端版本' }),
@@ -518,6 +516,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 

@@ -498,7 +498,7 @@
               </div>
               <div class="flex items-center gap-2 text-sm text-gray-300 mt-2">
                 <i class="fas fa-info-circle"></i>
-                <span>v3.9.2</span>
+                <span>v3.11.1</span>
               </div>
               <div class="mt-3 text-[11px] leading-5 text-gray-500">
                 <div>网站声明：仅为个人学习开发作用</div>
@@ -1619,7 +1619,7 @@
                 <h2 class="text-2xl font-bold text-slate-900">账号登录</h2>
                 <p class="mt-2 text-sm text-slate-500">登录后可进入完整平台并按权限访问对应模块。</p>
               </div>
-              <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-sm font-semibold">v3.9.2</span>
+              <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-sm font-semibold">v3.11.1</span>
             </div>
             <div class="mt-8 space-y-5">
               <div>
@@ -1712,3 +1712,4 @@
 
   window.JobwebApp = { boot, logout };
 })();
+
