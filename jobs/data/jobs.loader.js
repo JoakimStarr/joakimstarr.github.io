@@ -4,7 +4,7 @@
 
   window.JOBWEB_DATA_LOADER = {
     config: {
-      totalChunks: 9,
+      totalChunks: 6,
       priorityChunkIndex: 0,
       loadedChunks: new Set(),
       isLoading: false,
