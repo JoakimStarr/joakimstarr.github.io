@@ -230,24 +230,82 @@
       .q-num { min-width: 38px; }
       .qa-body { padding: 0 14px 14px; }
     }
+
+    
+    .nav-strip {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--panel-border);
+    }
+    .nav-link {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(37,99,235,0.08);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .nav-link:hover { background: rgba(37,99,235,0.18); }
+
+    /* Chapter block */
+    .chapter-block {
+      margin-bottom: 40px;
+      scroll-margin-top: 110px;
+    }
+
+    .chapter-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 20px;
+      padding: 0;
+    }
+    .chapter-badge {
+      display: inline-block;
+      padding: 6px 20px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      box-shadow: 0 6px 20px rgba(37,99,235,0.22);
+      letter-spacing: 0.04em;
+    }
+
   </style>
 </head>
 <body>
   <main class="shell">
     <header class="hero">
-      <!-- <div class="hero-top">
-        <div>
-          <h1 class="title">实务（题目+答案）(1)</h1>
-          <p class="subtitle">答案和解析默认隐藏，点击题目即可展开。</p>
-        </div>
-      </div> -->
       <div class="toolbar">
         <button type="button" id="expand-all">全部展开</button>
         <button type="button" id="collapse-all">全部折叠</button>
-        <!-- <span class="note">只保留这两个 PDF 的内容，未改动其他文件夹。</span> -->
       </div>
+
+      <nav class="nav-strip">
+        <a href="#chapter-1" class="nav-link">第1章</a>
+        <a href="#chapter-2" class="nav-link">第2章</a>
+        <a href="#chapter-3" class="nav-link">第3章</a>
+        <a href="#chapter-4" class="nav-link">第4章</a>
+        <a href="#chapter-5" class="nav-link">第5章</a>
+        <a href="#chapter-6" class="nav-link">第6章</a>
+        <a href="#chapter-7" class="nav-link">第7章</a>
+        <a href="#chapter-8" class="nav-link">第8章</a>
+        <a href="#chapter-9" class="nav-link">第9章</a>
+        <a href="#chapter-10" class="nav-link">第10章</a>
+
+        <a href="#chapter-budingxiang" class="nav-link">不定项</a>
+      </nav>
     </header>
     <section id="content">
+      <div class="chapter-block" id="chapter-1">
+
 <h2 class="section-heading">单项选择题</h2>
 
 <details class="qa-card">
@@ -561,6 +619,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-2">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -1125,6 +1184,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-3">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -3275,7 +3335,7 @@
     </div>
   </div>
 </details>
-
+<div class="chapter-block" id="chapter-3">
 <h2 class="section-heading">单项选择题</h2>
 
 <details class="qa-card">
@@ -4199,6 +4259,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-4">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -4691,6 +4752,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-5">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -5219,6 +5281,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-6">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -5467,6 +5530,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-7">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -5725,6 +5789,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-8">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -6523,6 +6588,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-9">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -7079,6 +7145,7 @@
     </div>
   </div>
 </details>
+<div class="chapter-block" id="chapter-10">
 
 <h2 class="section-heading">单项选择题</h2>
 
@@ -7463,6 +7530,9 @@
     </div>
   </div>
 </details>
+
+<div class="chapter-block" id="chapter-budingxiang">
+
 
 <h2 class="section-heading">不定项选择题</h2>
 
