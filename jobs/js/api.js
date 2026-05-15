@@ -666,7 +666,7 @@ function configStore() {
                 'Qwen/Qwen3.5-4B'
             ];
     const defaults = {
-        app: { name: snapshot().meta?.app_name || 'FinIntern Hub', version: snapshot().meta?.version || '4.0.0', debug: false },
+        app: { name: snapshot().meta?.app_name || 'FinIntern Hub', version: snapshot().meta?.version || '3.9.2', debug: false },
         crawler: { max_concurrent: 6, request_timeout: 20, retry_attempts: 2, headless: true },
         ai: {
             api_key: String(metaAi.api_key || metaAi.apiKey || '').trim(),
@@ -2253,7 +2253,7 @@ const API = {
         const timeoutRate = stats.requests > 0 ? Number(((stats.timeouts / stats.requests) * 100).toFixed(1)) : 0;
         const cacheHitRate = stats.requests > 0 ? Number(((stats.cache_hits / stats.requests) * 100).toFixed(1)) : 0;
         return {
-            app: { name: snapshot().meta?.app_name || 'FinIntern Hub', version: snapshot().meta?.version || '4.0.0' },
+            app: { name: snapshot().meta?.app_name || 'FinIntern Hub', version: snapshot().meta?.version || '3.9.2' },
             database: { total_jobs: overview().total_jobs, snapshot_generated_at: snapshot().meta?.generated_at || '' },
             today_jobs: overview().today_jobs,
             crawler_success_rate: successRate,

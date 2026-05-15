@@ -13,7 +13,7 @@ const state = {
 let crawlerPollingInterval = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    logger.info('Application starting', { version: window.APP_VERSION || '4.0.0' });
+    logger.info('Application starting', { version: '2.0.0' });
     initNavigation();
     initEventListeners();
     loadPage('home');
