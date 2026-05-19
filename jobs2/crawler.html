@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>文人病</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="Joakim Starr 文人病 我从人间走过">
+  <meta name="theme-color" content="#10b981">
+
+  <link rel="canonical" href="http://example.com/jobs2/crawler.html">
+
+  
+
+  <meta name="description" content="数据采集 - FinIntern Hub                                                        &#x2F;* 爬虫页面专用样式 *&#x2F;         .status-indicator {             width: 12px;             height: 12px;">
+<meta property="og:type" content="website">
+<meta property="og:title" content="文人病">
+<meta property="og:url" content="http://example.com/jobs2/crawler.html">
+<meta property="og:site_name" content="文人病">
+<meta property="og:description" content="数据采集 - FinIntern Hub                                                        &#x2F;* 爬虫页面专用样式 *&#x2F;         .status-indicator {             width: 12px;             height: 12px;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-19T05:38:23.412Z">
+<meta property="article:modified_time" content="2026-05-19T05:38:23.412Z">
+<meta property="article:author" content="Joakim Starr(文人病)">
+<meta property="article:tag" content="Joakim Starr 文人病 我从人间走过">
+<meta name="twitter:card" content="summary">
+  <meta name="generator" content="Hexo 7.3.0">
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"","url":"http://example.com/jobs2/crawler.html"}
+</script>
+
+  
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  <style>
+    :root {
+      --sea-color-primary: #10b981;
+    }
+  </style>
+
+  
+<script src="/js/theme_mode.js"></script>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<body>
+  <header class="sea-header">
+    <nav class="sea-nav-wrap">
+  <div class="sea-nav-logo" title="- 我从人间走过">
+    <a href="/">文人病</a>
+  </div>
+  <div class="sea-nav-menus">
+    <div id="sea-nav-toggle">
+      <svg t="1716965724278" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10878" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M950.857143 768v73.142857c0 20.004571-16.566857 36.571429-36.571429 36.571429H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571429v-73.142857c0-20.004571 16.566857-36.571429 36.571429-36.571429h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571429z m0-292.571429v73.142858c0 20.004571-16.566857 36.571429-36.571429 36.571428H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571428v-73.142858c0-20.004571 16.566857-36.571429 36.571429-36.571428h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571428z m0-292.571428v73.142857c0 20.004571-16.566857 36.571429-36.571429 36.571429H109.714286c-20.004571 0-36.571429-16.566857-36.571429-36.571429V182.857143c0-20.004571 16.566857-36.571429 36.571429-36.571429h804.571428c20.004571 0 36.571429 16.566857 36.571429 36.571429z" p-id="10879"></path></svg>
+    </div>
+
+    <div id="sea-nav-dimmer"></div>
+<div class="sea-menu-wrap">
+  
+    <a
+      class="sea-menu-link "
+      
+      href="/archives/"
+    >
+      归档
+    </a>
+  
+    <a
+      class="sea-menu-link "
+      
+      href="/graph/"
+    >
+      图片
+    </a>
+  
+
+  <span class="sea-menu-sep">|</span>
+
+  
+  
+
+  
+    <a href="/search" title="Search">
+  <span class="sea-menu-icon" id="sea-search-icon">
+    <svg t="1725410662861" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5552" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M400.085333 151.210667c-89.059556 0-172.672 47.616-218.197333 124.273777a14.222222 14.222222 0 1 0 24.462222 14.535112c40.433778-68.067556 114.659556-110.364444 193.735111-110.364445a14.222222 14.222222 0 1 0 0-28.444444zM170.197333 336.298667a14.236444 14.236444 0 0 0-17.080889 10.609777c-4.252444 18.147556-6.656 29.397333-6.656 49.592889a14.222222 14.222222 0 1 0 28.444445 0c0-17.137778 1.92-26.083556 5.902222-43.121777a14.222222 14.222222 0 0 0-10.609778-17.080889z" fill="" p-id="5553"></path><path d="M947.384889 821.944889L717.809778 592.384a70.584889 70.584889 0 0 0-16.64-12.472889 346.254222 346.254222 0 0 0 47.36-175.089778c0-192.142222-156.302222-348.444444-348.444445-348.444444-192.128 0-348.444444 156.302222-348.444444 348.444444s156.316444 348.430222 348.444444 348.430223c68.408889 0 132.209778-19.882667 186.083556-54.058667 2.915556 4.821333 6.570667 9.472 10.951111 13.852444l229.575111 229.589334a84.849778 84.849778 0 0 0 60.359111 24.974222 84.821333 84.821333 0 0 0 60.344889-24.974222 84.778667 84.778667 0 0 0 24.974222-60.330667 84.920889 84.920889 0 0 0-24.988444-60.359111zM108.529778 404.835556c0-160.768 130.787556-291.555556 291.555555-291.555556 160.782222 0 291.555556 130.787556 291.555556 291.555556 0 160.782222-130.801778 291.541333-291.555556 291.541333-160.768 0-291.555556-130.759111-291.555555-291.541333z m798.620444 497.578666c-10.766222 10.723556-29.496889 10.723556-40.248889 0L637.340444 672.839111c-1.991111-1.976889-2.730667-3.299556-2.830222-3.299555 0.042667-0.611556 0.824889-6.471111 17.080889-22.698667 16.213333-16.256 22.072889-16.995556 22.257778-17.109333 0.369778 0.113778 1.692444 0.853333 3.740444 2.887111l229.546667 229.560889c5.390222 5.390222 8.334222 12.529778 8.334222 20.138666a28.401778 28.401778 0 0 1-8.32 20.096z" p-id="5554"></path></svg>
+  </span>
+</a>
+  
+
+
+  <span class="sea-menu-icon" id="sea-theme-dark">
+    <svg t="1725413107294" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10118" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M557.553778 976.355556c-257.265778 0-466.56-207.160889-466.56-464.426667 0-253.923556 206.577778-464.284444 460.501333-464.284445h0.355556c10.766222 0 20.622222 3.953778 25.443555 13.610667 4.878222 9.756444 3.740444 20.394667-2.915555 29.027556-55.722667 72.220444-85.162667 158.108444-85.162667 249.372444 0 225.891556 183.779556 409.386667 409.671111 409.386667l5.248-0.256c10.325333-0.142222 20.977778 5.859556 25.841778 15.644444a28.302222 28.302222 0 0 1-2.915556 30.051556C837.902222 910.08 703.203556 976.355556 557.553778 976.355556zM495.274667 105.016889C299.192889 135.281778 147.882667 306.161778 147.882667 509.809778c0 225.877333 183.779556 409.656889 409.671111 409.656889 108.686222 0 210.403556-42.055111 286.577778-116.977778-231.566222-27.192889-411.804444-224.625778-411.804445-463.36 0-83.427556 21.617778-163.299556 62.947556-234.112z" fill="" p-id="10119"></path><path d="M578.830222 879.132444c-186.865778 0-345.784889-133.418667-377.841778-317.269333a14.222222 14.222222 0 1 1 28.017778-4.878222c29.681778 170.183111 176.810667 293.703111 349.824 293.703111a14.222222 14.222222 0 1 1 0 28.444444zM209.991111 531.2c-7.537778 0-13.838222-6.997333-14.193778-14.606222-0.312889-6.584889-0.483556-13.795556-0.483555-20.465778 0-7.864889 6.357333-14.492444 14.222222-14.492444s14.222222 6.229333 14.222222 14.094222c0 6.229333 0.170667 13.425778 0.455111 19.584 0.369778 7.850667-5.674667 15.886222-13.525333 15.886222h-0.696889z" fill="" p-id="10120"></path><path d="M622.350222 309.930667m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" fill="" p-id="10121"></path><path d="M787.072 188.273778m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" fill="" p-id="10122"></path><path d="M731.960889 415.303111m-25.344 0a25.344 25.344 0 1 0 50.688 0 25.344 25.344 0 1 0-50.688 0Z" p-id="10123"></path></svg>
+  </span>
+  <span class="sea-menu-icon" id="sea-theme-light">
+    <svg t="1725410359322" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4274" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M512 768c-141.376 0-256-114.624-256-256s114.624-256 256-256 256 114.624 256 256-114.624 256-256 256z m0-85.333333a170.666667 170.666667 0 1 0 0-341.333334 170.666667 170.666667 0 0 0 0 341.333334zM469.333333 85.333333a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0V85.333333z m0 768a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0v-85.333334zM85.333333 554.666667a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334H85.333333z m768 0a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334h-85.333334zM161.834667 222.165333a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m576 576a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m-515.669334 64a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z m576-576a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z" p-id="4275"></path></svg>
+  </span>
+
+  <span id="sea-menu-close-icon">
+    <svg t="1725435896874" class="sea-svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4408" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M556.8 512l265.6-265.6c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L512 467.2 246.4 201.6c-12.8-12.8-32-12.8-44.8 0s-12.8 32 0 44.8l265.6 265.6-265.6 265.6c-12.8 12.8-12.8 32 0 44.8 6.4 6.4 12.8 9.6 22.4 9.6s16-3.2 22.4-9.6l265.6-265.6 265.6 265.6c6.4 6.4 16 9.6 22.4 9.6s16-3.2 22.4-9.6c12.8-12.8 12.8-32 0-44.8L556.8 512z" p-id="4409"></path></svg>
+  </span>
+</div>
+  </div>
+</nav>
+  </header>
+  <main id="sea-main-wrapper" data-pagefind-body>
+    
+
+
+  <article class="sea-page-card-wrapper">
+  <h1 class="sea-page-card-title">
+    
+  </h1>
+  <div class="sea-article-content sea-doc">
+    <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinIntern Hub 数据采集控制面板 - 管理和执行爬虫任务">
+    <meta name="keywords" content="爬虫,数据采集,实习岗位,金融实习">
+    <title>数据采集 - FinIntern Hub</title>
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="css/common.css">
+    
+    <style>
+        /* 爬虫页面专用样式 */
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-idle {
+            background-color: var(--color-gray-400);
+            animation: none;
+        }
+        
+        .status-running {
+            background-color: var(--color-success);
+        }
+        
+        .status-error {
+            background-color: var(--color-error);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--color-gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+        
+        .log-container {
+            max-height: 460px;
+            overflow-y: auto;
+            padding: var(--space-4);
+            border-radius: calc(var(--radius-xl) + 2px);
+            background:
+                radial-gradient(circle at top right, rgba(59, 130, 246, 0.16), transparent 32%),
+                linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.92));
+            color: var(--color-gray-100);
+        }
+        
+        .log-empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 160px;
+            border: 1px dashed rgba(148, 163, 184, 0.3);
+            border-radius: var(--radius-xl);
+            color: rgba(226, 232, 240, 0.72);
+            text-align: center;
+            padding: var(--space-6);
+        }
+
+        .log-entry {
+            position: relative;
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: var(--radius-xl);
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+        }
+
+        .log-entry:last-child {
+            margin-bottom: 0;
+        }
+
+        .log-entry::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+            background: rgba(148, 163, 184, 0.5);
+        }
+
+        .log-entry.log-tone-info::before { background: linear-gradient(180deg, #38bdf8, #2563eb); }
+        .log-entry.log-tone-success::before { background: linear-gradient(180deg, #4ade80, #16a34a); }
+        .log-entry.log-tone-warning::before { background: linear-gradient(180deg, #fbbf24, #f97316); }
+        .log-entry.log-tone-error::before { background: linear-gradient(180deg, #fb7185, #dc2626); }
+
+        .log-icon {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #f8fafc;
+            font-size: 1rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .log-entry.log-tone-info .log-icon { color: #7dd3fc; }
+        .log-entry.log-tone-success .log-icon { color: #86efac; }
+        .log-entry.log-tone-warning .log-icon { color: #fcd34d; }
+        .log-entry.log-tone-error .log-icon { color: #fda4af; }
+
+        .log-main {
+            min-width: 0;
+        }
+
+        .log-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .log-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            line-height: 1;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .log-pill-time {
+            color: rgba(226, 232, 240, 0.8);
+            background: rgba(148, 163, 184, 0.14);
+            border-color: rgba(148, 163, 184, 0.16);
+        }
+
+        .log-pill-level {
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .log-tone-info .log-pill-level {
+            color: #bfdbfe;
+            background: rgba(37, 99, 235, 0.18);
+            border-color: rgba(96, 165, 250, 0.28);
+        }
+
+        .log-tone-success .log-pill-level {
+            color: #bbf7d0;
+            background: rgba(22, 163, 74, 0.18);
+            border-color: rgba(74, 222, 128, 0.28);
+        }
+
+        .log-tone-warning .log-pill-level {
+            color: #fde68a;
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(251, 191, 36, 0.28);
+        }
+
+        .log-tone-error .log-pill-level {
+            color: #fecdd3;
+            background: rgba(220, 38, 38, 0.18);
+            border-color: rgba(251, 113, 133, 0.28);
+        }
+
+        .log-pill-source,
+        .log-pill-stage,
+        .log-pill-count {
+            color: rgba(226, 232, 240, 0.9);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .log-title {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #f8fafc;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .log-detail {
+            font-size: 13px;
+            line-height: 1.7;
+            color: rgba(203, 213, 225, 0.82);
+            word-break: break-word;
+        }
+        
+        .control-btn {
+            min-width: 120px;
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .source-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            background-color: var(--color-primary-100);
+            color: var(--color-primary-700);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+        }
+        
+        /* noscript 提示样式 */
+        .noscript-notice {
+            padding: var(--space-6);
+            background-color: var(--color-warning-light);
+            border: 1px solid var(--color-warning);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+        }
+        
+        .noscript-notice h3 {
+            color: var(--color-warning);
+            margin-bottom: var(--space-2);
+        }
+        
+        /* 静态内容提示 */
+        .static-notice {
+            padding: var(--space-4);
+            background-color: var(--color-info-light);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+        }
+        
+        /* 加载状态 */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .card {
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 app-shell">
+    <!-- noscript 提示 -->
+    <noscript>
+        <div class="noscript-notice">
+            <h3><i class="fas fa-exclamation-triangle"></i> JavaScript 已禁用</h3>
+            <p>数据采集页面需要 JavaScript 才能正常运行。请启用 JavaScript 后刷新页面。</p>
+        </div>
+    </noscript>
+
+    <div id="app" class="min-h-screen flex">
+        <!-- 侧边栏容器 - 由 navbar.js 渲染 -->
+        <div id="navbar-container"></div>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 ml-0 md:ml-64 pt-20 md:pt-0">
+            <!-- 顶部栏 -->
+            <header class="bg-white shadow-sm border-b px-8 py-4 sticky top-0 z-40">
+                <div class="flex items-center justify-between">
+                    <h2 id="page-title" class="text-2xl font-bold text-gray-800">数据采集</h2>
+                    <div class="flex items-center gap-4">
+                        <button id="refresh-btn" class="p-2 text-gray-600 hover:text-blue-600 transition" title="刷新状态">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 页面内容 -->
+            <div id="content" class="p-8">
+                <!-- 静态内容提示（JS加载前显示） -->
+                <div id="static-notice" class="static-notice">
+                    <p><i class="fas fa-info-circle"></i> 正在加载页面资源，请稍候...</p>
+                </div>
+
+                <!-- 爬虫状态卡片 -->
+                <div class="card mb-6 motion-card reveal-up">
+                    <div class="card-header">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">
+                                <i class="fas fa-heartbeat mr-2"></i>爬虫状态
+                            </h3>
+                            <span id="status-badge" class="badge badge-secondary">
+                                <span class="status-indicator status-idle mr-2"></span>
+                                <span id="status-text">未连接</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- 进度条 -->
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-sm text-gray-600">采集进度</span>
+                                <span id="progress-text" class="text-sm font-medium text-gray-800 count-rolling">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 当前数据源 -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="text-sm text-gray-600">当前数据源:</span>
+                            <span id="current-source" class="source-tag">
+                                <i class="fas fa-database"></i>
+                                <span>未开始</span>
+                            </span>
+                        </div>
+                        
+                        <!-- 运行时间 -->
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm text-gray-600">运行时间:</span>
+                            <span id="elapsed-time" class="text-sm font-medium text-gray-800">00:00:00</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 motion-card">
+                                <div class="text-xs text-gray-500">任务ID</div>
+                                <div id="task-id" class="text-sm font-semibold text-gray-900 mt-1">--</div>
+                            </div>
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 motion-card">
+                                <div class="text-xs text-gray-500">运行模式</div>
+                                <div id="run-mode" class="text-sm font-semibold text-gray-900 mt-1">append</div>
+                            </div>
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 motion-card">
+                                <div class="text-xs text-gray-500">停止/完成原因</div>
+                                <div id="stop-reason" class="text-sm font-semibold text-gray-900 mt-1">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 控制面板 -->
+                <div class="card mb-6 motion-card reveal-up">
+                    <div class="card-header">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-sliders-h mr-2"></i>控制面板
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="flex flex-wrap items-center gap-6">
+                            <!-- 无头模式复选框 -->
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="headless-mode" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-gray-700">无头模式（后台运行）</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="replace-existing" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-gray-700">覆盖更新旧数据（replace）</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <span class="text-gray-700">增量模式</span>
+                                <select id="incremental-mode" class="form-select w-40">
+                                    <option value="conservative">保守增量</option>
+                                    <option value="strict">严格增量</option>
+                                </select>
+                            </label>
+                            
+                            <!-- 控制按钮 -->
+                            <div class="flex gap-3">
+                                <button id="start-btn" class="btn btn-primary control-btn">
+                                    <i class="fas fa-play mr-2"></i>启动爬虫
+                                </button>
+                                <button id="stop-btn" class="btn btn-outline control-btn" disabled>
+                                    <i class="fas fa-stop mr-2"></i>停止爬虫
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近日志 -->
+                <div class="card motion-card reveal-up">
+                    <div class="card-header">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">
+                                <i class="fas fa-terminal mr-2"></i>最近日志
+                            </h3>
+                            <button id="clear-logs-btn" class="btn btn-ghost btn-sm">
+                                <i class="fas fa-trash-alt mr-1"></i>清空
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="log-container" class="log-container">
+                            <div class="log-entry">
+                                <span class="log-time">--:--:--</span>
+                                <span class="text-gray-500">等待连接...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast hidden">
+        <i id="toast-icon" class="fas fa-check-circle"></i>
+        <span id="toast-message">操作成功</span>
+    </div>
+
+    <!-- 引入公共脚本 -->
+    <!-- 元数据（优先加载） -->
+    <script src="./data/jobs.meta.js"></script>
+    <!-- 优先加载前20条数据（约100KB，快速渲染） -->
+    <script src="./data/jobs.chunk.0.js"></script>
+    <script src="./js/api.js?v=20260409-v395"></script>
+    <script src="js/auth.js?v=20260409-v395"></script>
+    <script src="js/logger.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/navbar.js?v=20260409-v395"></script>
+    <script src="js/ui-components.js?v=20260409-v395"></script>
+    
+    <!-- 页面脚本 -->
+    <script>
+        // 爬虫控制页面脚本
+        (function() {
+            'use strict';
+
+            // 状态管理
+            const state = {
+                isRunning: false,
+                isLoading: false,
+                pollInterval: null,
+                logs: [],
+                maxLogs: 100
+            };
+
+            // DOM 元素缓存
+            const elements = {};
+
+            // 初始化
+            function init() {
+                cacheElements();
+                setupNavbar();
+                loadSettings();
+                bindEvents();
+                loadInitialData();
+                startPolling();
+                
+                // 隐藏静态提示
+                const staticNotice = document.getElementById('static-notice');
+                if (staticNotice) {
+                    staticNotice.style.display = 'none';
+                }
+                
+                logger.info('Crawler page initialized');
+            }
+
+            // 缓存DOM元素
+            function cacheElements() {
+                elements.statusBadge = document.getElementById('status-badge');
+                elements.statusText = document.getElementById('status-text');
+                elements.statusIndicator = elements.statusBadge?.querySelector('.status-indicator');
+                elements.progressFill = document.getElementById('progress-fill');
+                elements.progressText = document.getElementById('progress-text');
+                elements.currentSource = document.getElementById('current-source');
+                elements.elapsedTime = document.getElementById('elapsed-time');
+                elements.taskId = document.getElementById('task-id');
+                elements.runMode = document.getElementById('run-mode');
+                elements.stopReason = document.getElementById('stop-reason');
+                elements.headlessMode = document.getElementById('headless-mode');
+                elements.replaceExisting = document.getElementById('replace-existing');
+                elements.incrementalMode = document.getElementById('incremental-mode');
+                elements.startBtn = document.getElementById('start-btn');
+                elements.stopBtn = document.getElementById('stop-btn');
+                elements.refreshBtn = document.getElementById('refresh-btn');
+                elements.clearLogsBtn = document.getElementById('clear-logs-btn');
+                elements.logContainer = document.getElementById('log-container');
+                elements.toast = document.getElementById('toast');
+                elements.toastIcon = document.getElementById('toast-icon');
+                elements.toastMessage = document.getElementById('toast-message');
+            }
+
+            // 初始化导航栏
+            function setupNavbar() {
+                if (typeof initNavbar === 'function') {
+                    initNavbar('#navbar-container', 'crawler');
+                } else if (typeof renderNavbar === 'function') {
+                    const container = document.getElementById('navbar-container');
+                    if (container) {
+                        container.innerHTML = renderNavbar('crawler');
+                    }
+                }
+            }
+
+            // 加载设置（从localStorage）
+            function loadSettings() {
+                if (elements.headlessMode) {
+                    const savedHeadless = Storage.get('crawler_headless_mode', true);
+                    elements.headlessMode.checked = savedHeadless;
+                }
+                if (elements.replaceExisting) {
+                    const savedReplace = Storage.get('crawler_replace_existing', false);
+                    elements.replaceExisting.checked = savedReplace;
+                }
+                if (elements.incrementalMode) {
+                    elements.incrementalMode.value = Storage.get('crawler_incremental_mode', 'conservative');
+                }
+            }
+
+            // 保存设置到localStorage
+            function saveSettings() {
+                if (elements.headlessMode) {
+                    Storage.set('crawler_headless_mode', elements.headlessMode.checked);
+                }
+                if (elements.replaceExisting) {
+                    Storage.set('crawler_replace_existing', elements.replaceExisting.checked);
+                }
+                if (elements.incrementalMode) {
+                    Storage.set('crawler_incremental_mode', elements.incrementalMode.value || 'conservative');
+                }
+            }
+
+            // 绑定事件
+            function bindEvents() {
+                // 启动按钮
+                if (elements.startBtn) {
+                    elements.startBtn.addEventListener('click', handleStart);
+                }
+
+                // 停止按钮
+                if (elements.stopBtn) {
+                    elements.stopBtn.addEventListener('click', handleStop);
+                }
+
+                // 刷新按钮
+                if (elements.refreshBtn) {
+                    elements.refreshBtn.addEventListener('click', handleRefresh);
+                }
+
+                // 清空日志按钮
+                if (elements.clearLogsBtn) {
+                    elements.clearLogsBtn.addEventListener('click', clearLogs);
+                }
+
+                // 无头模式复选框
+                if (elements.headlessMode) {
+                    elements.headlessMode.addEventListener('change', saveSettings);
+                }
+                if (elements.replaceExisting) {
+                    elements.replaceExisting.addEventListener('change', saveSettings);
+                }
+                if (elements.incrementalMode) {
+                    elements.incrementalMode.addEventListener('change', saveSettings);
+                }
+
+                // 监听页面刷新事件
+                window.addEventListener('app:refresh', handleRefresh);
+
+                // 页面卸载时停止轮询
+                window.addEventListener('beforeunload', stopPolling);
+
+                // 页面可见性变化时调整轮询频率
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+            }
+
+            // 加载初始数据
+            async function loadInitialData() {
+                await Promise.all([
+                    updateStatus(),
+                    loadLogs()
+                ]);
+            }
+
+            // 更新爬虫状态
+            async function updateStatus() {
+                try {
+                    const status = await API.getCrawlerStatus();
+                    updateStatusUI(status);
+                    state.isRunning = status.is_running;
+                    updateControlButtons();
+                    return status;
+                } catch (error) {
+                    logger.error('Failed to fetch crawler status', error);
+                    showToast('获取状态失败: ' + error.message, 'error');
+                    updateStatusUI({
+                        is_running: false,
+                        status: 'error',
+                        progress: 0,
+                        message: '连接失败',
+                        current_source: '未知',
+                        elapsed_seconds: 0
+                    });
+                    return null;
+                }
+            }
+
+            // 更新状态UI
+            function updateStatusUI(status) {
+                if (!status) return;
+
+                // 更新状态指示器
+                if (elements.statusIndicator && elements.statusText) {
+                    elements.statusIndicator.className = 'status-indicator';
+                    
+                    if (status.is_running) {
+                        elements.statusIndicator.classList.add('status-running');
+                        elements.statusText.textContent = '运行中';
+                        elements.statusBadge.className = 'badge badge-success';
+                    } else if (status.status === 'error') {
+                        elements.statusIndicator.classList.add('status-error');
+                        elements.statusText.textContent = '错误';
+                        elements.statusBadge.className = 'badge badge-error';
+                    } else {
+                        elements.statusIndicator.classList.add('status-idle');
+                        elements.statusText.textContent = '空闲';
+                        elements.statusBadge.className = 'badge badge-secondary';
+                    }
+                }
+
+                // 更新进度条
+                if (elements.progressFill && elements.progressText) {
+                    const progress = Math.round(status.progress || 0);
+                    elements.progressFill.style.width = progress + '%';
+                    if (typeof animateCountUp === 'function') {
+                        animateCountUp(elements.progressText, progress, { suffix: '%', duration: 560 });
+                    } else {
+                        elements.progressText.textContent = progress + '%';
+                    }
+                }
+
+                // 更新当前数据源
+                if (elements.currentSource) {
+                    const sourceText = elements.currentSource.querySelector('span');
+                    if (sourceText) {
+                        sourceText.textContent = status.current_source || '未开始';
+                    }
+                }
+
+                // 更新运行时间
+                if (elements.elapsedTime) {
+                    elements.elapsedTime.textContent = formatElapsedTime(status.elapsed_seconds || 0);
+                }
+                if (elements.taskId) {
+                    elements.taskId.textContent = status.task_id || '--';
+                }
+                if (elements.runMode) {
+                    elements.runMode.textContent = status.run_mode || 'append';
+                }
+                if (elements.stopReason) {
+                    elements.stopReason.textContent = status.stop_reason || (status.is_running ? '运行中' : '--');
+                }
+            }
+
+            // 格式化运行时间
+            function formatElapsedTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            // 更新控制按钮状态
+            function updateControlButtons() {
+                if (elements.startBtn && elements.stopBtn) {
+                    elements.startBtn.disabled = state.isRunning || state.isLoading;
+                    elements.stopBtn.disabled = !state.isRunning || state.isLoading;
+                }
+            }
+
+            // 加载日志
+            async function loadLogs() {
+                try {
+                    const logs = await API.getCrawlerLogs(50);
+                    renderLogs(logs);
+                } catch (error) {
+                    logger.error('Failed to fetch crawler logs', error);
+                    addLogEntry({
+                        timestamp: new Date().toISOString(),
+                        level: 'ERROR',
+                        message: '获取日志失败: ' + error.message
+                    });
+                }
+            }
+
+            // 渲染日志
+            function renderLogs(logs) {
+                if (!elements.logContainer || !logs) return;
+
+                // 按时间排序（旧的在前，新的在后），这样新的会显示在底部
+                state.logs = logs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                elements.logContainer.innerHTML = '';
+
+                if (logs.length === 0) {
+                    elements.logContainer.innerHTML = renderEmptyLogs('暂无日志记录');
+                    return;
+                }
+
+                logs.forEach(log => {
+                    addLogEntry(log, false);
+                });
+
+                scrollToBottom();
+            }
+
+            // 添加单条日志
+            function addLogEntry(log, autoScroll = true) {
+                if (!elements.logContainer) return;
+
+                const entry = document.createElement('div');
+                const parsed = parseLog(log);
+                entry.className = `log-entry log-tone-${parsed.tone}`;
+                
+                entry.innerHTML = `
+                    <div class="log-icon">
+                        <i class="fas ${parsed.icon}"></i>
+                    </div>
+                    <div class="log-main">
+                        <div class="log-meta">
+                            <span class="log-pill log-pill-time">
+                                <i class="fas fa-clock"></i>
+                                <span>${escapeHtml(parsed.time)}</span>
+                            </span>
+                            <span class="log-pill log-pill-level">${escapeHtml(parsed.level)}</span>
+                            ${parsed.source ? `
+                                <span class="log-pill log-pill-source">
+                                    <i class="fas fa-database"></i>
+                                    <span>${escapeHtml(parsed.source)}</span>
+                                </span>
+                            ` : ''}
+                            <span class="log-pill log-pill-stage">
+                                <i class="fas ${parsed.stageIcon}"></i>
+                                <span>${escapeHtml(parsed.stage)}</span>
+                            </span>
+                            ${parsed.countLabel ? `
+                                <span class="log-pill log-pill-count">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span>${escapeHtml(parsed.countLabel)}</span>
+                                </span>
+                            ` : ''}
+                        </div>
+                        <div class="log-title">${escapeHtml(parsed.title)}</div>
+                        ${parsed.detail ? `<div class="log-detail">${escapeHtml(parsed.detail)}</div>` : ''}
+                    </div>
+                `;
+
+                // 移除"暂无日志"提示
+                const emptyMsg = elements.logContainer.querySelector('.log-empty-state');
+                if (emptyMsg) {
+                    emptyMsg.remove();
+                }
+
+                elements.logContainer.appendChild(entry);
+
+                // 限制日志数量
+                while (elements.logContainer.children.length > state.maxLogs) {
+                    elements.logContainer.removeChild(elements.logContainer.firstChild);
+                }
+
+                if (autoScroll) {
+                    scrollToBottom();
+                }
+            }
+
+            // 清空日志
+            function clearLogs() {
+                if (elements.logContainer) {
+                    elements.logContainer.innerHTML = renderEmptyLogs('日志已清空');
+                }
+                state.logs = [];
+                logger.info('Logs cleared by user');
+            }
+
+            function renderEmptyLogs(message) {
+                return `
+                    <div class="log-empty-state">
+                        <div>
+                            <div class="text-lg font-semibold mb-2">${escapeHtml(message)}</div>
+                            <div class="text-sm opacity-80">新的采集状态、数据源进度和异常信息会按时间顺序显示在这里。</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function parseLog(log) {
+                const rawMessage = String(log.message || '').trim();
+                const time = log.timestamp ? formatDate(log.timestamp, 'YYYY-MM-DD HH:mm:ss') : '----:--:-- --:--:--';
+                const level = String(log.level || 'INFO').toUpperCase();
+                const sourceMatch = rawMessage.match(/^\[([^\]]+)\]\s*/);
+                const source = sourceMatch ? sourceMatch[1] : '';
+                const message = sourceMatch ? rawMessage.slice(sourceMatch[0].length).trim() : rawMessage;
+                const countMatch = message.match(/(\d+)\s*条/);
+                const countLabel = countMatch ? `${countMatch[1]} 条` : '';
+
+                let stage = '运行日志';
+                let stageIcon = 'fa-list-check';
+                let icon = 'fa-circle-info';
+                let tone = normalizeLogTone(level);
+                let title = message || '收到新的采集日志';
+
+                if (/已保存|保存\s+\d+\s+条|写入|覆盖/.test(message)) {
+                    stage = '数据写入';
+                    stageIcon = 'fa-floppy-disk';
+                    icon = 'fa-database';
+                    tone = tone === 'error' ? tone : 'success';
+                    title = countLabel ? `本轮写入 ${countLabel}` : '已完成一批数据写入';
+                } else if (/启动|开始|准备|初始化/.test(message)) {
+                    stage = '任务启动';
+                    stageIcon = 'fa-play';
+                    icon = 'fa-rocket';
+                    tone = tone === 'error' ? tone : 'info';
+                    title = source ? `${source} 开始采集` : '采集任务已启动';
+                } else if (/停止|中断|取消|终止/.test(message)) {
+                    stage = '任务停止';
+                    stageIcon = 'fa-hand';
+                    icon = 'fa-octagon-stop';
+                    tone = level === 'ERROR' ? 'error' : 'warning';
+                    title = '采集任务收到停止信号';
+                } else if (/完成|结束|汇总|总计|耗时/.test(message)) {
+                    stage = '执行完成';
+                    stageIcon = 'fa-flag-checkered';
+                    icon = 'fa-circle-check';
+                    tone = tone === 'error' ? tone : 'success';
+                    title = countLabel ? `阶段完成，处理 ${countLabel}` : '采集阶段执行完成';
+                } else if (/第\s*\d+\s*页|请求|API|列表|详情|抓取|获取/.test(message)) {
+                    stage = '采集中';
+                    stageIcon = 'fa-spinner';
+                    icon = 'fa-satellite-dish';
+                    tone = tone === 'error' ? tone : tone;
+                    title = source ? `${source} 正在采集` : '正在获取新的岗位数据';
+                } else if (/失败|错误|异常|超时|422|403|404|登录/.test(message) || level === 'ERROR') {
+                    stage = '异常告警';
+                    stageIcon = 'fa-triangle-exclamation';
+                    icon = 'fa-bug';
+                    tone = 'error';
+                    title = source ? `${source} 出现异常` : '采集过程中出现异常';
+                } else if (/等待|空闲|暂无/.test(message)) {
+                    stage = '等待中';
+                    stageIcon = 'fa-hourglass-half';
+                    icon = 'fa-hourglass-half';
+                    tone = 'info';
+                    title = message || '等待新的采集任务';
+                }
+
+                return {
+                    time,
+                    level,
+                    source,
+                    stage,
+                    stageIcon,
+                    icon,
+                    tone,
+                    title,
+                    countLabel,
+                    detail: rawMessage
+                };
+            }
+
+            function normalizeLogTone(level) {
+                if (level === 'ERROR') return 'error';
+                if (level === 'WARNING' || level === 'WARN') return 'warning';
+                if (level === 'SUCCESS') return 'success';
+                return 'info';
+            }
+
+            // 滚动到底部
+            function scrollToBottom() {
+                if (elements.logContainer) {
+                    elements.logContainer.scrollTop = elements.logContainer.scrollHeight;
+                }
+            }
+
+            // 处理启动
+            async function handleStart() {
+                if (state.isLoading || state.isRunning) return;
+
+                state.isLoading = true;
+                updateControlButtons();
+                setButtonLoading(elements.startBtn, true);
+
+                try {
+                    const headless = elements.headlessMode ? elements.headlessMode.checked : true;
+                    const replaceExisting = elements.replaceExisting ? elements.replaceExisting.checked : false;
+                    const incrementalMode = elements.incrementalMode ? elements.incrementalMode.value : 'conservative';
+                    const result = await API.startCrawler({ headless, replace_existing: replaceExisting, incremental_mode: incrementalMode });
+                    
+                    showToast(result.message || '爬虫启动成功', 'success');
+                    logger.info('Crawler started', { headless, replaceExisting });
+                    
+                    // 立即更新状态
+                    await updateStatus();
+                    await loadLogs();
+                } catch (error) {
+                    showToast('启动失败: ' + error.message, 'error');
+                    logger.error('Failed to start crawler', error);
+                } finally {
+                    state.isLoading = false;
+                    updateControlButtons();
+                    setButtonLoading(elements.startBtn, false);
+                }
+            }
+
+            // 处理停止
+            async function handleStop() {
+                if (state.isLoading || !state.isRunning) return;
+
+                state.isLoading = true;
+                updateControlButtons();
+                setButtonLoading(elements.stopBtn, true);
+
+                try {
+                    const result = await API.stopCrawler();
+                    
+                    showToast(result.message || '爬虫已停止', 'success');
+                    logger.info('Crawler stopped');
+                    
+                    // 立即更新状态
+                    await updateStatus();
+                    await loadLogs();
+                } catch (error) {
+                    showToast('停止失败: ' + error.message, 'error');
+                    logger.error('Failed to stop crawler', error);
+                } finally {
+                    state.isLoading = false;
+                    updateControlButtons();
+                    setButtonLoading(elements.stopBtn, false);
+                }
+            }
+
+            // 处理刷新
+            async function handleRefresh() {
+                if (elements.refreshBtn) {
+                    const icon = elements.refreshBtn.querySelector('i');
+                    if (icon) icon.classList.add('fa-spin');
+                }
+
+                await Promise.all([
+                    updateStatus(),
+                    loadLogs()
+                ]);
+
+                setTimeout(() => {
+                    if (elements.refreshBtn) {
+                        const icon = elements.refreshBtn.querySelector('i');
+                        if (icon) icon.classList.remove('fa-spin');
+                    }
+                }, 500);
+            }
+
+            // 设置按钮加载状态
+            function setButtonLoading(btn, loading) {
+                if (!btn) return;
+                
+                if (loading) {
+                    const originalText = btn.innerHTML;
+                    btn.dataset.originalText = originalText;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>处理中...';
+                } else {
+                    btn.innerHTML = btn.dataset.originalText || btn.innerHTML;
+                }
+            }
+
+            // 显示Toast提示
+            function showToast(message, type = 'success') {
+                if (!elements.toast || !elements.toastIcon || !elements.toastMessage) return;
+
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-times-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+
+                const colors = {
+                    success: 'toast-success',
+                    error: 'toast-error',
+                    warning: 'toast-warning',
+                    info: ''
+                };
+
+                elements.toastIcon.className = 'fas ' + (icons[type] || icons.success);
+                elements.toastMessage.textContent = message;
+                elements.toast.className = 'toast ' + (colors[type] || '');
+                elements.toast.classList.remove('hidden');
+
+                setTimeout(() => {
+                    elements.toast.classList.add('hidden');
+                }, 3000);
+            }
+
+            // HTML转义
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // 开始轮询
+            function startPolling() {
+                stopPolling();
+                // 每3秒轮询一次
+                state.pollInterval = setInterval(async () => {
+                    await updateStatus();
+                    await loadLogs();
+                }, 3000);
+            }
+
+            // 停止轮询
+            function stopPolling() {
+                if (state.pollInterval) {
+                    clearInterval(state.pollInterval);
+                    state.pollInterval = null;
+                }
+            }
+
+            // 处理页面可见性变化
+            function handleVisibilityChange() {
+                if (document.hidden) {
+                    // 页面隐藏时降低轮询频率到10秒
+                    stopPolling();
+                    state.pollInterval = setInterval(async () => {
+                        await updateStatus();
+                        await loadLogs();
+                    }, 10000);
+                } else {
+                    // 页面显示时恢复正常轮询
+                    startPolling();
+                    // 立即更新一次
+                    updateStatus();
+                    loadLogs();
+                }
+            }
+
+            // DOM加载完成后初始化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+  </div>
+</article>
+
+
+
+  </main>
+  <footer id="sea-footer-container">
+  <div class="sea-footer-row">
+    <div class="sea-footer-menu-link">
+      
+        <a
+          class="sea-footer-link"
+          
+          href="/joakimstarr@qq.com"
+        >
+          Email
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+        <a
+          class="sea-footer-link"
+          
+            target="_blank"
+          
+          href="https://github.com/joakimstarr"
+        >
+          Github
+        </a>
+        <span class="sea-footer-link__dot">·</span>
+      
+    </div>
+  </div>
+  
+  
+  <div class="sea-footer-row">
+    <div class="sea-footer-copyright">
+      <span>©</span>
+      
+        2026
+      
+      <span>·</span>
+      Joakim Starr(文人病)
+    </div>
+    <span class="split-line">|</span>
+    <div class="sea-footer-theme-by">
+      Theme by <a class="theme" href="https://github.com/hai-zou/hexo-theme-sea" target="_blank">Sea</a>
+    </div>
+  </div>
+</footer>
+
+  
+<script src="/js/main.js" defer></script>
+
+
+<script src="/js/theme.js" defer></script>
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</html>
