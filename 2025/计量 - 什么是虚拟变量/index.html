@@ -48,7 +48,7 @@
     <script class="keep-theme-configurations">
     const KEEP = window.KEEP || {}
     KEEP.hexo_config = {"hostname":"joakimstarr.github.io","root":"/","language":"zh-CN"}
-    KEEP.theme_config = {"base_info":{"primary_color":"#2B5797","title":"文人病","author":"Joakim Starr(文人病)","avatar":"/images/avatar.webp","logo":"/images/logo.webp","favicon":"/images/favicon.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","categories":"/categories","about":"/about"},"first_screen":{"enable":false,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/JoakimStarr","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:joakimstarr@example.com"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"announcement":"从人间走过，用文字记录。","category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":true,"level_badge":true,"custom_badge":["One","Two","Three","一介","书生"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":true},"cdn":{"enable":false,"provider":"cdnjs","custom":{"enable":false,"url":null}},"pjax":{"enable":true},"footer":{"since":2025,"word_count":true,"site_deploy":{"enable":true,"provider":"github","url":"https://github.com/JoakimStarr"},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","search_db_path":"keep-search.json","source_data":{},"version":"4.3.0"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#2B5797","title":"文人病","author":"Joakim Starr(文人病)","avatar":"/images/avatar.webp","logo":"/images/logo.webp","favicon":"/images/favicon.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","categories":"/categories","about":"/about"},"first_screen":{"enable":false,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/JoakimStarr","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:joakimstarr@example.com"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"announcement":null,"category":true,"tag":true,"post_datetime":"updated","post_datetime_format":"ago"},"post":{"author_badge":{"enable":false,"level_badge":false,"custom_badge":null},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":true,"reward":{"enable":false,"img_link":"/images/logo.webp","text":"请作者喝咖啡","icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":true},"cdn":{"enable":false,"provider":"cdnjs","custom":{"enable":false,"url":null}},"pjax":{"enable":true},"footer":{"since":2025,"word_count":true,"site_deploy":{"enable":true,"provider":"github","url":"https://github.com/JoakimStarr"},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","search_db_path":"keep-search.json","source_data":{},"version":"4.3.0"}
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
     KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
     KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
@@ -270,8 +270,6 @@
                             <div class="author border-box">
                                 <span class="name">Joakim Starr(文人病)</span>
                                 
-                                    <span class="author-badge">Lv4</span>
-                                
                             </div>
                             <div class="meta-info border-box">
                                 
@@ -283,13 +281,13 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2025-07-30 11:09:36</span>
+                <span class="datetime">2025-07-30</span>
             </span>
 
             
                 <span class="meta-info-item post-update-date">
                     <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                    <span class="datetime" data-updated="Tue Jul 21 2026 15:59:12 GMT+0800">2026-07-21 15:59:12</span>
+                    <span class="datetime" data-updated="Tue Jul 21 2026 15:59:12 GMT+0800">2026-07-21</span>
                 </span>
             
         
@@ -327,7 +325,7 @@
         
         
             <span class="meta-info-item post-min2read">
-                <i class="icon fas fa-clock"></i>&nbsp;<span>6 分钟</span>
+                <i class="icon fas fa-clock"></i>&nbsp;<span>7 分钟</span>
             </span>
         
         
@@ -368,13 +366,13 @@
 <h2 id="为什么需要虚拟变量">为什么需要虚拟变量</h2>
 <p>许多统计模型只能处理数值型变量，分类变量无法直接参与计算，而在实际中，有可能收到这些因素的影响，或者我们想要研究性别、地区、行业是否对收入有影响，这个时候就需要量化，将其变为虚拟变量。通过引入虚拟变量，可以将分类信息编码为数值，使其能够被模型识别和利用。</p>
 <h2 id="虚拟变量的构造方法">虚拟变量的构造方法</h2>
-<p>对于有 $k$ 个类别的分类变量，通常需要引入 $k-1$ 个虚拟变量。例如：</p>
+<p>对于有 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span> 个类别的分类变量，通常需要引入 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7778em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 个虚拟变量。例如：</p>
 <table>
 <thead>
 <tr>
 <th>地区</th>
-<th>$D_1$</th>
-<th>$D_2$</th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">D_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">D_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></th>
 </tr>
 </thead>
 <tbody>
@@ -395,46 +393,48 @@
 </tr>
 </tbody>
 </table>
-<p>其中，$D_1$ 表示“东部”，$D_2$ 表示“中部”，西部作为基准组，即当 $D_1 = 0，D_2 = 0$ 时，表示“西部”。</p>
+<p>其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">D_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 表示“东部”，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">D_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 表示“中部”，西部作为基准组，即当 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn><mtext>，</mtext><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D_1 = 0，D_2 = 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord">0</span><span class="mord cjk_fallback">，</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> 时，表示“西部”。</p>
 <h2 id="虚拟变量陷阱">虚拟变量陷阱</h2>
-<p>在回归模型中，若为 $k$ 个类别引入 $k$ 个虚拟变量，会导致多重共线性（虚拟变量陷阱）。这是因为如上所述，基准组可以由前$k-1$个变量表示。因此，通常只需引入 $k-1$ 个虚拟变量，剩下的类别作为基准组。<br>
-如上述例子所示，$D_1=1,D_2=0$为东部，$D_1=0,D_2=1$为中部，当$D_1=0,D_2=0$为西部。这个时候就没有必要额外引入一个$D_3$变量了。</p>
+<p>在回归模型中，若为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span> 个类别引入 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span></span></span></span> 个虚拟变量，会导致多重共线性（虚拟变量陷阱）。这是因为如上所述，基准组可以由前<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7778em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>个变量表示。因此，通常只需引入 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.7778em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.0315em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 个虚拟变量，剩下的类别作为基准组。<br>
+如上述例子所示，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>1</mn><mo separator="true">,</mo><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D_1=1,D_2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>为东部，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn><mo separator="true">,</mo><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">D_1=0,D_2=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>为中部，当<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn><mo separator="true">,</mo><msub><mi>D</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">D_1=0,D_2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="katex-base"><span class="katex-strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>为西部。这个时候就没有必要额外引入一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">D_3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="katex-base"><span class="katex-strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="katex-sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>变量了。</p>
 <h2 id="应用举例">应用举例</h2>
 <p>假设我们要分析工资与性别的关系，可以建立如下回归模型：</p>
-<p>$$\begin{align}<br>
-工资 = \beta_0 + \beta_1 \times 性别 + \epsilon<br>
-\end{align}$$其中，性别为虚拟变量（男=1，女=0），$\beta_1$ 表示男性与女性工资的平均差异。<br>
-或者分析工资与地区的关系，则可以建立如下模型：<br>
-$$<br>
-\begin{align}<br>
+<p>\begin{align}
+工资 = \beta_0 + \beta_1 \times 性别 + \epsilon
+\end{align}$$其中，性别为虚拟变量（男=1，女=0），$\beta_1$ 表示男性与女性工资的平均差异。
+或者分析工资与地区的关系，则可以建立如下模型：
+</p>
+<p>\begin{align}<br>
 工资 = \beta_0 + \beta_1 D_1 + \beta_1 \times D_2+ \epsilon<br>
-\end{align}<br>
-$$其中，$D_1=1,D_2=0$为东部，$D_1=0,D_2=1$为中部，当$D_1=0,D_2=0$为西部。</p>
-<h2 id="结果解读">结果解读</h2>
-<p>假设以性别对工资的影响为例，设模型为：<br>
-$$\begin{align}<br>
-工资 = \beta_0 + \beta_1 \times D + \epsilon<br>
-\end{align}$$其中，性别为虚拟变量$D$（男=1，女=0）。<br>
-假设回归结果为<br>
-$$<br>
-\begin{align}<br>
+\end{align}</p>
+<p>其中，$D_1=1,D_2=0$为东部，$D_1=0,D_2=1$为中部，当$D_1=0,D_2=0$为西部。
+
+## 结果解读
+假设以性别对工资的影响为例，设模型为：
+$$\begin{align}
+工资 = \beta_0 + \beta_1 \times D + \epsilon
+\end{align}$$其中，性别为虚拟变量$D$（男=1，女=0）。
+假设回归结果为
+</p>
+<p>\begin{align}<br>
 工资 = 5000 + 50 \times D + \epsilon<br>
-\end{align}<br>
-$$那么，当性别为女的时候，虚拟变量$D=0$，则会发现，性别为女时的回归就变为了：<br>
-$$<br>
-\begin{align}<br>
+\end{align}</p>
+<p>那么，当性别为女的时候，虚拟变量$D=0$，则会发现，性别为女时的回归就变为了：
+</p>
+<p>\begin{align}<br>
 工资 = 5000 + 50 \times 0 + \epsilon<br>
-\end{align}<br>
-$$而当性别为男的bian为男的时候，虚拟变量$D=1$，则会发现，性别为男时的回归就变为了：<br>
-$$<br>
-\begin{align}<br>
+\end{align}</p>
+<p>而当性别为男的bian为男的时候，虚拟变量$D=1$，则会发现，性别为男时的回归就变为了：
+</p>
+<p>\begin{align}<br>
 工资 = 5000 + 50 \times 1 + \epsilon<br>
-\end{align}<br>
-$$从上述对比中可以发现，男性的工资比女性高50个单位。而 5000 是平均工资水平。若$\beta_1=50$系数在给定的显著性水平下显著，那么我们就有理由说，性别对工资有显著影响。</p>
-<h3 id="stata-实现">stata 实现</h3>
-<p>在这里我们还是使用 stata 自带的 auto 数据集来演示虚拟变量的使用。<br>
-导入数据集：</p>
-<pre><code class="language-stata">. sysuse auto, clear
+\end{align}</p>
+<p>从上述对比中可以发现，男性的工资比女性高50个单位。而 5000 是平均工资水平。若$\beta_1=50$系数在给定的显著性水平下显著，那么我们就有理由说，性别对工资有显著影响。
+### stata 实现
+在这里我们还是使用 stata 自带的 auto 数据集来演示虚拟变量的使用。
+导入数据集：
+```stata
+. sysuse auto, clear
 (1978 automobile data)
 
 . tab foreign # 查看foreign变量的取值   
@@ -446,31 +446,28 @@ $$从上述对比中可以发现，男性的工资比女性高50个单位。而 
 ------------+-----------------------------------
       Total |         74      100.00
 
-</code></pre>
-<p>可以发现，foreign的取值为国内(Domestic)和国内(Foreign)，在 stata 里面，foreign 以及进行虚拟变量处理了，可以通过下列命令查看。</p>
-<pre><code class="language-stata">. label list  origin
+```
+可以发现，foreign的取值为国内(Domestic)和国内(Foreign)，在 stata 里面，foreign 以及进行虚拟变量处理了，可以通过下列命令查看。
+```stata
+. label list  origin
 origin:
            0 Domestic
            1 Foreign
 
-</code></pre>
-<p>在这里，origin 是 foreign 值标签。从这里可以发现，0 表示国内，1 表示国外。<br>
-从这个地方可以看出<br>
-<a target="_blank" rel="noopener" href="https://pica.zhimg.com/80/v2-d84a1fc97ba9464d80d7015c181834b6_1440w.webp?source=d16d100b" title="image" class="gallery-item"><img  
-                       lazyload
-                       alt="image"
-                       data-src="https://pica.zhimg.com/80/v2-d84a1fc97ba9464d80d7015c181834b6_1440w.webp?source=d16d100b"
-                        alt="alt text"
-                 ></a><br>
-若要从0 开始构建虚拟变量，我们需要将 foreign 恢复为原始值，在这个地方我们进行下列操作进行还原。</p>
-<pre><code class="language-stata">. gen foreign_str = &quot;&quot;
+```
+在这里，origin 是 foreign 值标签。从这里可以发现，0 表示国内，1 表示国外。
+从这个地方可以看出
+![alt text](https://pica.zhimg.com/80/v2-d84a1fc97ba9464d80d7015c181834b6_1440w.webp?source=d16d100b)
+若要从0 开始构建虚拟变量，我们需要将 foreign 恢复为原始值，在这个地方我们进行下列操作进行还原。
+```stata
+. gen foreign_str = ""
 (74 missing values generated)
 
-. replace foreign_str = &quot;Domestic&quot; if foreign == 0
+. replace foreign_str = "Domestic" if foreign == 0
 variable foreign_str was str1 now str8
 (52 real changes made)
 
-. replace foreign_str = &quot;Foreign&quot; if foreign == 1
+. replace foreign_str = "Foreign" if foreign == 1
 (22 real changes made)
 
 . tab foreign_str
@@ -482,12 +479,13 @@ foreign_str |      Freq.     Percent        Cum.
 ------------+-----------------------------------
       Total |         74      100.00
 
-</code></pre>
-<p>这个地方我们生成了一个新变量，名为foreign_str，用来保存foreign变量的原始值。通过tab 查看可以发现，和 foreign的值是一样的。<br>
-接下来，我们进行虚拟变量的生成。</p>
-<pre><code class="language-stata">. gen foreign_dummy = 0 # 生成新变量，并将其全部赋值为 0 
+```
+这个地方我们生成了一个新变量，名为foreign_str，用来保存foreign变量的原始值。通过tab 查看可以发现，和 foreign的值是一样的。
+接下来，我们进行虚拟变量的生成。
+```stata
+. gen foreign_dummy = 0 # 生成新变量，并将其全部赋值为 0 
 
-. replace foreign_dummy = 1 if foreign_str == &quot;Foreign&quot; 将满足条件的值改为 1
+. replace foreign_dummy = 1 if foreign_str == "Foreign" 将满足条件的值改为 1
 (22 real changes made) 
 
 . tab foreign_dummy
@@ -504,20 +502,21 @@ foreign_dum |
 end of do-file
 
 . 
-</code></pre>
-<p>至此，我们就完成了虚拟变量的构建，接下来就可以将其放入模型中进行回归处理了。<br>
-接下来，我们研究汽车价格和来源是否为国外的关系进行研究。在 stata 中，接着运行以下代码进行回归：</p>
-<pre><code class="language-stata">. reg price foreign_dummy # 也可以将foreign_dummy换为foreign
+```
+至此，我们就完成了虚拟变量的构建，接下来就可以将其放入模型中进行回归处理了。
+接下来，我们研究汽车价格和来源是否为国外的关系进行研究。在 stata 中，接着运行以下代码进行回归：
+```stata
+. reg price foreign_dummy # 也可以将foreign_dummy换为foreign
 
       Source |       SS           df       MS      Number of obs   =        74
 -------------+----------------------------------   F(1, 72)        =      0.17
-       Model |  1507382.66         1  1507382.66   Prob &gt; F        =    0.6802
+       Model |  1507382.66         1  1507382.66   Prob > F        =    0.6802
     Residual |   633558013        72  8799416.85   R-squared       =    0.0024
 -------------+----------------------------------   Adj R-squared   =   -0.0115
        Total |   635065396        73  8699525.97   Root MSE        =    2966.4
 
 -------------------------------------------------------------------------------
-        price | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+        price | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
 --------------+----------------------------------------------------------------
 foreign_dummy |   312.2587   754.4488     0.41   0.680    -1191.708    1816.225
         _cons |   6072.423    411.363    14.76   0.000     5252.386     6892.46
@@ -525,12 +524,12 @@ foreign_dummy |   312.2587   754.4488     0.41   0.680    -1191.708    1816.225
 . 
 end of do-file
 
-</code></pre>
-<p>从上述结果我们可以构建下列的回归方程：<br>
-$$\begin{align}<br>
-price = 6072.423 + 312.2587 \times foreign_dummy<br>
-\end{align}<br>
-$$但是在这里我们可以发现，$foreign_dummy$的$p $值为0.680，大于0.1，因此我们无法拒绝$H_0$，即$foreign_dummy$对$price$的贡献为0。则我们没有理由认为$foreign_dummy$对$price$有显著的影响。即表示国外车与国内车的平均价格差异</p>
+```
+从上述结果我们可以构建下列的回归方程：
+$$\begin{align}
+price = 6072.423 + 312.2587 \times foreign\_dummy
+\end{align}
+$$但是在这里我们可以发现，$foreign\_dummy$的$p $值为0.680，大于0.1，因此我们无法拒绝$H_0$，即$foreign\_dummy$对$price$的贡献为0。则我们没有理由认为$foreign\_dummy$对$price$有显著的影响。即表示国外车与国内车的平均价格差异</p>
 </div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script src="https://github.com/sachinchoolur/lg-thumbnail.js"></script><script src="https://github.com/sachinchoolur/lg-fullscreen.js"></script><script src="https://github.com/sachinchoolur/lg-zoom.js"></script><script src="https://github.com/sachinchoolur/lg-autoplay.js"></script><script src="https://github.com/sachinchoolur/lg-video.js"></script><script src="https://github.com/sachinchoolur/lg-hash.js"></script><script src="https://github.com/sachinchoolur/lg-pager.js"></script><script>if (typeof lightGallery !== 'undefined') {
         var options = {
             selector: '.gallery-item'
@@ -539,60 +538,6 @@ $$但是在这里我们可以发现，$foreign_dummy$的$p $值为0.680，大于
         }</script>
                     
                 </div>
-
-                
-                        
-<div class="post-copyright-info-container border-box">
-    <div class="copyright-info-content border-box">
-        <div class="copyright-info-top border-box">
-            <div class="copyright-post-title border-box text-ellipsis">
-                计量｜什么是虚拟变量
-            </div>
-
-            <div class="copyright-post-link border-box text-ellipsis">
-                2025/计量 - 什么是虚拟变量/
-            </div>
-        </div>
-
-        <div class="copyright-info-bottom border-box">
-            <div class="copyright-post-author bottom-item">
-                <div class="type">
-                    作者
-                </div>
-                <div class="content">Joakim Starr(文人病)</div>
-            </div>
-
-            <div class="post-time bottom-item">
-                <div class="type">
-                    发布于
-                </div>
-                <div class="content">2025-07-30 11:09</div>
-            </div>
-
-
-            <div class="post-license bottom-item">
-                <div class="type">
-                    许可
-                </div>
-                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
-                    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank">
-                        
-                            <i class="fa-brands fa-creative-commons"></i>
-                            <i class="fa-brands fa-creative-commons-by"></i>
-                            <i class="fa-brands fa-creative-commons-nc"></i>
-                            <i class="fa-brands fa-creative-commons-sa"></i>
-                        
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <i class="copyright-bg fa-solid fa-copyright"></i>
-    </div>
-    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
-        <i class="fa-solid fa-copy"></i>
-    </div>
-</div>
 
                 
 
@@ -697,7 +642,7 @@ $$但是在这里我们可以发现，$foreign_dummy$的$p $值为0.680，大于
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">什么是虚拟变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟变量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.</span> <span class="nav-text">为什么需要虚拟变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">虚拟变量的构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E9%99%B7%E9%98%B1"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟变量陷阱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">应用举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.6.</span> <span class="nav-text">结果解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stata-%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.6.1.</span> <span class="nav-text">stata 实现</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">什么是虚拟变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟变量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.</span> <span class="nav-text">为什么需要虚拟变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">虚拟变量的构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E9%99%B7%E9%98%B1"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟变量陷阱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">应用举例</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -743,7 +688,7 @@ $$但是在这里我们可以发现，$foreign_dummy$的$p $值为0.680，大于
             
                 <span class="count-item border-box word">
                     <span class="item-type border-box">总字数</span>
-                    <span class="item-value border-box word">48.2k</span>
+                    <span class="item-value border-box word">49.3k</span>
                 </span>
             
 
@@ -891,7 +836,7 @@ $$但是在这里我们可以发现，$foreign_dummy$的$p $值为0.680，大于
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">什么是虚拟变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟变量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.</span> <span class="nav-text">为什么需要虚拟变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">虚拟变量的构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E9%99%B7%E9%98%B1"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟变量陷阱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">应用举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.6.</span> <span class="nav-text">结果解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stata-%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.6.1.</span> <span class="nav-text">stata 实现</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">什么是虚拟变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟变量的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.</span> <span class="nav-text">为什么需要虚拟变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">虚拟变量的构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%8F%98%E9%87%8F%E9%99%B7%E9%98%B1"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟变量陷阱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">应用举例</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -954,10 +899,6 @@ $$但是在这里我们可以发现，$foreign_dummy$的$p $值为0.680，大于
         
 
         <!-- copyright-info -->
-        
-            
-<script src="/js/post/copyright-info.js"></script>
-
         
 
         <!-- share -->
