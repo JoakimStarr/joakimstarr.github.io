@@ -16,6 +16,7 @@ KEEP.initLazyLoad = () => {
       window.innerHeight + document.documentElement.scrollTop || document.body.scrollTop
 
     imgs.forEach((img) => {
+      // Handle post content images (lazyload attr + data-src)
       if (img.hasAttribute('lazyload') && !img.hasAttribute('loading')) {
         const imgOffsetTop = window.scrollY + img.getBoundingClientRect().top
 
@@ -32,6 +33,17 @@ KEEP.initLazyLoad = () => {
               clearTimeout(loadImageTimeout)
             }
           }, 500)
+        }
+      }
+
+      // Handle data-original images (avatar/logo/theme elements)
+      if (img.hasAttribute('data-original') && !img.hasAttribute('loading')) {
+        const realSrc = img.getAttribute('data-original')
+        const tempImg = new Image()
+        tempImg.src = realSrc
+        tempImg.onload = () => {
+          img.src = realSrc
+          img.removeAttribute('data-original')
         }
       }
     })
