@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Joakim Starr 文人病 我从人间走过">
+    <meta name="description" content="一介书生，羁旅他乡，借助文字抚慰心灵。">
+    <meta name="author" content="Joakim Starr(文人病)">
+    
+    <title>
+        
+            量化研究方向 |
+        
+        文人病
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script>
+        (function () {
+            let theme = localStorage.getItem('KEEP-THEME-STATUS');
+            let classname = "";
+            if (!theme || (JSON.parse(theme).isAutoTheme)){
+                classname = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark-mode" : "light-mode";
+            }
+            else{
+                classname = JSON.parse(theme).isDark ? "dark-mode" : "light-mode";
+            }
+            document.documentElement.classList.add(classname);
+        })();
+    </script>
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"joakimstarr.github.io","root":"/","language":"zh-CN"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#2B5797","title":"文人病","author":"Joakim Starr(文人病)","avatar":"/images/avatar.svg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/","archives":"/archives","tags":"/tags","categories":"/categories","about":"/about"},"first_screen":{"enable":false,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/JoakimStarr","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:joakimstarr@example.com"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"announcement":"从人间走过，用文字记录。","category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":true,"level_badge":true,"custom_badge":["One","Two","Three","一介","书生"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":true},"cdn":{"enable":false,"provider":"cdnjs","custom":{"enable":false,"url":null}},"pjax":{"enable":true},"footer":{"since":2025,"word_count":true,"site_deploy":{"enable":true,"provider":"github","url":"https://github.com/JoakimStarr"},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","search_db_path":"keep-search.json","source_data":{},"version":"4.3.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/loading.gif" data-original="/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               文人病
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/">
+                                
+                                首页
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/archives">
+                                
+                                归档
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/tags">
+                                
+                                标签
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/categories">
+                                
+                                分类
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/about">
+                                
+                                关于
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/">
+                            
+                            首页
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/archives">
+                            
+                            归档
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/tags">
+                            
+                            标签
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/categories">
+                            
+                            分类
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/about">
+                            
+                            关于
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+
+<div class="fade-in-down-animation">
+    <div class="page-template-container border-box keep-container ">
+        <!-- page top -->
+        
+
+        <!-- page bottom -->
+        <div class="page-template-bottom border-box">
+            <!-- use page template -->
+            
+
+            <!-- page content -->
+            <div class="page-content border-box keep-markdown-body ">
+                
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><h2 id="量化研究-策略开发">量化研究 / 策略开发</h2>
+<p>求职意向：量化研究、策略开发、数据分析</p>
+<h3 id="教育经历">教育经历</h3>
+<p><strong>东北财经大学 · 数量经济学 · 硕士</strong>（2025.09 - 2028.01）</p>
+<ul>
+<li>主修：高级计量经济学、高级宏微观经济学、Python文本分析</li>
+<li>荣誉：2025年入学奖学金</li>
+</ul>
+<p><strong>九江学院 · 金融工程 · 本科</strong>（2020.09 - 2024.07）</p>
+<ul>
+<li>主修：会计学基础、财务管理、金融计量学、数据库原理与应用</li>
+<li>荣誉：第十二届MathorCup数学建模三等奖、第三届华数杯全国三等奖、全国数模大赛江西省三等奖（2022）</li>
+</ul>
+<h3 id="工作经历">工作经历</h3>
+<p><strong>重庆风逸捷科技有限公司 · 策略开发实习生</strong>（2025.04 - 2025.08）</p>
+<p><strong>项目：Meteora平台AMM定价算法逆向</strong></p>
+<ul>
+<li>对Meteora平台 <strong>DAMM V1及V2</strong> 进行逆向工程，还原 <strong>AMM核心定价算法</strong>，为套利策略研发提供模型基础</li>
+<li>独立完成协议逆向与模型还原，实现不变量求解、swap计算与滑点分析</li>
+<li>基于定价差异构建套利策略信号模块</li>
+<li>搭建自动化数据流水线，实现从API拉取到策略信号输出的全流程</li>
+</ul>
+<p><strong>成果：</strong></p>
+<ul>
+<li>完成协议逆向与定价模型复现全流程验证，套利信号模块经历史回测确认有效性</li>
+<li>形成从链上数据解析到策略信号的 <strong>可复用量化分析工具集</strong></li>
+</ul>
+<h3 id="项目经历">项目经历</h3>
+<h4 id="1-基金净值预测系统（独立开发）">1. 基金净值预测系统（独立开发）</h4>
+<p><strong>项目背景：</strong> 针对基金净值披露的滞后性，为辅助投资决策，基于 <strong>机器学习</strong> 构建 <strong>盘中净值预测系统</strong></p>
+<p><strong>技术实现：</strong></p>
+<ul>
+<li>独立完成数据采集、特征工程、模型训练与部署</li>
+<li>构建多因子预测模型，支持T日盘中估算与回测诊断</li>
+<li><strong>技术栈：</strong> FastAPI · LightGBM/XGBoost · scikit-learn · SQLite</li>
+</ul>
+<p><strong>项目成果：</strong></p>
+<ul>
+<li>实现 <strong>完整净值预测流水线</strong>，覆盖数据获取→特征构建→模型训练→结果可视化全链路</li>
+<li>集成定时模型更新与多模型对比评估</li>
+</ul>
+<h4 id="2-跨市场隔夜溢出因子ETF回测分析（独立研究）">2. 跨市场隔夜溢出因子ETF回测分析（独立研究）</h4>
+<p><strong>项目背景：</strong> A股收盘早于美股开盘，海外市场信息需次日才能在A股反映。基于这一时间差，构建隔夜溢出因子与板块资金流因子的多因子ETF回测框架，验证海外市场对A股科技ETF的预测能力</p>
+<p><strong>技术实现：</strong></p>
+<ul>
+<li>通过Qlib管理40+只ETF及海外指数数据</li>
+<li>构建滚动相关性溢出因子（SOX/IXIC/KS11多指数等权组合）与板块资金流因子（主力强度z-score截面信号），覆盖13个科技/AI板块</li>
+<li>基于alphalens+empyrical进行分层回测分析，包含Newey-West统计检验、IS/OOS过拟合检查与前视偏差验证</li>
+<li><strong>技术栈：</strong> pandas/NumPy · Qlib · akshare/yfinance · alphalens/empyrical · statsmodels</li>
+</ul>
+<p><strong>项目成果：</strong></p>
+<ul>
+<li>组合因子 <strong>IC达0.156</strong>（ICIR 0.400），<strong>多空夏普比率6.81</strong>，47只ETF分层单调性良好</li>
+<li>经过IS/OOS分拆与滚动IC检验无前视偏差</li>
+<li>完成Qlib数据管道迁移（CSV→二进制格式+海外指数注册），形成可复用的量化分析流程</li>
+</ul>
+<h4 id="3-量化投资系统学习项目（GitHub私有仓库）">3. 量化投资系统学习项目（GitHub私有仓库）</h4>
+<p><a target="_blank" rel="noopener" href="https://via.placeholder.com/800x400/2b5797/ffffff?text=IS+vs+OOS+%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96" title="image" class="gallery-item"><img  
+                       lazyload
+                       alt="image"
+                       data-src="https://via.placeholder.com/800x400/2b5797/ffffff?text=IS+vs+OOS+%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96"
+                        alt="样本内外对比"
+                 ></a></p>
+<p><strong>项目简介：</strong> 从零构建量化策略的完整学习路径，通过6个核心问题系统化掌握量化投资方法论。</p>
+<p><strong>学习路径（Q1-Q6系列）：</strong></p>
+<ul>
+<li><strong>Q1-策略基础</strong>：沪深300ETF历史数据分析与均线策略回测</li>
+<li><strong>Q2-选股问题</strong>：个股vs ETF信号质量对比、GDP数据锁定中美市场</li>
+<li><strong>Q3-资产配置</strong>：等权组合、风险平价、均值方差优化</li>
+<li><strong>Q4-交易时机</strong>：择时信号、止损策略、仓位管理</li>
+<li><strong>Q5-策略验证</strong>：回测指标、显著性检验、过拟合检测</li>
+<li><strong>Q6-参数优化</strong>：网格搜索、样本内/样本外验证、稳健性测试</li>
+</ul>
+<p><strong>核心技术点：</strong></p>
+<ul>
+<li>📊 完整的Qlib数据管道（CSV→二进制格式+海外指数注册）</li>
+<li>🧪 系统化的回测框架（模拟券商、手续费、滑点、成交价模式）</li>
+<li>📈 因子分析与绩效评估（alphalens分层回测、empyrical绩效评估）</li>
+<li>🔬 参数优化与过拟合防范（IS/OOS分拆、滚动IC检验、Newey-West统计）</li>
+<li>🎯 实战案例：A股隔夜跨市场溢出因子 + 板块资金流因子ETF回测</li>
+</ul>
+<p><strong>技术栈：</strong> Python + Qlib + alphalens + empyrical + Jupyter Notebook</p>
+<p><strong>项目成果：</strong></p>
+<ul>
+<li>✅ 完整的参数优化实验（490个有效组合，网格搜索+样本外验证）</li>
+<li>✅ 详细的技术文档与踩坑总结（时间错位、相关性计算、数据格式等）</li>
+<li>✅ 可视化分析（IS vs OOS散点图、月度收益分布、水下曲线）</li>
+</ul>
+<h3 id="专业技能">专业技能</h3>
+<h4 id="编程语言（熟练度标识）">编程语言（熟练度标识）</h4>
+<ul>
+<li><strong>精通：</strong> Python（Pandas/NumPy）</li>
+<li><strong>熟练：</strong> Stata · MySQL</li>
+<li><strong>了解：</strong> R · MATLAB</li>
+</ul>
+<h4 id="建模方法">建模方法</h4>
+<ul>
+<li><strong>精通：</strong> 统计建模 · 时间序列分析</li>
+<li><strong>熟练：</strong> 多因子模型 · LightGBM · XGBoost</li>
+<li><strong>了解：</strong> 深度学习（PyTorch/TensorFlow）</li>
+</ul>
+<h4 id="策略回测">策略回测</h4>
+<ul>
+<li><strong>精通：</strong> alphalens分层回测 · empyrical绩效评估</li>
+<li><strong>熟练：</strong> AMM定价分析 · 套利策略验证</li>
+<li><strong>了解：</strong> 强化学习策略</li>
+</ul>
+<h4 id="量化平台">量化平台</h4>
+<ul>
+<li><strong>熟练：</strong> Qlib</li>
+<li><strong>了解：</strong> <a class="link"   target="_blank" rel="noopener" href="http://vn.py" >vn.py<i class="fas fa-external-link-alt"></i></a> · Backtrader</li>
+</ul>
+<h3 id="开源项目">开源项目</h3>
+<h4 id="1-PaperPulse-论文脉搏">1. PaperPulse - 论文脉搏</h4>
+<p><strong>在线地址：</strong> <a href="https://joakimstarr.github.io/paper">joakimstarr.github.io/paper</a> | <strong>GitHub：</strong> <a class="link"   target="_blank" rel="noopener" href="https://github.com/JoakimStarr/paper_hot" >paper_hot<i class="fas fa-external-link-alt"></i></a></p>
+<p><a target="_blank" rel="noopener" href="https://via.placeholder.com/800x400/2b5797/ffffff?text=PaperPulse+%E8%AE%BA%E6%96%87%E8%84%89%E6%90%8F" title="image" class="gallery-item"><img  
+                       lazyload
+                       alt="image"
+                       data-src="https://via.placeholder.com/800x400/2b5797/ffffff?text=PaperPulse+%E8%AE%BA%E6%96%87%E8%84%89%E6%90%8F"
+                        alt="PaperPulse首页"
+                 ></a></p>
+<p><strong>项目简介：</strong> 中文经济学论文发现与分析平台，追踪50+个顶级经济学期刊和arXiv AI论文，提供AI智能分析、趋势分析、关系网络可视化。</p>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li><strong>多源数据聚合</strong>：CNKI知网经济学TOP50期刊、6个自建站点爬虫、arXiv AI领域论文</li>
+<li><strong>AI智能分析</strong>：基于智谱GLM/硅基流动Qwen的单篇论文深度分析（研究背景、方法创新、主要发现、研究意义）</li>
+<li><strong>趋势话题追踪</strong>：基于关键词频率增长率的动态话题趋势</li>
+<li><strong>关系网络可视化</strong>：D3.js交互式关键词共现网络和作者合作网络</li>
+</ul>
+<p><strong>技术亮点：</strong></p>
+<ul>
+<li>📊 支持中英双语切换、暗黑模式</li>
+<li>🤖 AI双通道架构（智谱GLM + 硅基流动），自动降级切换</li>
+<li>📈 论文综合评分系统（时效性50% + 期刊权威性30% + 趋势热度20%）</li>
+<li>🕷️ 自研爬虫系统（DrissionPage浏览器自动化 + BeautifulSoup）</li>
+</ul>
+<p><strong>技术栈：</strong> FastAPI + Next.js 14 + SQLite + 智谱GLM + D3.js + Recharts</p>
+<h4 id="2-FinIntern-Hub-金融实习信息聚合">2. FinIntern Hub - 金融实习信息聚合</h4>
+<p><strong>在线地址：</strong> <a href="https://joakimstarr.github.io/jobs">joakimstarr.github.io/jobs</a> | <strong>GitHub：</strong> <a class="link"   target="_blank" rel="noopener" href="https://github.com/JoakimStarr/job_hub" >job_hub<i class="fas fa-external-link-alt"></i></a></p>
+<p><a target="_blank" rel="noopener" href="https://via.placeholder.com/800x400/2b5797/ffffff?text=FinIntern+Hub+%E9%87%91%E8%9E%8D%E5%AE%9E%E4%B9%A0" title="image" class="gallery-item"><img  
+                       lazyload
+                       alt="image"
+                       data-src="https://via.placeholder.com/800x400/2b5797/ffffff?text=FinIntern+Hub+%E9%87%91%E8%9E%8D%E5%AE%9E%E4%B9%A0"
+                        alt="FinIntern Hub首页"
+                 ></a></p>
+<p><strong>项目简介：</strong> 金融实习信息聚合平台，自动抓取多个金融招聘网站，提供职位搜索、智能匹配、投递管理等功能。</p>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li>🕷️ <strong>多网站爬虫</strong>：BOSS直聘、实习僧、应届生求职网等主流平台</li>
+<li>🤖 <strong>AI智能匹配</strong>：基于职位描述和简历匹配度分析，提供匹配分数和建议</li>
+<li>🔍 <strong>职位搜索</strong>：支持关键词搜索、多维度筛选（城市、职位类型、薪资等）</li>
+<li>📊 <strong>投递管理</strong>：投递状态跟踪、面试安排、进度提醒</li>
+</ul>
+<p><strong>技术亮点：</strong></p>
+<ul>
+<li>⚡ Next.js 14 + React 18 + TypeScript全栈开发</li>
+<li>🎨 Tailwind CSS响应式设计，支持暗黑模式</li>
+<li>💾 SQLite数据库，轻量级部署</li>
+<li>🤖 AI匹配算法，基于文本相似度和关键词权重</li>
+</ul>
+<p><strong>技术栈：</strong> Next.js + TypeScript + SQLite + AI匹配算法</p>
+<h3 id="自我评价">自我评价</h3>
+<p><strong>数量经济学</strong>硕士在读，具备DeFi协议算法逆向与Python复现经验，能独立完成从数据分析到策略回测的量化研究全流程。对 <strong>量化策略研究</strong> 有持续兴趣，注重理论严谨性与结果可验证性。</p>
+<h3 id="联系方式">联系方式</h3>
+<ul>
+<li>邮箱：JoakimStarr@foxmail.com</li>
+<li>GitHub：<a class="link"   target="_blank" rel="noopener" href="https://github.com/JoakimStarr" >Joakim Starr<i class="fas fa-external-link-alt"></i></a></li>
+<li><a href="/about/">返回关于我</a></li>
+</ul>
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script src="https://github.com/sachinchoolur/lg-thumbnail.js"></script><script src="https://github.com/sachinchoolur/lg-fullscreen.js"></script><script src="https://github.com/sachinchoolur/lg-zoom.js"></script><script src="https://github.com/sachinchoolur/lg-autoplay.js"></script><script src="https://github.com/sachinchoolur/lg-video.js"></script><script src="https://github.com/sachinchoolur/lg-hash.js"></script><script src="https://github.com/sachinchoolur/lg-pager.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
+                
+            </div>
+
+            <!-- comment plugin -->
+            
+        </div>
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2025</span>&nbsp;-&nbsp;2026
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Joakim Starr(文人病)</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+                <a target="_blank" rel="nofollow" href="https://github.com/JoakimStarr">
+            
+            本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/loading.gif" data-original="/images/brands/github.png"></span> 提供部署服务
+            
+                </a>
+            
+        </div>
+    
+
+    
+        <div class="count-info info-item">
+            
+                <span class="count-item border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">48.2k</span>
+                </span>
+            
+
+            
+                <span class="count-item border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-item border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script id="pjax-script" src="/js/libs/pjax.min.js"></script>
+<script>
+  (function () {
+    const isGoogleTranslate = location.hostname.includes('.translate.goog')
+
+    if (isGoogleTranslate) {
+      document.getElementById('pjax-script')?.remove()
+      return
+    }
+
+    function initPjax () {
+      if (window.pjax) return
+
+      window.pjax = new Pjax({
+        selectors: [
+          'head title',
+          '.page-container',
+          '.pjax'
+        ],
+        history: true,
+        debug: false,
+        cacheBust: false,
+        timeout: 0,
+        analytics: false,
+        currentUrlFullReload: false,
+        scrollRestoration: false
+      })
+
+      document.addEventListener('pjax:send', onPjaxSend)
+      document.addEventListener('pjax:complete', onPjaxComplete)
+    }
+
+    function onPjaxSend () {
+      KEEP?.utils?.pjaxProgressBarStart()
+    }
+
+    function onPjaxComplete () {
+      KEEP?.utils?.pjaxProgressBarEnd()
+
+      window?.pjax?.executeScripts(
+        document.querySelectorAll('script[data-pjax], .pjax script')
+      )
+
+      KEEP?.initExecute()
+    }
+
+    // DOM Ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPjax)
+    } else {
+      initPjax()
+    }
+  })()
+</script>
+
+
+
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</html>

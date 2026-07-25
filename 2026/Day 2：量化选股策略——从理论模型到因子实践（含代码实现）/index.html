@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Joakim Starr 文人病 我从人间走过">
+    <meta name="description" content="一介书生，羁旅他乡，借助文字抚慰心灵。">
+    <meta name="author" content="Joakim Starr(文人病)">
+    
+    <title>
+        
+            Day 2：量化选股策略——从理论模型到因子实践（含代码实现） |
+        
+        文人病
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="/images/logo.svg">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script>
+        (function () {
+            let theme = localStorage.getItem('KEEP-THEME-STATUS');
+            let classname = "";
+            if (!theme || (JSON.parse(theme).isAutoTheme)){
+                classname = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark-mode" : "light-mode";
+            }
+            else{
+                classname = JSON.parse(theme).isDark ? "dark-mode" : "light-mode";
+            }
+            document.documentElement.classList.add(classname);
+        })();
+    </script>
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"joakimstarr.github.io","root":"/","language":"zh-CN"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#2B5797","title":"文人病","author":"Joakim Starr(文人病)","avatar":"/images/avatar.svg","logo":"/images/logo.svg","favicon":"/images/logo.svg"},"menu":{"home":"/","archives":"/archives","tags":"/tags","categories":"/categories","about":"/about"},"first_screen":{"enable":false,"background_img":"/images/bg.svg","background_img_dark":"/images/bg.svg","description":"Keep writing and Keep loving.","hitokoto":false},"social_contact":{"enable":true,"links":{"github":"https://github.com/JoakimStarr","weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":"mailto:joakimstarr@example.com"}},"scroll":{"progress_bar":true,"percent":true,"hide_header":true},"home":{"announcement":"从人间走过，用文字记录。","category":true,"tag":true,"post_datetime":"updated"},"post":{"author_badge":{"enable":true,"level_badge":true,"custom_badge":["One","Two","Three","一介","书生"]},"word_count":{"wordcount":true,"min2read":true},"datetime_format":"YYYY-MM-DD HH:mm:ss","copyright_info":true,"share":true,"reward":{"enable":false,"img_link":null,"text":null,"icon":null}},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":true,"site_pv":true,"page_pv":false}},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.39"},"waline":{"server_url":null,"reaction":false,"version":"3.3.2"},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":true},"cdn":{"enable":false,"provider":"cdnjs","custom":{"enable":false,"url":null}},"pjax":{"enable":true},"footer":{"since":2025,"word_count":true,"site_deploy":{"enable":true,"provider":"github","url":"https://github.com/JoakimStarr"},"record":{"enable":false,"list":[{"code":null,"link":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","search_db_path":"keep-search.json","source_data":{},"version":"4.3.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left flex-start border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="/images/loading.gif" data-original="/images/logo.svg">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               文人病
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc border-box">
+                <ul class="menu-list border-box">
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/">
+                                
+                                首页
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/archives">
+                                
+                                归档
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/tags">
+                                
+                                标签
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/categories">
+                                
+                                分类
+                                
+                            </a>
+                            
+                        </li>
+                    
+                        
+                        <li class="menu-item flex-start border-box">
+                            <a class="menu-text-color border-box" href="/about">
+                                
+                                关于
+                                
+                            </a>
+                            
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="menu-text-color fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile border-box flex-start">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list border-box">
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/">
+                            
+                            首页
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/archives">
+                            
+                            归档
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/tags">
+                            
+                            标签
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/categories">
+                            
+                            分类
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+                
+                <li class="drawer-menu-item border-box not-sub-menu">
+                    <label class="drawer-menu-label border-box">
+                        <a class="drawer-menu-text-color left-side flex-start border-box" href="/about">
+                            
+                            关于
+                        </a>
+                        
+                    </label>
+                    
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        Day 2：量化选股策略——从理论模型到因子实践（含代码实现）
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="/images/loading.gif" data-original="/images/avatar.svg">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Joakim Starr(文人病)</span>
+                                
+                                    <span class="author-badge">Lv4</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2026-07-25 00:00:00</span>
+            </span>
+
+            
+                <span class="meta-info-item post-update-date">
+                    <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                    <span class="datetime" data-updated="Sat Jul 25 2026 11:11:34 GMT+0800">2026-07-25 11:11:34</span>
+                </span>
+            
+        
+
+        
+            <span class="meta-info-item post-category border-box"><i class="icon fas fa-folder"></i>&nbsp;
+                <ul class="post-category-ul">
+                    
+                            <li class="category-item"><a href="/categories/%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84/">量化投资</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84/">量化投资</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E9%80%89%E8%82%A1%E7%AD%96%E7%95%A5/">选股策略</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+            <span class="meta-info-item post-wordcount">
+                <i class="icon fas fa-file-word"></i>&nbsp;<span>4.7k 字</span>
+            </span>
+        
+        
+            <span class="meta-info-item post-min2read">
+                <i class="icon fas fa-clock"></i>&nbsp;<span>17 分钟</span>
+            </span>
+        
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body ">
+                    
+
+                    
+                         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/css/lightgallery.min.css" /><div class=".article-gallery"><h1>Day 2：量化选股策略——从理论模型到因子实践（含代码实现）</h1>
+<p><strong>发布日期：2026-07-25 | 系列：量化学习笔记 | 作者：Joakim Starr</strong></p>
+<hr>
+<h2 id="写在前面">写在前面</h2>
+<p>昨天的 Day 1 笔记主要解决了&quot;量化是什么&quot;的问题，确立了整个学习的大方向。按照 WhaleQuant 的章节安排，第二章是金融市场基础概念，第三章是数据获取。但考虑到这两章更偏工具性（统计基础已在 Day 1 中提前梳理，数据获取需要配合代码实操），我决定先把第四章「量化选股策略」作为 Day 2 的核心攻坚内容。<br>
+原因很简单：<strong>选股是量化交易最核心的环节，也是信息密度最大的一章。</strong> 后续所有章节（择时、调仓、回测）本质上都是在为选股服务。先把这一章吃透，后面会顺畅很多。<br>
+本文是对第四章全文的精读笔记，包含理论推导、因子体系、有效性检验方法和 Python 实践。篇幅较长，建议配合目录食用。</p>
+<hr>
+<h2 id="1-为什么需要选股？">1. 为什么需要选股？</h2>
+<h3 id="1-1-从有效市场假说说起">1.1 从有效市场假说说起</h3>
+<p>选股这件事存在的根本前提，是市场并非完全有效。教材从有效市场理论切入，把市场分为四类：</p>
+<table>
+<thead>
+<tr>
+<th>市场类型</th>
+<th>特征</th>
+<th>技术分析</th>
+<th>基本面分析</th>
+<th>内幕消息</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无效市场</td>
+<td>价格未反映历史信息</td>
+<td>✅ 有效</td>
+<td>✅ 有效</td>
+<td>✅ 有效</td>
+</tr>
+<tr>
+<td>弱式有效</td>
+<td>价格反映历史信息</td>
+<td>❌ 失效</td>
+<td>✅ 有效</td>
+<td>✅ 有效</td>
+</tr>
+<tr>
+<td>半强式有效</td>
+<td>价格反映所有公开信息</td>
+<td>❌ 失效</td>
+<td>❌ 失效</td>
+<td>✅ 有效</td>
+</tr>
+<tr>
+<td>强式有效</td>
+<td>价格反映所有信息（含内幕）</td>
+<td>❌ 失效</td>
+<td>❌ 失效</td>
+<td>❌ 失效</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键结论</strong>：现实中不存在完美的强式有效市场。一般认为<strong>短期来看市场是无效的，长期来看市场是有效的</strong>。<br>
+这意味着：</p>
+<ul>
+<li>短期内，情绪和非理性交易会让股价偏离实际价值（无效性）</li>
+<li>长期内，理性投资者的套利行为会让价格回归价值（有效性）</li>
+</ul>
+<p>量化选股的目标，就是在这种&quot;短期无效→长期有效&quot;的过程中，<strong>系统性地识别出被低估的股票，低买高卖，获取超额收益（Alpha）</strong>。</p>
+<h3 id="1-2-主观选股-vs-量化选股">1.2 主观选股 vs 量化选股</h3>
+<p>传统基金经理靠深度研究少数股票来选股，而量化选股的核心差异在于：</p>
+<ul>
+<li><strong>覆盖广度</strong>：同时对全市场几千只股票打分筛选</li>
+<li><strong>规则客观</strong>：选股标准完全量化，不依赖主观判断</li>
+<li><strong>可回测验证</strong>：任何选股逻辑都可以用历史数据检验有效性</li>
+</ul>
+<hr>
+<h2 id="2-理论基石：从效用函数到多因子模型">2. 理论基石：从效用函数到多因子模型</h2>
+<p>这一节是全书理论密度最高的部分，教材从最基础的&quot;人为什么厌恶风险&quot;出发，一步步推导出多因子模型的数学形式。我按逻辑链重新梳理了一遍。</p>
+<h3 id="2-1-效用函数与风险厌恶">2.1 效用函数与风险厌恶</h3>
+<p>经济学假设每个投资者都有一个效用函数 $u(W)$，输入是财富总额，输出是这笔财富带来的满足感。大多数人的效用函数满足两个性质：</p>
+<ol>
+<li><strong>钱多比钱少好</strong>：$W_1 \le W_2 \Rightarrow u(W_1) \le u(W_2)$</li>
+<li><strong>边际效用递减</strong>：随着财富增加，每增加一单位财富所带来的额外效用逐渐减少，即效用函数通常为凹函数（$u’'(W) &lt; 0$）。简单来说，就是同样一块钱，对穷人来说价值更大，对富人来说价值更小。</li>
+</ol>
+<p>满足性质2的投资者被称为<strong>风险厌恶者</strong>——这也是大多数人的真实状态。<br>
+<strong>期望效用假说</strong>：面对多个投资选项，理性投资者会选择期望效用 $E[u(X)]$ 最大的那个。<br>
+<strong>损失厌恶</strong>：人们对损失的敏感程度远大于对同等收益的感受。这是行为经济学的核心发现，也是&quot;为什么人会在下跌时恐慌割肉&quot;的数学解释。</p>
+<h3 id="2-2-风险的定义与度量">2.2 风险的定义与度量</h3>
+<p>经济学中，风险 = 未来的不确定性 = 收益分布越分散，确定性越低。<br>
+所以最朴素的风险度量就是<strong>收益率的标准差 $\sigma_X$</strong>：在期望收益不变的情况下，$\sigma_X$ 越低越好。</p>
+<h3 id="2-3-MPT-模型（现代资产配置理论）">2.3 MPT 模型（现代资产配置理论）</h3>
+<p>Markowitz 在1952年提出的均值-方差模型，是量化投资的奠基性理论。核心思想：</p>
+<blockquote>
+<p>在给定预期收益 $\mu$ 的约束下，找到方差最小的资产配置方案。</p>
+</blockquote>
+<p>对于由 $n$ 个资产组成的组合 $P$（权重 $w_1, w_2, …, w_n$，满足 $\sum w_i = 1$），有：</p>
+<p>$$\text{预期收益：} E[r_P] = \sum_{i=1}^{n} w_i E[r_i]$$</p>
+<p>$$\text{方差：} Var(r_P) = \sum_{i=1}^{n}\sum_{j=1}^{n} w_i w_j Cov(r_i, r_j)$$<br>
+其中：$r_i$ 是资产 $i$ 的收益率，$Cov(r_i, r_j)$ 是资产 $i$ 和 $j$ 的协方差。 $r_P$ 是组合 $P$ 的收益率。<br>
+<strong>有效前沿（Efficient Frontier）</strong>：在所有可行组合中，相同风险下收益最高（或相同收益下风险最低）的那些点连成的曲线。</p>
+<p><strong>夏普比率</strong>：$$Sharpe = \frac{E(r_P) - r_f}{\sigma_P}$$<br>
+其中：$r_f$ 是无风险利率，$\sigma_P$ 是组合收益率的标准差。夏普比率衡量的是<strong>单位风险下的超额收益</strong>，是投资组合优劣的重要指标。<br>
+衡量每承受一单位总风险能获得多少超额回报。夏普比率越高的组合越优。</p>
+<blockquote>
+<p><strong>我的理解</strong>：MPT 告诉我们，分散投资不只是&quot;不把鸡蛋放在一个篮子里&quot;，而是要放到<strong>相关性低</strong>的篮子里。两只股票如果走势高度相关，分散持仓并不能降低风险。这也是为什么多因子模型要关注因子之间的共线性问题。</p>
+</blockquote>
+<h3 id="2-4-CAPM-模型（资本资产定价模型）">2.4 CAPM 模型（资本资产定价模型）</h3>
+<p>CAPM 建立在 MPT 之上，用简洁的公式描述了资产收益与系统性风险的关系：</p>
+<p>$$E[r_S] = r_f + \beta_S (E[r_M] - r_f)$$</p>
+<p>其中 $\beta_S = \frac{Cov(r_S, r_M)}{Var(r_M)}$ 衡量资产 $S$ 对市场的敏感度。</p>
+<p><strong>核心洞察</strong>：</p>
+<ul>
+<li>资产的预期收益只由它的 $\beta$ 决定，与自身波动率 $\sigma_S$ 无关</li>
+<li>$\beta$ 高 → 承担更多系统性风险 → 预期收益更高</li>
+<li>这个公式也是后续多因子模型中&quot;因子暴露&quot;概念的思想源头</li>
+</ul>
+<h3 id="2-5-APT-套利定价理论与多因子模型">2.5 APT 套利定价理论与多因子模型</h3>
+<p>CAPM 只用一个市场因子解释收益，太粗糙了。套利定价理论（APT）将其推广到<strong>多个因子</strong>：</p>
+<blockquote>
+<p>股票的预期收益可以被多个系统性因子线性解释，不同因子代表不同类型的风险溢价。</p>
+</blockquote>
+<p>多因子模型（Multiple-Factor Model）的数学形式：</p>
+<p>$$r_j = \sum_{k=1}^{K} X_{jk} \cdot f_k + u_j$$</p>
+<ul>
+<li>$X_{jk}$：股票 $j$ 在因子 $k$ 上的暴露度（因子载荷）</li>
+<li>$f_k$：因子 $k$ 的收益率</li>
+<li>$u_j$：残差收益（无法被因子解释的部分，即 Alpha）</li>
+</ul>
+<p><strong>这就是量化选股的核心公式。</strong> 选股的本质，就是找到那些 $u_j$（Alpha）解释不了超额收益的股票。</p>
+<hr>
+<h2 id="3-常见的因子分类">3. 常见的因子分类</h2>
+<p>教材将量化因子分为两大类：基于日频数据构建的和基于高频数据构建的。作为初学者，我先聚焦日频因子。</p>
+<h3 id="3-1-因子全景表">3.1 因子全景表</h3>
+<table>
+<thead>
+<tr>
+<th>因子类别</th>
+<th>具体因子</th>
+<th>经济学含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>估值因子</strong></td>
+<td>PE（市盈率）、PB（市净率）、PS（市销率）、股息率、PEG</td>
+<td>股票是否&quot;便宜&quot;</td>
+</tr>
+<tr>
+<td><strong>成长因子</strong></td>
+<td>营收增长率、净利润增长率、EPS增长率、ROE增长率</td>
+<td>公司扩张速度</td>
+</tr>
+<tr>
+<td><strong>盈利因子</strong></td>
+<td>ROE、ROA、毛利率、净利率、资产负债率</td>
+<td>公司盈利能力和财务健康度</td>
+</tr>
+<tr>
+<td><strong>动量因子</strong></td>
+<td>过去20日/60日/120日涨跌幅</td>
+<td>&quot;强者恒强&quot;的趋势效应</td>
+</tr>
+<tr>
+<td><strong>规模因子</strong></td>
+<td>总市值、流通市值</td>
+<td>小盘股效应</td>
+</tr>
+<tr>
+<td><strong>波动因子</strong></td>
+<td>日收益率标准差、最大回撤</td>
+<td>风险特征</td>
+</tr>
+<tr>
+<td><strong>换手率因子</strong></td>
+<td>日均换手率、换手率变化</td>
+<td>市场关注度和情绪</td>
+</tr>
+<tr>
+<td><strong>宏观因子</strong></td>
+<td>GDP增速、M2、利率、CPI</td>
+<td>宏观经济环境</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-2-因子构建示例">3.2 因子构建示例</h3>
+<p>以动量因子为例，计算&quot;过去20个交易日累计涨跌幅&quot;：</p>
+<pre><code class="language-python">import pandas as pd
+
+# 假设 df 包含日期、股票代码、收盘价
+df['momentum_20'] = df.groupby('stock_code')['close'].pct_change(periods=20)
+</code></pre>
+<p>以换手率因子为例：</p>
+<pre><code class="language-python"># 计算过去20日平均换手率
+df['turnover_20'] = df.groupby('stock_code')['turnover_rate'].transform(
+    lambda x: x.rolling(window=20).mean()
+)
+</code></pre>
+<p>因子的构建方式直接决定了它的经济含义。<strong>一个好的因子必须有清晰的经济学逻辑支撑</strong>，而不是纯数据挖掘出来的数字。</p>
+<hr>
+<h2 id="4-因子有效性检验">4. 因子有效性检验</h2>
+<p>这是我在今天学习中觉得最&quot;干货&quot;的部分。选了一堆因子，怎么判断它们真的有效？教材给出了系统的检验方法。</p>
+<h3 id="4-1-P值检验">4.1 P值检验</h3>
+<p>最基础的统计检验。对每个因子做回归：</p>
+<p>$$r_i = \alpha + \beta \cdot Factor_i + \epsilon_i$$</p>
+<p>用 t 检验判断 $\beta$ 是否显著不为0。p值越小 → 因子越显著。</p>
+<p><strong>注意</strong>：p值不是&quot;因子有效的概率&quot;，而是&quot;在原假设成立（因子无效）的情况下，观察到当前结果或更极端结果的概率&quot;。p值小 → 拒绝&quot;因子无效&quot;的假设。</p>
+<h3 id="4-2-IC-值（信息系数）——-最核心的指标">4.2 IC 值（信息系数）—— 最核心的指标</h3>
+<p>IC 定义为<strong>每个横截面上，因子值与下期收益率之间的相关系数</strong>。</p>
+<p>$$IC_t = Corr( Factor_{i,t}, Return_{i,t+1} )$$</p>
+<p><strong>计算逻辑</strong>（逐期截面计算）：</p>
+<pre><code class="language-python">import numpy as np
+from scipy import stats
+
+# 数据结构：每个交易日，所有股票的因子值和未来一期收益率
+# 对每一天，计算因子值与未来收益率的 Spearman 秩相关系数
+ic_series = []
+for date in unique_dates:
+    daily_data = df[df['date'] == date]
+    ic = stats.spearmanr(daily_data['factor'], daily_data['forward_return']).correlation
+    ic_series.append(ic)
+
+ic_mean = np.mean(ic_series)   # IC均值 → 因子有效性
+ic_std = np.std(ic_series)     # IC标准差 → 因子稳定性
+</code></pre>
+<p><strong>为什么用 Spearman 而不是 Pearson？</strong></p>
+<ul>
+<li>Spearman 基于排名，对异常值不敏感</li>
+<li>金融数据（尤其是PE、PB）往往严重右偏，Pearson 会被极端值带偏</li>
+<li>Spearman 能捕捉单调的非线性关系</li>
+</ul>
+<p><strong>IC 值解读标准</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>IC 均值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 0.05</td>
+<td>强正向预测能力</td>
+</tr>
+<tr>
+<td>0.03 ~ 0.05</td>
+<td>中等正向预测能力</td>
+</tr>
+<tr>
+<td>≈ 0</td>
+<td>无预测能力</td>
+</tr>
+<tr>
+<td>&lt; -0.03</td>
+<td>负向预测能力（因子值低反而收益高）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>在股票多因子研究中，由于市场噪声极大，长期稳定维持 IC 均值 0.03~0.05 已经属于较优秀的因子，超过 0.1 的情况十分少见。</p>
+</blockquote>
+<h3 id="4-3-IR-值（信息比率）">4.3 IR 值（信息比率）</h3>
+<p>IR = IC 均值 / IC 标准差</p>
+<p>$$IR = \frac{Mean(IC)}{Std(IC)}$$</p>
+<p>IR 衡量的是因子预测能力的<strong>稳定性</strong>，是&quot;风险调整后的 IC&quot;。<br>
+<strong>IR 值解读标准</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>IR 绝对值</th>
+<th>因子评级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt; 0.5</td>
+<td>优秀</td>
+</tr>
+<tr>
+<td>0.3 ~ 0.5</td>
+<td>良好</td>
+</tr>
+<tr>
+<td>0.1 ~ 0.3</td>
+<td>一般</td>
+</tr>
+<tr>
+<td>&lt; 0.1</td>
+<td>较差</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>本文所说的 IR 指的是 IC Information Ratio（ICIR），而不是组合绩效评价中的 Information Ratio，两者定义不同。</p>
+</blockquote>
+<h3 id="4-4-完整的因子评价体系">4.4 完整的因子评价体系</h3>
+<p>教材和实务中通常综合以下指标判断因子质量：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+<th>判断标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IC 均值</td>
+<td>因子平均预测能力</td>
+<td>绝对值越大越好</td>
+</tr>
+<tr>
+<td>IC 标准差</td>
+<td>IC 的波动程度</td>
+<td>越小越好</td>
+</tr>
+<tr>
+<td>IR</td>
+<td>稳定性调整后的预测力</td>
+<td>绝对值 &gt; 0.3 可用，&gt; 0.5 优秀</td>
+</tr>
+<tr>
+<td>IC &gt; 0 比例</td>
+<td>IC 为正的时间占比</td>
+<td>显著偏离50%说明方向稳定</td>
+</tr>
+<tr>
+<td>t 统计量</td>
+<td>IC 是否显著不为0</td>
+<td>绝对值 &gt; 2 为显著</td>
+</tr>
+</tbody>
+</table>
+<p><strong>个人体会</strong>：这套 IC/IR 体系非常实用。它让我意识到，一个&quot;好因子&quot;不仅要在平均意义上有效（IC均值高），还要在大部分时间里稳定有效（IR高）。偶尔灵偶尔不灵的因子，实际用起来会很痛苦。</p>
+<hr>
+<h2 id="5-行业与市值中性化">5. 行业与市值中性化</h2>
+<p>这是今天学到的最&quot;实战&quot;的部分。教材花了相当篇幅讲这个概念，因为它直接决定了因子的纯度。</p>
+<h3 id="5-1-为什么要中性化？">5.1 为什么要中性化？</h3>
+<p>很多因子并不是在&quot;纯粹&quot;地捕捉某种风险溢价，而是混杂了市值效应或行业效应。</p>
+<p>举个例子：PE 因子在低估值组表现好，但如果你选出来的低 PE 股票全是大银行（因为银行天然 PE 低），那你的&quot;低估值策略&quot;本质上就变成了&quot;银行板块超配策略&quot;。一旦银行板块整体下跌，你的策略就会亏得很惨。</p>
+<p><strong>中性化的目的：剔除因子中市值和行业的影响，让因子更纯粹地反映自身信息。</strong></p>
+<h3 id="5-2-市值中性化（连续变量）">5.2 市值中性化（连续变量）</h3>
+<p>思路：用因子值对市值做线性回归，取残差作为中性化后的因子。</p>
+<p>$$Y = \beta \cdot \ln(MarketValue) + \alpha + \varepsilon$$</p>
+<pre><code class="language-python">import numpy as np
+import pandas as pd
+
+def market_neutralize(df, factor_col, mv_col='total_mv'):
+    &quot;&quot;&quot;市值中性化：对因子值取对数市值的回归残差&quot;&quot;&quot;
+    df = df.copy()
+    log_mv = np.log(df[mv_col])
+    
+    # 用 numpy 做简单线性回归取残差
+    slope, intercept = np.polyfit(log_mv, df[factor_col], 1)
+    fitted = slope * log_mv + intercept
+    df[f'&#123;factor_col&#125;_neutralized'] = df[factor_col] - fitted
+    
+    return df
+</code></pre>
+<h3 id="5-3-行业中性化（离散变量）">5.3 行业中性化（离散变量）</h3>
+<p>两种方法：</p>
+<p><strong>方法一：行业均值做差（简单直观）</strong></p>
+<p>$$\varepsilon_i = Y_i - \overline{Y}_{Industry_i}$$</p>
+<pre><code class="language-python">def industry_neutralize(df, factor_col, industry_col='industry'):
+    &quot;&quot;&quot;行业中性化：因子值减去所在行业的均值&quot;&quot;&quot;
+    industry_mean = df.groupby(industry_col)[factor_col].transform('mean')
+    df[f'&#123;factor_col&#125;_ind_neutral'] = df[factor_col] - industry_mean
+    return df
+</code></pre>
+<p><strong>方法二：哑变量回归取残差（更严谨）</strong></p>
+<p>将行业转为哑变量，做多元线性回归，取残差。结果与均值做差法本质相同，但数学形式更规范。</p>
+<h3 id="5-4-中性化的实际影响">5.4 中性化的实际影响</h3>
+<p>教材中给出的示例显示，中性化前后的因子值分布会发生明显变化。一个混杂了市值和行业效应的&quot;伪因子&quot;，经过中性化后可能变得几乎无效——这恰恰说明它原来捕捉的不是真正的信号，而是市值或行业的 Beta 暴露。</p>
+<blockquote>
+<p>⚠️ <strong>警示</strong>：在检验任何因子之前，必须先做中性化处理。否则你以为发现的 Alpha，可能只是行业配置或市值暴露的副产品。</p>
+</blockquote>
+<hr>
+<h2 id="6-多因子选股模型构建（五步法）">6. 多因子选股模型构建（五步法）</h2>
+<p>这是全章的落地环节。教材给出了一个标准化的五步流程：</p>
+<h3 id="Step-1：候选因子选取">Step 1：候选因子选取</h3>
+<p>根据经济逻辑选取若干候选因子，涵盖估值、成长、质量、动量等类别。</p>
+<h3 id="Step-2：因子有效性检验">Step 2：因子有效性检验</h3>
+<p>用 IC/IR 体系筛选掉无效因子，保留 IC 均值显著且 IR &gt; 0.3 的因子。</p>
+<h3 id="Step-3：因子预处理">Step 3：因子预处理</h3>
+<ul>
+<li><strong>异常值处理</strong>：用 MAD 法（中位数绝对偏差）或 Winsorize 法截尾</li>
+<li><strong>缺失值填充</strong>：前向填充或行业均值填充</li>
+<li><strong>标准化</strong>：Z-score 标准化使不同量纲的因子可加</li>
+<li><strong>中性化</strong>：市值 + 行业中性化</li>
+</ul>
+<h3 id="Step-4：综合评分">Step 4：综合评分</h3>
+<p>两种主流方法：</p>
+<p><strong>打分法（推荐初学者）</strong>：</p>
+<ol>
+<li>每个因子横截面上排序打分（如 Z-score 或 Rank）</li>
+<li>按权重加权求和得到综合得分</li>
+<li>选得分最高的前 N% 股票</li>
+</ol>
+<pre><code class="language-python"># 简化的打分法示例
+def composite_score(df, factor_cols, weights=None):
+    &quot;&quot;&quot;多因子综合打分&quot;&quot;&quot;
+    df = df.copy()
+    
+    if weights is None:
+        weights = [1.0 / len(factor_cols)] * len(factor_cols)
+    
+    # 每个因子 Z-score 标准化
+    for col in factor_cols:
+        df[f'&#123;col&#125;_z'] = (df[col] - df[col].mean()) / df[col].std()
+    
+    # 加权求和
+    score = pd.Series(0.0, index=df.index)
+    for col, w in zip(factor_cols, weights):
+        score += w * df[f'&#123;col&#125;_z']
+    
+    df['composite_score'] = score
+    return df
+
+# 示例：三个因子等权打分
+factor_cols = ['pe_factor', 'roe_factor', 'momentum_factor']
+result = composite_score(stock_data, factor_cols)
+
+# 选前20%
+selected = result.nlargest(int(len(result)*0.2), 'composite_score')
+print(f'Selected &#123;len(selected)&#125; stocks')
+</code></pre>
+<p><strong>打分法的权重选择</strong>：</p>
+<ul>
+<li>等权：简单但不区分因子重要性</li>
+<li>IC 加权：按各因子的 IC 均值赋权</li>
+<li>IR 加权：按 IC/IR 赋权，兼顾有效性和稳定性</li>
+<li>最大化 IC_IR：通过优化求解最优权重</li>
+</ul>
+<p><strong>回归法</strong>：</p>
+<ul>
+<li>用历史收益率对多因子做回归，得到每个因子的系数</li>
+<li>将最新因子值代入回归方程，预测未来收益</li>
+<li>选预测收益最高的股票</li>
+</ul>
+<blockquote>
+<p>教材指出：A股市场上，简单的打分法往往比回归法表现更好。原因可能是因子间共线性较高，回归法不稳定。</p>
+</blockquote>
+<h3 id="Step-5：组合优化与回测">Step 5：组合优化与回测</h3>
+<p>对筛选出的股票做组合优化（考虑行业约束、换手率约束等），然后进入回测环节验证策略效果。这部分在第七章会详细展开。</p>
+<hr>
+<h2 id="7-今日反思与行动计划">7. 今日反思与行动计划</h2>
+<h3 id="核心收获">核心收获</h3>
+<ol>
+<li>
+<p><strong>选股的本质是因子暴露的管理</strong>。好的选股模型不是找到&quot;涨最多的股票&quot;，而是找到一组稳定有效的因子，系统性地获取因子溢价。</p>
+</li>
+<li>
+<p><strong>中性化是必经步骤</strong>。不中性化的因子很可能只是在偷懒——它暴露的是市值或行业的 Beta，不是真正的 Alpha。</p>
+</li>
+<li>
+<p><strong>IC/IR 体系是因子研究的灵魂工具</strong>。它让&quot;这个因子好不好&quot;从一个模糊的直觉变成了可量化的判断。</p>
+</li>
+<li>
+<p><strong>打分法适合A股初学者</strong>。等权重或 IC 加权的打分法简单直观，且对共线性不敏感，是入门首选。</p>
+</li>
+</ol>
+<h3 id="尚未解决的问题">尚未解决的问题</h3>
+<ul>
+<li>因子间的共线性如何处理？教材提到了但没有深入，后续需要学习 PCA 降维或 Lasso 回归</li>
+<li>因子衰减速度怎么度量？IC 的半衰期分析</li>
+<li>高频因子（如分钟级量价因子）的构建方法</li>
+</ul>
+<h3 id="下一步行动">下一步行动</h3>
+<p>按照今天的五步法，我计划用 Python + Tushare 实际构建一个多因子选股模型：</p>
+<ol>
+<li>获取全市场股票的基本面数据（PE、PB、ROE）和量价数据（动量、换手率）</li>
+<li>计算各因子值，做市值+行业中性化</li>
+<li>计算 IC/IR，筛选有效因子</li>
+<li>用打分法构建综合评分，选股回测</li>
+</ol>
+<p>这部分实操将作为 Day 3 的内容。</p>
+<hr>
+<h2 id="参考链接">参考链接</h2>
+<ul>
+<li><a class="link"   target="_blank" rel="noopener" href="https://datawhalechina.github.io/whale-quant/#/./ch04_%E9%87%8F%E5%8C%96%E9%80%89%E8%82%A1%E7%AD%96%E7%95%A5/ch04_%E9%87%8F%E5%8C%96%E9%80%89%E8%82%A1%E7%AD%96%E7%95%A5" >DataWhale《WhaleQuant》第4章：量化选股策略<i class="fas fa-external-link-alt"></i></a></li>
+<li><a class="link"   target="_blank" rel="noopener" href="http://www.msfunds.com.cn/upload/201909/10/201909100756486616.pdf" >摩根士丹利华鑫基金：单因子有效性检验方法<i class="fas fa-external-link-alt"></i></a></li>
+<li>多因子模型：回归法和打分法详解（伯乐实验室）</li>
+<li>量化基本功：IC 分析（本领投资）</li>
+</ul>
+<hr>
+<p><em>下一篇预告：Day 3 —— 股票数据获取实战：用 Tushare + Pandas 拉取行情数据，开始构建第一个多因子选股模型</em></p>
+</div><script src="https://cdn.jsdelivr.net/lightgallery.js/1.0.1/js/lightgallery.min.js"></script><script src="https://github.com/sachinchoolur/lg-thumbnail.js"></script><script src="https://github.com/sachinchoolur/lg-fullscreen.js"></script><script src="https://github.com/sachinchoolur/lg-zoom.js"></script><script src="https://github.com/sachinchoolur/lg-autoplay.js"></script><script src="https://github.com/sachinchoolur/lg-video.js"></script><script src="https://github.com/sachinchoolur/lg-hash.js"></script><script src="https://github.com/sachinchoolur/lg-pager.js"></script><script>if (typeof lightGallery !== 'undefined') {
+        var options = {
+            selector: '.gallery-item'
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options);
+        }</script>
+                    
+                </div>
+
+                
+                        
+<div class="post-copyright-info-container border-box">
+    <div class="copyright-info-content border-box">
+        <div class="copyright-info-top border-box">
+            <div class="copyright-post-title border-box text-ellipsis">
+                Day 2：量化选股策略——从理论模型到因子实践（含代码实现）
+            </div>
+
+            <div class="copyright-post-link border-box text-ellipsis">
+                2026/Day 2：量化选股策略——从理论模型到因子实践（含代码实现）/
+            </div>
+        </div>
+
+        <div class="copyright-info-bottom border-box">
+            <div class="copyright-post-author bottom-item">
+                <div class="type">
+                    作者
+                </div>
+                <div class="content">Joakim Starr(文人病)</div>
+            </div>
+
+            <div class="post-time bottom-item">
+                <div class="type">
+                    发布于
+                </div>
+                <div class="content">2026-07-25 00:00</div>
+            </div>
+
+
+            <div class="post-license bottom-item">
+                <div class="type">
+                    许可
+                </div>
+                <div class="content tooltip" data-tooltip-content="CC BY-NC-SA 4.0">
+                    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans" target="_blank">
+                        
+                            <i class="fa-brands fa-creative-commons"></i>
+                            <i class="fa-brands fa-creative-commons-by"></i>
+                            <i class="fa-brands fa-creative-commons-nc"></i>
+                            <i class="fa-brands fa-creative-commons-sa"></i>
+                        
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <i class="copyright-bg fa-solid fa-copyright"></i>
+    </div>
+    <div class="copy-copyright-info flex-center tooltip" data-tooltip-content="复制版权信息" data-tooltip-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84/">量化投资</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E9%80%89%E8%82%A1%E7%AD%96%E7%95%A5/">选股策略</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                            <div class="post-share-container border-box">
+    <ul class="share-list-wrap border-box">
+        <li class="qq share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到 QQ"
+        >
+            <i class="fa-brands fa-qq"></i>
+        </li>
+        <li class="wechat share-item border-box flex-center tooltip tooltip-img"
+            data-tooltip-content="分享到微信"
+            data-tooltip-img-tip="微信扫一扫"
+            data-tooltip-img-style="background-color: #fff; top: -10px; padding: 0.6rem 0.6rem 0.1rem 0.6rem;"
+        >
+            <i class="fa-brands fa-weixin"></i>
+        </li>
+        <li class="weibo share-item border-box flex-center tooltip"
+            data-tooltip-content="分享到微博"
+        >
+            <i class="fa-brands fa-weibo"></i>
+        </li>
+    </ul>
+</div>
+
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2026/Day%201%EF%BC%9A%E4%BB%8E%E6%8A%95%E8%B5%84%E5%88%B0%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84%E2%80%94%E2%80%94%E5%BB%BA%E7%AB%8B%E8%AE%A4%E7%9F%A5%E6%A1%86%E6%9E%B6/"
+                                   title="Day 1：从投资到量化投资——建立认知框架"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">Day 1：从投资到量化投资——建立认知框架</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Day 2：量化选股策略——从理论模型到因子实践（含代码实现）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E9%80%89%E8%82%A1%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">1. 为什么需要选股？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BB%8E%E6%9C%89%E6%95%88%E5%B8%82%E5%9C%BA%E5%81%87%E8%AF%B4%E8%AF%B4%E8%B5%B7"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1 从有效市场假说说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E4%B8%BB%E8%A7%82%E9%80%89%E8%82%A1-vs-%E9%87%8F%E5%8C%96%E9%80%89%E8%82%A1"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2 主观选股 vs 量化选股</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%9F%B3%EF%BC%9A%E4%BB%8E%E6%95%88%E7%94%A8%E5%87%BD%E6%95%B0%E5%88%B0%E5%A4%9A%E5%9B%A0%E5%AD%90%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">2. 理论基石：从效用函数到多因子模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%95%88%E7%94%A8%E5%87%BD%E6%95%B0%E4%B8%8E%E9%A3%8E%E9%99%A9%E5%8E%8C%E6%81%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.1 效用函数与风险厌恶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E9%A3%8E%E9%99%A9%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%BA%A6%E9%87%8F"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.2 风险的定义与度量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-MPT-%E6%A8%A1%E5%9E%8B%EF%BC%88%E7%8E%B0%E4%BB%A3%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE%E7%90%86%E8%AE%BA%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">2.3 MPT 模型（现代资产配置理论）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-CAPM-%E6%A8%A1%E5%9E%8B%EF%BC%88%E8%B5%84%E6%9C%AC%E8%B5%84%E4%BA%A7%E5%AE%9A%E4%BB%B7%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">2.4 CAPM 模型（资本资产定价模型）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-APT-%E5%A5%97%E5%88%A9%E5%AE%9A%E4%BB%B7%E7%90%86%E8%AE%BA%E4%B8%8E%E5%A4%9A%E5%9B%A0%E5%AD%90%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.5.</span> <span class="nav-text">2.5 APT 套利定价理论与多因子模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9B%A0%E5%AD%90%E5%88%86%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">3. 常见的因子分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%9B%A0%E5%AD%90%E5%85%A8%E6%99%AF%E8%A1%A8"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.1 因子全景表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%9B%A0%E5%AD%90%E6%9E%84%E5%BB%BA%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.2 因子构建示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%9B%A0%E5%AD%90%E6%9C%89%E6%95%88%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">1.5.</span> <span class="nav-text">4. 因子有效性检验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-P%E5%80%BC%E6%A3%80%E9%AA%8C"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 P值检验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-IC-%E5%80%BC%EF%BC%88%E4%BF%A1%E6%81%AF%E7%B3%BB%E6%95%B0%EF%BC%89%E2%80%94%E2%80%94-%E6%9C%80%E6%A0%B8%E5%BF%83%E7%9A%84%E6%8C%87%E6%A0%87"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.2 IC 值（信息系数）—— 最核心的指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-IR-%E5%80%BC%EF%BC%88%E4%BF%A1%E6%81%AF%E6%AF%94%E7%8E%87%EF%BC%89"><span class="nav-number">1.5.3.</span> <span class="nav-text">4.3 IR 值（信息比率）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%AE%8C%E6%95%B4%E7%9A%84%E5%9B%A0%E5%AD%90%E8%AF%84%E4%BB%B7%E4%BD%93%E7%B3%BB"><span class="nav-number">1.5.4.</span> <span class="nav-text">4.4 完整的因子评价体系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%A1%8C%E4%B8%9A%E4%B8%8E%E5%B8%82%E5%80%BC%E4%B8%AD%E6%80%A7%E5%8C%96"><span class="nav-number">1.6.</span> <span class="nav-text">5. 行业与市值中性化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%AD%E6%80%A7%E5%8C%96%EF%BC%9F"><span class="nav-number">1.6.1.</span> <span class="nav-text">5.1 为什么要中性化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%B8%82%E5%80%BC%E4%B8%AD%E6%80%A7%E5%8C%96%EF%BC%88%E8%BF%9E%E7%BB%AD%E5%8F%98%E9%87%8F%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">5.2 市值中性化（连续变量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E8%A1%8C%E4%B8%9A%E4%B8%AD%E6%80%A7%E5%8C%96%EF%BC%88%E7%A6%BB%E6%95%A3%E5%8F%98%E9%87%8F%EF%BC%89"><span class="nav-number">1.6.3.</span> <span class="nav-text">5.3 行业中性化（离散变量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E4%B8%AD%E6%80%A7%E5%8C%96%E7%9A%84%E5%AE%9E%E9%99%85%E5%BD%B1%E5%93%8D"><span class="nav-number">1.6.4.</span> <span class="nav-text">5.4 中性化的实际影响</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%A4%9A%E5%9B%A0%E5%AD%90%E9%80%89%E8%82%A1%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%EF%BC%88%E4%BA%94%E6%AD%A5%E6%B3%95%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">6. 多因子选股模型构建（五步法）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1%EF%BC%9A%E5%80%99%E9%80%89%E5%9B%A0%E5%AD%90%E9%80%89%E5%8F%96"><span class="nav-number">1.7.1.</span> <span class="nav-text">Step 1：候选因子选取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2%EF%BC%9A%E5%9B%A0%E5%AD%90%E6%9C%89%E6%95%88%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">1.7.2.</span> <span class="nav-text">Step 2：因子有效性检验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3%EF%BC%9A%E5%9B%A0%E5%AD%90%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.7.3.</span> <span class="nav-text">Step 3：因子预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-4%EF%BC%9A%E7%BB%BC%E5%90%88%E8%AF%84%E5%88%86"><span class="nav-number">1.7.4.</span> <span class="nav-text">Step 4：综合评分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-5%EF%BC%9A%E7%BB%84%E5%90%88%E4%BC%98%E5%8C%96%E4%B8%8E%E5%9B%9E%E6%B5%8B"><span class="nav-number">1.7.5.</span> <span class="nav-text">Step 5：组合优化与回测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E4%BB%8A%E6%97%A5%E5%8F%8D%E6%80%9D%E4%B8%8E%E8%A1%8C%E5%8A%A8%E8%AE%A1%E5%88%92"><span class="nav-number">1.8.</span> <span class="nav-text">7. 今日反思与行动计划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%94%B6%E8%8E%B7"><span class="nav-number">1.8.1.</span> <span class="nav-text">核心收获</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%9A%E6%9C%AA%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.8.2.</span> <span class="nav-text">尚未解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E4%B8%80%E6%AD%A5%E8%A1%8C%E5%8A%A8"><span class="nav-number">1.8.3.</span> <span class="nav-text">下一步行动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.9.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="copyright-info info-item">
+    &copy;&nbsp;<span>2025</span>&nbsp;-&nbsp;2026
+    
+            &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Joakim Starr(文人病)</a>
+        
+    </div>
+
+    <div class="theme-info info-item">
+        由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+    </div>
+
+    
+        
+        <div class="deploy-info info-item">
+            
+                <a target="_blank" rel="nofollow" href="https://github.com/JoakimStarr">
+            
+            本站由 <span class="tooltip" data-tooltip-content="GitHub Pages"><img src="/images/loading.gif" data-original="/images/brands/github.png"></span> 提供部署服务
+            
+                </a>
+            
+        </div>
+    
+
+    
+        <div class="count-info info-item">
+            
+                <span class="count-item border-box word">
+                    <span class="item-type border-box">总字数</span>
+                    <span class="item-value border-box word">48.2k</span>
+                </span>
+            
+
+            
+                <span class="count-item border-box uv">
+                    <span class="item-type border-box">访客数</span>
+                    <span class="item-value border-box uv" id="busuanzi_value_site_uv"></span>
+                </span>
+            
+
+            
+                <span class="count-item border-box pv">
+                    <span class="item-type border-box">访问量</span>
+                    <span class="item-value border-box pv" id="busuanzi_value_site_pv"></span>
+                </span>
+            
+        </div>
+    
+
+    
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="post-tools-list border-box">
+        <!-- PC encrypt again -->
+        
+
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <!-- toggle mode -->
+        
+            <li class="tools-item tool-toggle-theme-mode flex-center">
+                <i class="fas fa-moon"></i>
+            </li>
+        
+
+        <!-- rss -->
+        
+
+        <!-- to bottom -->
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text">Day 2：量化选股策略——从理论模型到因子实践（含代码实现）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E9%80%89%E8%82%A1%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">1. 为什么需要选股？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BB%8E%E6%9C%89%E6%95%88%E5%B8%82%E5%9C%BA%E5%81%87%E8%AF%B4%E8%AF%B4%E8%B5%B7"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1 从有效市场假说说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E4%B8%BB%E8%A7%82%E9%80%89%E8%82%A1-vs-%E9%87%8F%E5%8C%96%E9%80%89%E8%82%A1"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2 主观选股 vs 量化选股</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%90%86%E8%AE%BA%E5%9F%BA%E7%9F%B3%EF%BC%9A%E4%BB%8E%E6%95%88%E7%94%A8%E5%87%BD%E6%95%B0%E5%88%B0%E5%A4%9A%E5%9B%A0%E5%AD%90%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">2. 理论基石：从效用函数到多因子模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%95%88%E7%94%A8%E5%87%BD%E6%95%B0%E4%B8%8E%E9%A3%8E%E9%99%A9%E5%8E%8C%E6%81%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.1 效用函数与风险厌恶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E9%A3%8E%E9%99%A9%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%BA%A6%E9%87%8F"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.2 风险的定义与度量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-MPT-%E6%A8%A1%E5%9E%8B%EF%BC%88%E7%8E%B0%E4%BB%A3%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE%E7%90%86%E8%AE%BA%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">2.3 MPT 模型（现代资产配置理论）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-CAPM-%E6%A8%A1%E5%9E%8B%EF%BC%88%E8%B5%84%E6%9C%AC%E8%B5%84%E4%BA%A7%E5%AE%9A%E4%BB%B7%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">2.4 CAPM 模型（资本资产定价模型）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-APT-%E5%A5%97%E5%88%A9%E5%AE%9A%E4%BB%B7%E7%90%86%E8%AE%BA%E4%B8%8E%E5%A4%9A%E5%9B%A0%E5%AD%90%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.5.</span> <span class="nav-text">2.5 APT 套利定价理论与多因子模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9B%A0%E5%AD%90%E5%88%86%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">3. 常见的因子分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%9B%A0%E5%AD%90%E5%85%A8%E6%99%AF%E8%A1%A8"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.1 因子全景表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%9B%A0%E5%AD%90%E6%9E%84%E5%BB%BA%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.2 因子构建示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%9B%A0%E5%AD%90%E6%9C%89%E6%95%88%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">1.5.</span> <span class="nav-text">4. 因子有效性检验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-P%E5%80%BC%E6%A3%80%E9%AA%8C"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 P值检验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-IC-%E5%80%BC%EF%BC%88%E4%BF%A1%E6%81%AF%E7%B3%BB%E6%95%B0%EF%BC%89%E2%80%94%E2%80%94-%E6%9C%80%E6%A0%B8%E5%BF%83%E7%9A%84%E6%8C%87%E6%A0%87"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.2 IC 值（信息系数）—— 最核心的指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-IR-%E5%80%BC%EF%BC%88%E4%BF%A1%E6%81%AF%E6%AF%94%E7%8E%87%EF%BC%89"><span class="nav-number">1.5.3.</span> <span class="nav-text">4.3 IR 值（信息比率）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%AE%8C%E6%95%B4%E7%9A%84%E5%9B%A0%E5%AD%90%E8%AF%84%E4%BB%B7%E4%BD%93%E7%B3%BB"><span class="nav-number">1.5.4.</span> <span class="nav-text">4.4 完整的因子评价体系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E8%A1%8C%E4%B8%9A%E4%B8%8E%E5%B8%82%E5%80%BC%E4%B8%AD%E6%80%A7%E5%8C%96"><span class="nav-number">1.6.</span> <span class="nav-text">5. 行业与市值中性化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%AD%E6%80%A7%E5%8C%96%EF%BC%9F"><span class="nav-number">1.6.1.</span> <span class="nav-text">5.1 为什么要中性化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%B8%82%E5%80%BC%E4%B8%AD%E6%80%A7%E5%8C%96%EF%BC%88%E8%BF%9E%E7%BB%AD%E5%8F%98%E9%87%8F%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">5.2 市值中性化（连续变量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E8%A1%8C%E4%B8%9A%E4%B8%AD%E6%80%A7%E5%8C%96%EF%BC%88%E7%A6%BB%E6%95%A3%E5%8F%98%E9%87%8F%EF%BC%89"><span class="nav-number">1.6.3.</span> <span class="nav-text">5.3 行业中性化（离散变量）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E4%B8%AD%E6%80%A7%E5%8C%96%E7%9A%84%E5%AE%9E%E9%99%85%E5%BD%B1%E5%93%8D"><span class="nav-number">1.6.4.</span> <span class="nav-text">5.4 中性化的实际影响</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%A4%9A%E5%9B%A0%E5%AD%90%E9%80%89%E8%82%A1%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%EF%BC%88%E4%BA%94%E6%AD%A5%E6%B3%95%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">6. 多因子选股模型构建（五步法）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1%EF%BC%9A%E5%80%99%E9%80%89%E5%9B%A0%E5%AD%90%E9%80%89%E5%8F%96"><span class="nav-number">1.7.1.</span> <span class="nav-text">Step 1：候选因子选取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2%EF%BC%9A%E5%9B%A0%E5%AD%90%E6%9C%89%E6%95%88%E6%80%A7%E6%A3%80%E9%AA%8C"><span class="nav-number">1.7.2.</span> <span class="nav-text">Step 2：因子有效性检验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3%EF%BC%9A%E5%9B%A0%E5%AD%90%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.7.3.</span> <span class="nav-text">Step 3：因子预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-4%EF%BC%9A%E7%BB%BC%E5%90%88%E8%AF%84%E5%88%86"><span class="nav-number">1.7.4.</span> <span class="nav-text">Step 4：综合评分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-5%EF%BC%9A%E7%BB%84%E5%90%88%E4%BC%98%E5%8C%96%E4%B8%8E%E5%9B%9E%E6%B5%8B"><span class="nav-number">1.7.5.</span> <span class="nav-text">Step 5：组合优化与回测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E4%BB%8A%E6%97%A5%E5%8F%8D%E6%80%9D%E4%B8%8E%E8%A1%8C%E5%8A%A8%E8%AE%A1%E5%88%92"><span class="nav-number">1.8.</span> <span class="nav-text">7. 今日反思与行动计划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%94%B6%E8%8E%B7"><span class="nav-number">1.8.1.</span> <span class="nav-text">核心收获</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%9A%E6%9C%AA%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.8.2.</span> <span class="nav-text">尚未解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E4%B8%80%E6%AD%A5%E8%A1%8C%E5%8A%A8"><span class="nav-number">1.8.3.</span> <span class="nav-text">下一步行动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.9.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+
+
+<!-- common js -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+    
+<script src="/js/lazyload.js"></script>
+
+
+
+<div class="pjax">
+    <!-- home page -->
+    
+
+    <!-- post page -->
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+            
+<script src="/js/post/copyright-info.js"></script>
+
+        
+
+        <!-- share -->
+        
+            
+<script src="/js/post/share.js"></script>
+
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+    <script id="pjax-script" src="/js/libs/pjax.min.js"></script>
+<script>
+  (function () {
+    const isGoogleTranslate = location.hostname.includes('.translate.goog')
+
+    if (isGoogleTranslate) {
+      document.getElementById('pjax-script')?.remove()
+      return
+    }
+
+    function initPjax () {
+      if (window.pjax) return
+
+      window.pjax = new Pjax({
+        selectors: [
+          'head title',
+          '.page-container',
+          '.pjax'
+        ],
+        history: true,
+        debug: false,
+        cacheBust: false,
+        timeout: 0,
+        analytics: false,
+        currentUrlFullReload: false,
+        scrollRestoration: false
+      })
+
+      document.addEventListener('pjax:send', onPjaxSend)
+      document.addEventListener('pjax:complete', onPjaxComplete)
+    }
+
+    function onPjaxSend () {
+      KEEP?.utils?.pjaxProgressBarStart()
+    }
+
+    function onPjaxComplete () {
+      KEEP?.utils?.pjaxProgressBarEnd()
+
+      window?.pjax?.executeScripts(
+        document.querySelectorAll('script[data-pjax], .pjax script')
+      )
+
+      KEEP?.initExecute()
+    }
+
+    // DOM Ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPjax)
+    } else {
+      initPjax()
+    }
+  })()
+</script>
+
+
+
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body>
+</html>
